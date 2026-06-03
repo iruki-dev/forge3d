@@ -1,0 +1,107 @@
+site_name: forge3d
+site_description: Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation.
+site_url: https://forge3d.readthedocs.io
+repo_url: https://github.com/iruki-dev/forge3d
+repo_name: iruki-dev/forge3d
+docs_dir: docs_src
+site_dir: site
+
+theme:
+  name: material
+  language: en
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: blue
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - content.code.annotate
+    - toc.integrate
+  icon:
+    repo: fontawesome/brands/github
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_source: false
+            show_root_heading: true
+            show_root_full_path: false
+            heading_level: 2
+            members_order: source
+            separate_signature: true
+            show_signature_annotations: true
+
+markdown_extensions:
+  - admonition
+  - def_list
+  - attr_list
+  - md_in_html
+  - tables
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - toc:
+      permalink: true
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: install.md
+    - Quickstart: quickstart.md
+  - Tutorials:
+    - Physics Simulation: tutorials/01_physics.md
+    - Realtime & HQ Rendering: tutorials/02_rendering.md
+    - Robot Arm (FK / IK): tutorials/03_robot.md
+    - Reinforcement Learning: tutorials/04_rl.md
+  - Architecture: architecture.md
+  - API Reference:
+    - forge3d.World: api/world.md
+    - forge3d.Body: api/body.md
+    - forge3d.Shape & Material: api/shapes.md
+    - forge3d.App: api/app.md
+    - forge3d.Input & Key: api/input.md
+    - forge3d.Viewer & Recorder: api/rendering.md
+    - forge3d.Camera: api/camera.md
+    - forge3d.robot: api/robot.md
+    - Backend (NumPy / JAX): api/backends.md
+  - Contributing: contributing.md
+  - Changelog: changelog.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/iruki-dev/forge3d
+    - icon: fontawesome/brands/python
+      link: https://pypi.org/project/forge3d/

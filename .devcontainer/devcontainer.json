@@ -1,0 +1,24 @@
+{
+  "name": "Python 3",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "features": {
+    "ghcr.io/siri404/devcontainer-ai-features/claude-code:1": {}
+  },
+  "remoteEnv": {
+    "ENGINE_BACKEND": "numpy",
+    "XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+    "OMP_NUM_THREADS": "4"
+  },
+  "postCreateCommand": "pip install --no-cache-dir -e '.[dev,rl]' && pip install --no-cache-dir 'jax[cpu]>=0.4.30'",
+  "runArgs": [
+    "--net=host",
+    "-v", "/tmp/.X11-unix:/tmp/.X11-unix:ro",
+    "--device", "/dev/dri:/dev/dri"
+  ],
+  "containerEnv": {
+    "DISPLAY": "${localEnv:DISPLAY}"
+  }
+}

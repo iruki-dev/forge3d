@@ -4,9 +4,10 @@
 > 각 task 완료 시 갱신한다. (현재 목표 / 완료 / 진행 중 / 다음 / 결정·블로커)
 
 ## 현재 상태
-- **현재 Phase**: P13 ✅ 완료 (현대 강체 물리)
-- **활성 SPEC**: `docs/specs/phase-13-modern-rigid-body.md` ✅ 완료
+- **현재 Phase**: P24 ✅ 완료 (v1.0.0 제품 릴리즈)
+- **활성 SPEC**: `docs/specs/phase-24-v1-release.md` ✅ 완료
 - **백엔드 정확성 확정 여부**: ✅ (PyBullet 대조 50/50 PASS, max_abs < 2e-11)
+- **테스트**: 459 passed (P14~P23 신규 테스트 포함)
 
 ## Phase 체크리스트 (게이트)
 - [x] **P0** 환경·골격·백엔드 스위치 — 게이트: `import forge3d` + pytest 통과(np/jnp 둘 다)
@@ -23,6 +24,16 @@
 - [x] **P11** all-JAX 성능화(JIT+vmap) + SHAC — 게이트: steps/s 대폭 향상
 - [x] **P12 (선택)** 실접촉 마찰 파지·GJK/EPA·도메인 랜덤화
 - [x] **P13** 현대 강체 물리 — 관성 텐서+각 임펄스·PGS 10회·구 vs OBB 일반·캡슐·에너지 보존
+- [x] **P14** Git+CI/CD+PyPI 인프라 — GitHub Actions CI/Release/Docs, pyproject.toml, ReadTheDocs
+- [x] **P15** MkDocs 문서 사이트 — Material 테마, mkdocstrings, 튜토리얼 4종, API 레퍼런스
+- [x] **P16** 조인트·구속 — FixedJoint/Ball/Hinge(모터·한계)/Prismatic/Distance/Spring, 11개 테스트
+- [x] **P17** 충돌 이벤트 콜백 — begin/stay/end, 쌍별 핸들러, TriggerZone, 6개 테스트
+- [x] **P18** 씬 직렬화 — World.save/load JSON, StateRecorder npz, 6개 테스트
+- [x] **P19** 충돌 레이어·마스크 — CollisionLayer 비트필드, Body.collision_layer/mask, ignore_collision
+- [x] **P20** API 강화 — ValidationError 계층, add_box/add_sphere 인자 검증, 10개 테스트
+- [x] **P21** Heightfield 지형 — add_terrain(), 쌍선형 높이 보간, 구·박스 충돌, 5개 테스트
+- [x] **P23** 아일랜드 슬리핑 — Body.is_sleeping, wake_body(), 5개 테스트
+- [x] **P24** v1.0.0 릴리즈 — 버전 1.0.0, Production/Stable classifier, CHANGELOG 완성
 
 > 자기검증(상시): 응용이 라이브러리를 외부인처럼 import만 하는가? 물리 코어가 render를 import하지 않는가?
 

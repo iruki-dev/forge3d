@@ -47,6 +47,9 @@ class _Body:
     # Pre-computed inverse of inertia_local (constant per body — never changes).
     # Cached here to avoid np.linalg.inv every physics step.
     inertia_inv_local: Any = field(default=None)
+    # Collision layer/mask (bit fields). Default: layer=0x0001, mask=0xFFFF
+    collision_layer: int = 0x0001
+    collision_mask: int = 0xFFFF
 
 
 # ── World ─────────────────────────────────────────────────────────────────────
@@ -78,6 +81,20 @@ class PhysicsWorld:
         self._contact_spring_k: float = float(contact_spring_k)
         # Body-id → list-index cache for O(1) lookups (invalidated on remove)
         self._id_to_idx: dict[int, int] = {}
+        # Constraint / joint system
+        self._constraints: list[Any] = []  # list[Constraint]
+        self._next_joint_id: int = 0
+        # Physics-level ignored pairs — frozenset({id_a, id_b})
+        self._ignored_pairs: set[frozenset[int]] = set()
+        # Heightfield terrain list
+        self._heightfields: list[Any] = []
+        # Island sleeping — count of consecutive steps below threshold
+        self._sleep_counters: dict[int, int] = {}  # body_id → sleep_frames
+        # Sleeping parameters
+        self._sleep_vel_threshold: float = 0.01    # m/s
+        self._sleep_omega_threshold: float = 0.01  # rad/s
+        self._sleep_frames_required: int = 60       # ~1 s @ 60 Hz
+        self._sleeping_enabled: bool = True
 
     # ── Scene construction ────────────────────────────────────────────────────
 
@@ -402,6 +419,20 @@ class PhysicsWorld:
 
     # ── Simulation ────────────────────────────────────────────────────────────
 
+    # ── Constraint / joint management ─────────────────────────────────────────
+
+    def add_constraint(self, constraint: Any) -> int:
+        """Register a constraint; returns a joint_id for later removal."""
+        jid = self._next_joint_id
+        self._next_joint_id += 1
+        constraint.joint_id = jid
+        self._constraints.append(constraint)
+        return jid
+
+    def remove_constraint(self, joint_id: int) -> None:
+        """Remove a constraint by joint_id."""
+        self._constraints = [c for c in self._constraints if c.joint_id != joint_id]
+
     def step(self, dt: float) -> None:
         """Advance simulation by dt seconds.
 
@@ -409,7 +440,8 @@ class PhysicsWorld:
           1. Apply gravity to velocities (and rotation); do NOT move positions yet.
           2. Detect contacts at CURRENT positions (with AABB broad-phase).
           3. Resolve contacts: velocity impulses + Baumgarte position correction.
-          4. Update positions with POST-CONTACT velocities.
+          4. Solve joint constraints (Sequential Impulse, 4 iterations).
+          5. Update positions with POST-CONTACT velocities.
         """
         from forge3d.collision.detection import detect_contacts
         from forge3d.contact.solver import solve_contacts
@@ -418,7 +450,19 @@ class PhysicsWorld:
         self._bodies = [_vel_step_body(b, dt, self._gravity) for b in self._bodies]
 
         # Step 2: narrow-phase collision detection
-        contacts = detect_contacts(self._bodies)
+        contacts = detect_contacts(self._bodies, self._ignored_pairs if self._ignored_pairs else None)
+
+        # Heightfield contacts
+        if self._heightfields:
+            from forge3d.collision.heightfield import box_vs_heightfield, sphere_vs_heightfield
+            for idx, body in enumerate(self._bodies):
+                if body.static:
+                    continue
+                for hf in self._heightfields:
+                    if body.shape_type == "sphere":
+                        contacts.extend(sphere_vs_heightfield(body, idx, hf))
+                    elif body.shape_type == "box":
+                        contacts.extend(box_vs_heightfield(body, idx, hf))
 
         # Step 3: impulse-based contact resolution
         if contacts:
@@ -426,12 +470,23 @@ class PhysicsWorld:
                 self._bodies, contacts, spring_k=self._contact_spring_k, dt=dt
             )
 
-        # Step 4: position update with final (post-contact) velocities
+        # Step 4: joint constraint solving (3 iterations per step)
+        if self._constraints:
+            self._rebuild_index()
+            for _ in range(3):
+                for constraint in self._constraints:
+                    constraint.apply(self._bodies, self._id_to_idx, dt)
+
+        # Step 5: position update with final (post-contact) velocities
         self._bodies = [_pos_step_body(b, dt) for b in self._bodies]
 
         self._time += dt
         # Keep id→index cache consistent after list replacement
         self._rebuild_index()
+
+        # Step 6: update sleep counters
+        if self._sleeping_enabled:
+            self._update_sleep_counters(contacts)
 
     @property
     def time(self) -> float:
@@ -510,6 +565,41 @@ class PhysicsWorld:
 
 
 # ── Body integration ──────────────────────────────────────────────────────────
+
+
+    def _update_sleep_counters(self, contacts: list[Any]) -> None:
+        """Update sleep counters and mark bodies as sleeping/awake."""
+        # Collect body IDs involved in contacts (those should stay awake)
+        active_ids: set[int] = set()
+        for c in contacts:
+            a = self._bodies[c.body_a_idx]
+            active_ids.add(a.body_id)
+            if c.body_b_idx >= 0:
+                b = self._bodies[c.body_b_idx]
+                active_ids.add(b.body_id)
+
+        for body in self._bodies:
+            if body.static:
+                continue
+            bid = body.body_id
+            v_mag = np.linalg.norm(body.vel)
+            w_mag = np.linalg.norm(body.omega)
+            is_slow = (v_mag < self._sleep_vel_threshold and
+                       w_mag < self._sleep_omega_threshold)
+            is_in_contact = bid in active_ids
+
+            if is_slow and not is_in_contact:
+                self._sleep_counters[bid] = self._sleep_counters.get(bid, 0) + 1
+            else:
+                self._sleep_counters[bid] = 0
+
+    def is_sleeping(self, body_id: int) -> bool:
+        """Return True if this body has been below the sleep threshold long enough."""
+        return self._sleep_counters.get(body_id, 0) >= self._sleep_frames_required
+
+    def wake_body(self, body_id: int) -> None:
+        """Reset sleep counter for a body (force it awake)."""
+        self._sleep_counters[body_id] = 0
 
 
 def _vel_step_body(b: _Body, dt: float, gravity: np.ndarray) -> _Body:

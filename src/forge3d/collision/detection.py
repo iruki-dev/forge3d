@@ -107,7 +107,10 @@ def _aabb_half_extents(body: Any, R: np.ndarray | None) -> np.ndarray:
     return np.full(3, 1e9)
 
 
-def detect_contacts(bodies: list[Any]) -> list[ContactPoint]:
+def detect_contacts(
+    bodies: list[Any],
+    ignored_pairs: "set[frozenset[int]] | None" = None,
+) -> list[ContactPoint]:
     """Detect all contacts in the current body list.
 
     Iterates all (a, b) pairs where a is dynamic.
@@ -139,6 +142,20 @@ def detect_contacts(bodies: list[Any]) -> list[ContactPoint]:
             b = bodies[j]
             if not b.static and j < i:
                 continue
+
+            # ── Layer/mask filter ──────────────────────────────────────────────
+            layer_a = getattr(a, "collision_layer", 0x0001)
+            mask_a  = getattr(a, "collision_mask",  0xFFFF)
+            layer_b = getattr(b, "collision_layer", 0x0001)
+            mask_b  = getattr(b, "collision_mask",  0xFFFF)
+            if not ((layer_a & mask_b) and (layer_b & mask_a)):
+                continue
+
+            # ── Pair-based ignore ──────────────────────────────────────────────
+            if ignored_pairs:
+                pair_key = frozenset({a.body_id, b.body_id})
+                if pair_key in ignored_pairs:
+                    continue
 
             # ── AABB broadphase ────────────────────────────────────────────────
             # If the axis-aligned bounding boxes don't overlap, no contact possible.

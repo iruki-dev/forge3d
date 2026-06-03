@@ -10,6 +10,56 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.0.0] — 2026-06-03  ★ STABLE RELEASE
+
+### Added (P15 — MkDocs 문서 사이트)
+- MkDocs Material 테마 기반 문서 사이트 (`mkdocs.yml`, `docs_src/`)
+- API 레퍼런스, 튜토리얼 4종, 아키텍처 개요 페이지
+- ReadTheDocs 설정 (`.readthedocs.yaml`), GitHub Pages 워크플로우
+
+### Added (P16 — 조인트 & 구속 시스템)
+- `forge3d.constraints` 패키지: Sequential Impulse 구속 솔버
+- `FixedJoint`, `BallJoint`, `HingeJoint` (모터·한계 포함), `PrismaticJoint`, `DistanceJoint`, `SpringJoint`
+- `World.add_joint(type, body_a, body_b, ...)` 통합 API; `World.remove_joint(handle)`
+- `forge3d.JointHandle` 핸들 클래스
+
+### Added (P17 — 충돌 이벤트 콜백)
+- `forge3d.CollisionEvent`, `forge3d.CollisionHandler`
+- `World.on_collision_begin`, `on_collision_stay`, `on_collision_end` 데코레이터
+- `World.add_collision_handler(body_a, body_b)` 쌍별 핸들러
+- `World.add_trigger_zone(position, size)` 순수 데이터 존 (물리 충돌 없음)
+- `World.ignore_collision(body_a, body_b)` 쌍별 충돌 무시
+
+### Added (P18 — 씬 직렬화)
+- `World.save(path)` → JSON 저장
+- `World.load(path)` 클래스 메서드 → World 복원
+- `forge3d.StateRecorder` — 프레임별 상태 기록 + npz 저장/재현
+
+### Added (P19 — 충돌 레이어·마스크)
+- `forge3d.CollisionLayer` 비트필드 상수 (`DEFAULT`, `PLAYER`, `ENEMY`, `BULLET` 등)
+- `Body.collision_layer`, `Body.collision_mask` 프로퍼티
+- `World.ignore_collision()` 쌍 기반 물리 충돌 무시 (physics-level)
+
+### Added (P20 — API 강화)
+- `forge3d.errors` 모듈: `Forge3dError`, `ValidationError`, `PhysicsError`, `RenderError`
+- `World()`, `add_box()`, `add_sphere()` 인자 검증 (mass > 0, size > 0, restitution ∈ [0,1])
+- 친절한 에러 메시지 (`ClassName.method() — param must be ... got param=...`)
+
+### Added (P21 — Heightfield 지형)
+- `World.add_terrain(heights, cell_size, origin)` → Heightfield
+- 구 vs 높이맵, 박스 vs 높이맵 충돌 감지 (쌍선형 보간)
+
+### Added (P23 — 아일랜드 슬리핑)
+- 바디 슬리핑 카운터 (`_sleep_counters`)
+- `Body.is_sleeping` 프로퍼티, `PhysicsWorld.wake_body()`
+
+### Changed
+- Version bump: `0.4.0` → `1.0.0` (첫 안정 릴리즈)
+- pyproject.toml `Development Status :: 5 - Production/Stable`
+- Baumgarte 바이어스 부호 수정 (구속 솔버 안정성 대폭 향상)
+
+---
+
 ## [0.4.0] — 2026-06-03
 
 ### Added (P14 — PyPI 배포 인프라)

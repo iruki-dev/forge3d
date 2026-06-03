@@ -137,12 +137,12 @@ def _build_mesh(
                     vertex_map[key] = new_idx
                     out_pos.append(pos_arr[v_idx])
                     out_uv.append(
-                        uv_arr[vt_idx]
+                        uv_arr[vt_idx]  # type: ignore[index]
                         if (has_uv and vt_idx >= 0)
                         else np.zeros(2, dtype=np.float32)
                     )
                     out_nrm.append(
-                        nrm_arr[vn_idx]
+                        nrm_arr[vn_idx]  # type: ignore[index]
                         if (has_nrm and vn_idx >= 0)
                         else np.zeros(3, dtype=np.float32)
                     )

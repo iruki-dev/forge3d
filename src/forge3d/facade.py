@@ -249,6 +249,33 @@ class Body:
 
         self._pw._replace_body(self._id, replace(b, omega=np.asarray(omega, dtype=float)))
 
+    @property
+    def is_sleeping(self) -> bool:
+        """True if this body is below the sleep velocity threshold for ≥ 1 s."""
+        return self._pw.is_sleeping(self._id)
+
+    @property
+    def collision_layer(self) -> int:
+        """Bit-field: which layer(s) this body belongs to."""
+        return self._state().collision_layer
+
+    @collision_layer.setter
+    def collision_layer(self, value: int) -> None:
+        from dataclasses import replace
+        b = self._state()
+        self._pw._replace_body(self._id, replace(b, collision_layer=int(value)))
+
+    @property
+    def collision_mask(self) -> int:
+        """Bit-field: which layers this body detects collisions with."""
+        return self._state().collision_mask
+
+    @collision_mask.setter
+    def collision_mask(self, value: int) -> None:
+        from dataclasses import replace
+        b = self._state()
+        self._pw._replace_body(self._id, replace(b, collision_mask=int(value)))
+
     def _flush_accumulators(self, dt: float) -> None:
         """Apply accumulated force/torque as impulses (called by World.step)."""
         if np.any(self._force_accum != 0):
@@ -304,12 +331,19 @@ class World:
     DEFAULT_DT: float = 1.0 / 60.0
 
     def __init__(self, gravity: Any = (0.0, 0.0, -9.81)) -> None:
+        from forge3d.errors import require_sequence
+        require_sequence(gravity, 3, "gravity", "World()")
         self._physics = PhysicsWorld(gravity=list(gravity))
         self._bodies: dict[int, Body] = {}
         self._materials: dict[str, Material] = {}
         self._camera: tuple | None = None
         self._robots: list[Any] = []
         self._welds: dict[int, tuple[int, np.ndarray]] = {}
+        # Event system
+        from forge3d.events import EventDispatcher
+        self._events = EventDispatcher()
+        # Collision ignore set: frozenset of (id_a, id_b) pairs
+        self._ignored_pairs: set[frozenset[int]] = set()
 
     # ── Scene construction ────────────────────────────────────────────────────
 
@@ -344,6 +378,12 @@ class World:
         friction: float = 0.5,
     ) -> Body:
         """Add a box-shaped rigid body."""
+        from forge3d.errors import require_all_positive, require_nonneg, require_positive, require_range, require_sequence
+        require_positive(float(mass), "mass", "World.add_box()")
+        require_sequence(size, 3, "size", "World.add_box()")
+        require_all_positive(size, "size", "World.add_box()")
+        require_range(float(restitution), 0.0, 1.0, "restitution", "World.add_box()")
+        require_nonneg(float(friction), "friction", "World.add_box()")
         mat_id, mat = _resolve_material(material)
         if mat:
             self._materials[mat_id] = mat
@@ -447,6 +487,12 @@ class World:
 
         ``static=True`` creates a non-moving marker (e.g. target visualization).
         """
+        from forge3d.errors import require_nonneg, require_positive, require_range
+        if not static:
+            require_positive(float(mass), "mass", "World.add_sphere()")
+        require_positive(float(radius), "radius", "World.add_sphere()")
+        require_range(float(restitution), 0.0, 1.0, "restitution", "World.add_sphere()")
+        require_nonneg(float(friction), "friction", "World.add_sphere()")
         mat_id, mat = _resolve_material(material)
         if mat:
             self._materials[mat_id] = mat
@@ -463,6 +509,42 @@ class World:
         body = Body(self._physics, bid)
         self._bodies[bid] = body
         return body
+
+    def add_terrain(
+        self,
+        heights: Any,
+        cell_size: float = 1.0,
+        origin: Any = (0.0, 0.0, 0.0),
+        material: Material | str = "ground",
+    ) -> Any:
+        """Add a heightfield terrain (static, collision-only).
+
+        Args:
+            heights: 2D array of shape (rows, cols) with z-heights in metres.
+            cell_size: World-space size of each grid cell (m).
+            origin: World-space position of the (0, 0) grid corner.
+            material: Surface material for rendering.
+
+        Returns:
+            A :class:`~forge3d.collision.heightfield.Heightfield` object.
+            Pass it to ``world.add_terrain()`` to enable collision.
+
+        Example::
+
+            import numpy as np
+            rng = np.random.default_rng(42)
+            h = rng.uniform(0, 2, (32, 32)).astype(np.float32)
+            terrain = world.add_terrain(h, cell_size=0.5, origin=(-8, -8, 0))
+        """
+        from forge3d.collision.heightfield import Heightfield
+
+        hf = Heightfield(
+            heights=np.asarray(heights, dtype=np.float32),
+            cell_size=float(cell_size),
+            origin=np.asarray(origin, dtype=float),
+        )
+        self._physics._heightfields.append(hf)
+        return hf
 
     def add(self, obj: Any) -> Any:
         """Add a Body or Robot to the world.  Returns the object passed in."""
@@ -604,6 +686,118 @@ class World:
         """Remove weld constraint from *body* (body resumes normal physics)."""
         self._welds.pop(body._id, None)
 
+    # ── Joint / constraint system ─────────────────────────────────────────────
+
+    def add_joint(
+        self,
+        joint_type: str,
+        body_a: Body,
+        body_b: Body | None = None,
+        anchor_a: Any = (0.0, 0.0, 0.0),
+        anchor_b: Any = (0.0, 0.0, 0.0),
+        axis: Any = (0.0, 0.0, 1.0),
+        limits: tuple[float, float] | None = None,
+        motor_velocity: float | None = None,
+        motor_max_torque: float = 10.0,
+        stiffness: float = 100.0,
+        damping: float = 5.0,
+        rest_length: float = 1.0,
+        target_distance: float = 1.0,
+    ) -> Any:
+        """Add a joint constraint between two bodies.
+
+        Args:
+            joint_type: One of ``"fixed"``, ``"ball"``, ``"hinge"``,
+                ``"prismatic"``, ``"distance"``, ``"spring"``.
+            body_a: First body (required).
+            body_b: Second body.  If ``None``, the joint anchors body_a
+                to a world-fixed point (``anchor_b`` in world frame).
+            anchor_a: Attachment point in body_a local frame.
+            anchor_b: Attachment point in body_b local frame (or world frame
+                if body_b is None).
+            axis: Hinge / slide axis in body_a local frame
+                (used for ``"hinge"`` and ``"prismatic"``).
+            limits: Angular limits (rad) for hinge or distance limits (m)
+                for prismatic.
+            motor_velocity: Target velocity for hinge/prismatic motor.
+            motor_max_torque: Torque cap for hinge motor (N·m).
+            stiffness: Spring constant k (N/m) for spring joint.
+            damping: Damping coefficient c (N·s/m) for spring joint.
+            rest_length: Natural spring length (m) for spring joint.
+            target_distance: Target distance (m) for distance joint.
+
+        Returns:
+            A :class:`forge3d.constraints.JointHandle` (pass to
+            :meth:`remove_joint` to delete the joint).
+
+        Examples::
+
+            hinge = world.add_joint("hinge", door, frame,
+                                    anchor_a=(-0.5, 0, 0),
+                                    anchor_b=(0.5, 0, 0),
+                                    axis=(0, 0, 1))
+            spring = world.add_joint("spring", box, ceiling,
+                                     stiffness=200.0, damping=10.0,
+                                     rest_length=2.0)
+        """
+        from forge3d.constraints import (
+            BallJoint,
+            DistanceJoint,
+            FixedJoint,
+            HingeJoint,
+            JointHandle,
+            PrismaticJoint,
+            SpringJoint,
+        )
+
+        id_a = body_a._id
+        id_b = body_b._id if body_b is not None else -1
+        anc_a = np.asarray(anchor_a, dtype=float)
+        anc_b = np.asarray(anchor_b, dtype=float)
+        ax = np.asarray(axis, dtype=float)
+
+        from forge3d.constraints.base import Constraint as _Constraint  # noqa: F811
+
+        jtype = joint_type.lower().replace("-", "_")
+        constraint: _Constraint
+        if jtype == "fixed":
+            constraint = FixedJoint(id_a, id_b, anc_a, anc_b)
+        elif jtype == "ball":
+            constraint = BallJoint(id_a, id_b, anc_a, anc_b)
+        elif jtype == "hinge":
+            constraint = HingeJoint(
+                id_a, id_b, anc_a, anc_b, ax,
+                limits=limits,
+                motor_velocity=motor_velocity,
+                motor_max_torque=motor_max_torque,
+            )
+        elif jtype == "prismatic":
+            constraint = PrismaticJoint(
+                id_a, id_b, anc_a, anc_b, ax,
+                limits=limits,
+                motor_velocity=motor_velocity,
+                motor_max_force=motor_max_torque,
+            )
+        elif jtype == "distance":
+            constraint = DistanceJoint(id_a, id_b, anc_a, anc_b, target_distance)
+        elif jtype == "spring":
+            constraint = SpringJoint(
+                id_a, id_b, anc_a, anc_b,
+                stiffness=stiffness, damping=damping, rest_length=rest_length,
+            )
+        else:
+            raise ValueError(
+                f"Unknown joint type '{joint_type}'. "
+                f"Choose from: fixed, ball, hinge, prismatic, distance, spring."
+            )
+
+        jid = self._physics.add_constraint(constraint)
+        return JointHandle(joint_id=jid, joint_type=jtype)
+
+    def remove_joint(self, handle: Any) -> None:
+        """Remove a joint by its handle (returned from :meth:`add_joint`)."""
+        self._physics.remove_constraint(handle.joint_id)
+
     def set_camera(
         self,
         position: Any,
@@ -623,6 +817,7 @@ class World:
         1. Flush per-body force/torque accumulators (apply_force / apply_torque).
         2. Physics step (gravity → contacts → impulses → position update).
         3. Apply weld constraints.
+        4. Dispatch collision events.
         """
         _dt = dt if dt is not None else self.DEFAULT_DT
         # Flush accumulators before physics step
@@ -633,6 +828,108 @@ class World:
                 body._flush_accumulators(_dt)
         self._physics.step(_dt)
         self._apply_welds()
+        # Always dispatch so _prev_contacts stays up to date (enables on_end after late registration)
+        self._dispatch_events()
+
+    def _dispatch_events(self) -> None:
+        """Detect current contacts and dispatch begin/stay/end callbacks."""
+        from forge3d.collision.detection import detect_contacts
+        from forge3d.events import CollisionEvent
+
+        contacts_raw = detect_contacts(self._physics._bodies)
+
+        class _EvtContact:
+            __slots__ = ["body_id_a", "body_id_b", "contact_point", "normal",
+                         "impulse", "relative_speed"]
+
+            def __init__(self, c: Any, bodies: list[Any]) -> None:
+                ba = bodies[c.body_a_idx]
+                self.body_id_a = ba.body_id
+                if c.body_b_idx >= 0:
+                    self.body_id_b = bodies[c.body_b_idx].body_id
+                else:
+                    self.body_id_b = -1
+                self.contact_point = c.pos
+                self.normal = c.normal
+                self.impulse = 0.0
+                self.relative_speed = 0.0
+
+        evt_contacts = [_EvtContact(c, self._physics._bodies) for c in contacts_raw]
+        # Filter ignored pairs
+        if self._ignored_pairs:
+            evt_contacts = [
+                c for c in evt_contacts
+                if frozenset({c.body_id_a, c.body_id_b}) not in self._ignored_pairs
+            ]
+
+        self._events._bodies = self._bodies  # type: ignore[assignment]  # share reference
+        self._events.dispatch(evt_contacts)
+
+    # ── Collision event API ────────────────────────────────────────────────────
+
+    def on_collision_begin(self, fn: Any) -> Any:
+        """Register a callback for when two bodies first collide.
+
+        Can be used as a decorator::
+
+            @world.on_collision_begin
+            def hit(event: forge3d.CollisionEvent) -> None:
+                print(event.body_a.name, "hit", event.body_b.name)
+        """
+        self._events.add_begin_listener(fn)
+        return fn
+
+    def on_collision_stay(self, fn: Any) -> Any:
+        """Register a callback called every step while two bodies remain in contact."""
+        self._events.add_stay_listener(fn)
+        return fn
+
+    def on_collision_end(self, fn: Any) -> Any:
+        """Register a callback when two bodies separate."""
+        self._events.add_end_listener(fn)
+        return fn
+
+    def add_collision_handler(self, body_a: "Body", body_b: "Body") -> Any:
+        """Return a :class:`~forge3d.events.CollisionHandler` for a specific body pair.
+
+        Example::
+
+            handler = world.add_collision_handler(ball, floor)
+            handler.on_begin = lambda e: print("Hit!")
+        """
+        handler = self._events.add_pair_handler(body_a._id, body_b._id)
+        return handler
+
+    def ignore_collision(self, body_a: "Body", body_b: "Body") -> None:
+        """Permanently ignore physics collisions between two specific bodies."""
+        pair: frozenset[int] = frozenset({body_a._id, body_b._id})
+        self._ignored_pairs.add(pair)
+        self._physics._ignored_pairs.add(pair)
+
+    def add_trigger_zone(
+        self,
+        position: Any = (0.0, 0.0, 0.0),
+        size: Any = (1.0, 1.0, 1.0),
+        name: str = "trigger",
+    ) -> Any:
+        """Add an invisible trigger zone (no physics collision, events only).
+
+        Returns a :class:`~forge3d.events.TriggerZone` with ``on_enter`` and
+        ``on_exit`` decorator attributes.
+
+        Example::
+
+            goal = world.add_trigger_zone(position=(5, 0, 0.5), size=(1, 1, 1))
+
+            @goal.on_enter
+            def scored(body: forge3d.Body) -> None:
+                print(f"GOAL! {body.name}")
+        """
+        pos = np.asarray(position, dtype=float)
+        sz = np.asarray(size, dtype=float)
+        half_extents = sz / 2.0
+        zone = self._events.add_trigger_zone(pos, half_extents)
+        return zone
 
     def _apply_welds(self) -> None:
         if not self._welds:
@@ -678,6 +975,38 @@ class World:
                 snap.materials[mat_id] = mat._to_snapshot_material()
 
         return snap
+
+    # ── Serialization ─────────────────────────────────────────────────────────
+
+    def save(self, path: Any) -> None:
+        """Save the current world state to a JSON file.
+
+        Args:
+            path: Output path (str or :class:`pathlib.Path`).
+
+        Example::
+
+            world.save("checkpoint.json")
+        """
+        from forge3d.io.world_snapshot import save_world
+        save_world(self, path)
+
+    @classmethod
+    def load(cls, path: Any) -> "World":
+        """Load a world from a JSON file saved by :meth:`save`.
+
+        Args:
+            path: Path to a JSON file.
+
+        Returns:
+            A new :class:`World` with all bodies restored.
+
+        Example::
+
+            world = forge3d.World.load("checkpoint.json")
+        """
+        from forge3d.io.world_snapshot import load_world
+        return load_world(path)  # type: ignore[return-value]
 
     def __repr__(self) -> str:
         return (

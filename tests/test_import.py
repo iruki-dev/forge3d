@@ -6,7 +6,7 @@ from __future__ import annotations
 def test_import_forge3d() -> None:
     import forge3d
 
-    assert forge3d.__version__ == "0.3.0"
+    assert forge3d.__version__ == "1.0.0"
 
 
 def test_import_backend() -> None:

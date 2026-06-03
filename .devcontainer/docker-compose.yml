@@ -1,0 +1,14 @@
+services:
+  dev:
+    build: .
+    volumes:
+      # Source code — live-editable without rebuild
+      - .:/workspace
+      # Persist checkpoints and logs outside container
+      - ./checkpoints:/workspace/checkpoints
+      - ./logs:/workspace/logs
+    environment:
+      ENGINE_BACKEND: ${ENGINE_BACKEND:-numpy}
+      XLA_FLAGS: "--xla_force_host_platform_device_count=4"
+      OMP_NUM_THREADS: "4"
+    working_dir: /workspace

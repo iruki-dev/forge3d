@@ -56,20 +56,34 @@ Public API:
 from __future__ import annotations
 
 from forge3d.app import App
+from forge3d.errors import Forge3dError, PhysicsError, RenderError, ValidationError
 from forge3d.backend import backend_name as _backend_name  # noqa: F401
 from forge3d.camera import FollowCamera, OrbitCamera
+from forge3d.constraints import JointHandle
+from forge3d.collision.layers import CollisionLayer
+from forge3d.events import CollisionEvent, CollisionHandler
 from forge3d.facade import Body, Material, Shape, World
 from forge3d.input import Input, Key
+from forge3d.io.world_snapshot import StateRecorder
 from forge3d.recorder import Recorder
 from forge3d.viewer import Viewer
 
-__version__ = "0.4.0"
+__version__ = "1.0.0"
 __all__ = [
     # Core
     "World",
     "Body",
     "Shape",
     "Material",
+    # Joints
+    "JointHandle",
+    # Events
+    "CollisionEvent",
+    "CollisionHandler",
+    # Collision layers
+    "CollisionLayer",
+    # Serialization
+    "StateRecorder",
     # Game loop
     "App",
     # Input
@@ -81,4 +95,11 @@ __all__ = [
     # Output
     "Viewer",
     "Recorder",
+    # Errors
+    "Forge3dError",
+    "ValidationError",
+    "PhysicsError",
+    "RenderError",
+    # Version
+    "__version__",
 ]
