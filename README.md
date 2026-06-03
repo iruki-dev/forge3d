@@ -5,7 +5,8 @@
 [![PyPI version](https://img.shields.io/pypi/v/forge3d.svg)](https://pypi.org/project/forge3d/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Tests](https://img.shields.io/badge/tests-215%20passing-brightgreen.svg)](#testing)
+[![CI](https://github.com/iruki-dev/forge3d/actions/workflows/ci.yml/badge.svg)](https://github.com/iruki-dev/forge3d/actions/workflows/ci.yml)
+[![Tests](https://img.shields.io/badge/tests-459%20passing-brightgreen.svg)](#testing)
 
 forge3d is a batteries-included 3D physics and game engine written entirely in Python — no
 external physics engines (no MuJoCo, PyBullet, or Bullet). Dynamics, collision, and contact are
@@ -63,7 +64,7 @@ pip install "forge3d[rl]"
 pip install "forge3d[all]"
 
 # Development install
-git clone https://github.com/your-org/forge3d
+git clone https://github.com/iruki-dev/forge3d
 cd forge3d
 pip install -e ".[dev]"
 ```
