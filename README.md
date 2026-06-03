@@ -2,7 +2,7 @@
 
 > **Pure-Python 3D game engine — easy like pygame, beautiful like simulation.**
 
-[![PyPI version](https://img.shields.io/pypi/v/forge3d.svg)](https://pypi.org/project/forge3d/)
+[![PyPI version](https://img.shields.io/pypi/v/pyforge3d.svg)](https://pypi.org/project/pyforge3d/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/iruki-dev/forge3d/actions/workflows/ci.yml/badge.svg)](https://github.com/iruki-dev/forge3d/actions/workflows/ci.yml)
@@ -52,22 +52,24 @@ all solved by forge3d's own code, backed by NumPy and optional JAX acceleration.
 
 ```bash
 # Core library (physics + rendering)
-pip install forge3d
+pip install pyforge3d
 
 # With rendering dependencies
-pip install "forge3d[render]"
+pip install "pyforge3d[render]"
 
 # With RL dependencies
-pip install "forge3d[rl]"
+pip install "pyforge3d[rl]"
 
 # Everything
-pip install "forge3d[all]"
+pip install "pyforge3d[all]"
 
 # Development install
 git clone https://github.com/iruki-dev/forge3d
 cd forge3d
 pip install -e ".[dev]"
 ```
+
+> **Install name vs import name:** `pip install pyforge3d` — then `import forge3d` in your code.
 
 **Requirements:** Python 3.12+, NumPy, SciPy, JAX (CPU wheel)
 

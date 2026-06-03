@@ -13,17 +13,22 @@ forge3d runs entirely on **CPU** — no CUDA, no GPU required for physics or tra
 
 ```bash
 # Physics core only (no rendering)
-pip install forge3d
+pip install pyforge3d
 
 # + Real-time OpenGL and HQ ray-tracer
-pip install "forge3d[render]"
+pip install "pyforge3d[render]"
 
 # + Gymnasium + Stable-Baselines3 RL
-pip install "forge3d[rl]"
+pip install "pyforge3d[rl]"
 
 # Everything (for development / research)
-pip install "forge3d[all]"
+pip install "pyforge3d[all]"
 ```
+
+> **Note:** The PyPI distribution is named `pyforge3d`, but the import name remains `forge3d`:
+> ```python
+> import forge3d as f3d   # same as always
+> ```
 
 ---
 

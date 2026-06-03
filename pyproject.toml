@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 # ── Project metadata ───────────────────────────────────────────────────────────
 
 [project]
-name = "forge3d"
+name = "pyforge3d"
 version = "1.0.0"
 description = "Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation."
 readme = "README.md"
@@ -77,7 +77,7 @@ docs = [
     "mkdocstrings[python]>=0.25",
 ]
 all = [
-    "forge3d[render,rl,dev]",
+    "pyforge3d[render,rl,dev]",
 ]
 
 # ── Build ─────────────────────────────────────────────────────────────────────
