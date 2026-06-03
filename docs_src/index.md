@@ -2,7 +2,7 @@
 
 **Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation.**
 
-[![PyPI version](https://img.shields.io/pypi/v/forge3d.svg)](https://pypi.org/project/forge3d/)
+[![PyPI version](https://img.shields.io/pypi/v/pyforge3d.svg)](https://pypi.org/project/pyforge3d/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/iruki-dev/forge3d/blob/main/LICENSE)
 [![CI](https://github.com/iruki-dev/forge3d/actions/workflows/ci.yml/badge.svg)](https://github.com/iruki-dev/forge3d/actions/workflows/ci.yml)
@@ -59,11 +59,14 @@ The physics code never changes — only the renderer does. That is the [SceneSna
 ## Installation
 
 ```bash
-pip install forge3d                # Core (physics only)
-pip install "forge3d[render]"      # + Realtime & HQ rendering
-pip install "forge3d[rl]"          # + Gymnasium / SB3 RL
-pip install "forge3d[all]"         # Everything
+pip install pyforge3d                # Core (physics only)
+pip install "pyforge3d[render]"      # + Realtime & HQ rendering
+pip install "pyforge3d[rl]"          # + Gymnasium / SB3 RL
+pip install "pyforge3d[all]"         # Everything
 ```
+
+!!! note "설치 이름 vs import 이름"
+    PyPI 배포명은 `pyforge3d`이지만 코드에서는 기존과 동일하게 `import forge3d`를 사용합니다.
 
 → [Full installation guide](install.md)
 

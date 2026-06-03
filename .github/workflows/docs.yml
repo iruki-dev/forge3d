@@ -23,7 +23,7 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install docs deps
-        run: pip install mkdocs-material mkdocstrings[python] "forge3d[render]" -e .
+        run: pip install mkdocs-material mkdocstrings[python] "pyforge3d[render]" -e .
       - name: Build docs
         run: mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3

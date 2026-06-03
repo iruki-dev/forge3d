@@ -104,4 +104,4 @@ extra:
     - icon: fontawesome/brands/github
       link: https://github.com/iruki-dev/forge3d
     - icon: fontawesome/brands/python
-      link: https://pypi.org/project/forge3d/
+      link: https://pypi.org/project/pyforge3d/

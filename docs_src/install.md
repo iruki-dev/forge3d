@@ -71,5 +71,5 @@ See `.devcontainer/docker-compose.yml` for the full CPU-only service definition.
 
 ```python
 import forge3d
-print(forge3d.__version__)  # → 0.4.0
+print(forge3d.__version__)  # → 1.0.0
 ```

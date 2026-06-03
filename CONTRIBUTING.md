@@ -5,10 +5,12 @@ Thank you for your interest in contributing!
 ## Quick start
 
 ```bash
-git clone https://github.com/your-org/forge3d
+git clone https://github.com/iruki-dev/forge3d
 cd forge3d
 pip install -e ".[dev]"
 ```
+
+> **참고:** PyPI 배포명은 `pyforge3d`이지만 코드에서는 `import forge3d`를 사용합니다.
 
 ## Workflow
 
