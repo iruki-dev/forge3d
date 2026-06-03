@@ -1,0 +1,140 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+# ── Project metadata ───────────────────────────────────────────────────────────
+
+[project]
+name = "forge3d"
+version = "0.4.0"
+description = "Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.12"
+authors = [{ name = "iruki", email = "me@iruki.dev" }]
+keywords = [
+    "game-engine", "physics", "simulation", "3d", "rigid-body",
+    "collision", "rendering", "robotics", "reinforcement-learning",
+    "numpy", "jax",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Games/Entertainment :: Simulation",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "sympy>=1.13",
+    "jax[cpu]>=0.4.25",
+]
+
+[project.urls]
+Homepage      = "https://github.com/iruki-dev/forge3d"
+Repository    = "https://github.com/iruki-dev/forge3d"
+Documentation = "https://forge3d.readthedocs.io"
+"Bug Tracker" = "https://github.com/iruki-dev/forge3d/issues"
+Changelog     = "https://github.com/iruki-dev/forge3d/blob/main/CHANGELOG.md"
+
+# ── Optional dependency groups ────────────────────────────────────────────────
+
+[project.optional-dependencies]
+render = [
+    "moderngl>=5.10",
+    "pyglet>=2.0",
+    "imageio>=2.34",
+    "imageio-ffmpeg>=0.5",
+]
+rl = [
+    "gymnasium>=0.29",
+    "stable-baselines3>=2.2",
+    "optax>=0.2",
+]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.4",
+    "mypy>=1.9",
+    # render deps for tests
+    "moderngl>=5.10",
+    "pyglet>=2.0",
+    "imageio>=2.34",
+    "imageio-ffmpeg>=0.5",
+]
+docs = [
+    "mkdocs-material>=9.5",
+    "mkdocstrings[python]>=0.25",
+]
+all = [
+    "forge3d[render,rl,dev]",
+]
+
+# ── Build ─────────────────────────────────────────────────────────────────────
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forge3d"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+    ".github/",
+    ".devcontainer/",
+    "docs/",
+    "docs_src/",
+    "tests/",
+    "apps/",
+    "validation/",
+    "checkpoints/",
+    "*.mp4",
+    "*.ppm",
+    "*.npz",
+]
+
+# ── Test ──────────────────────────────────────────────────────────────────────
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts   = "-q --tb=short"
+
+# ── Lint / Format ─────────────────────────────────────────────────────────────
+
+[tool.ruff]
+line-length    = 100
+target-version = "py312"
+src            = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
+ignore = ["B008", "SIM118"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["E501"]
+
+# ── Type-check ────────────────────────────────────────────────────────────────
+
+[tool.mypy]
+python_version        = "3.12"
+ignore_missing_imports = true
+disallow_untyped_defs  = false
+warn_return_any        = false
+warn_unused_ignores    = false
+
+# ── Coverage ──────────────────────────────────────────────────────────────────
+
+[tool.coverage.run]
+source = ["src/forge3d"]
+omit   = ["*/render/realtime/*", "*/render/hq/*"]
+
+[tool.coverage.report]
+fail_under = 70
+show_missing = true
