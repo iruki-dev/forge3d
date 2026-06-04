@@ -57,10 +57,41 @@
       "Bash(pytest tests/test_p21_terrain.py -v)",
       "Bash(pytest tests/test_p23_performance.py -v)",
       "Bash(python -c \"import forge3d; print\\('forge3d', forge3d.__version__, '✅'\\); print\\('joints:', forge3d.JointHandle.__name__\\); print\\('events:', forge3d.CollisionEvent.__name__\\); print\\('terrain:', forge3d.World.add_terrain.__name__\\)\")",
-      "Bash(GIT_DIR=.git GIT_WORK_TREE=. git add -A)"
+      "Bash(GIT_DIR=.git GIT_WORK_TREE=. git add -A)",
+      "Bash(GIT_DIR=.git GIT_WORK_TREE=. git diff HEAD --name-only)",
+      "Bash(python -c \"import forge3d; print\\('pip install pyforge3d → import forge3d:', forge3d.__version__, '✅'\\)\")",
+      "Bash(GIT_DIR=.git GIT_WORK_TREE=. git add pyproject.toml README.md docs_src/install.md)",
+      "Bash(GIT_DIR=.git GIT_WORK_TREE=. git push origin main)",
+      "Bash(GIT_DIR=.git GIT_WORK_TREE=. git add docs_src/index.md docs_src/install.md CONTRIBUTING.md mkdocs.yml .github/workflows/ci.yml .github/workflows/release.yml .github/workflows/docs.yml)",
+      "Bash(mkdir -p archive/demos archive/examples archive/apps/game archive/apps/robot_rl archive/outputs/training)",
+      "Bash(cp demos/interactive_robot.py demos/physics_showcase.py demos/training_watch.py archive/demos/ && cp examples/*.py archive/examples/ && cp apps/game/__init__.py apps/game/main.py apps/game/renderer.py apps/game/scene.py archive/apps/game/ && cp apps/robot_rl/__init__.py archive/apps/robot_rl/ 2>/dev/null; ls apps/robot_rl/ | head -20)",
+      "Bash(python demos/cascade_gauntlet.py --scene 1 -o /tmp/test_scene1.mp4)",
+      "Bash(python -m py_compile demos/forge_racer.py)",
+      "Bash(python -m py_compile demos/forge_drive.py)",
+      "Bash(sed -i 's/mass=5.0, static=False,/mass=5.0,/' /workspaces/2026_python_toy_project_1/demos/forge_drive.py)",
+      "Bash(sed -i 's/mass=0.1, static=False,/mass=0.1,/' /workspaces/2026_python_toy_project_1/demos/forge_drive.py)",
+      "Bash(cat /dev/null > /workspaces/2026_python_toy_project_1/demos/forge_drive.py && echo \"cleared\")",
+      "Read(//dev/**)",
+      "Bash(python -c \"import forge3d as f3d; w = f3d.World\\(\\); b = w.add_box\\(static=True\\); print\\('add_box static=True OK'\\); c = w.add_capsule\\(static=True\\); print\\('add_capsule static=True OK'\\); b2 = w.add_box\\(\\); b2.friction = 0.1; b2.restitution = 0.9; b2.linear_damping = 0.5; b2.angular_damping = 0.3; print\\(f'setters OK: friction={b2.friction}, restitution={b2.restitution}, ld={b2.linear_damping}'\\); w.step\\(1/60\\); print\\('step OK'\\)\")",
+      "Bash(python -c \"import importlib, forge3d.facade; importlib.reload\\(forge3d.facade\\); import forge3d as f3d; importlib.reload\\(f3d\\); w = f3d.World\\(\\); b = w.add_box\\(static=True\\); print\\('OK'\\)\")",
+      "Bash(python -c \"import forge3d; print\\(forge3d.__file__\\)\")",
+      "Bash(python -c \"import forge3d as f3d; w = f3d.World\\(\\); b = w.add_box\\(static=True\\); print\\('add_box static=True OK'\\); c = w.add_capsule\\(static=True\\); print\\('add_capsule static=True OK'\\); b2 = w.add_box\\(\\); b2.friction = 0.1; b2.linear_damping = 0.5; print\\(f'friction={b2.friction}, ld={b2.linear_damping}'\\); w.step\\(\\); print\\('step OK'\\)\")",
+      "Bash(python -m pytest tests/test_p18_serialization.py -q --tb=short)",
+      "Bash(python -m pytest tests/ -q --tb=short --ignore=tests/test_p9_training.py --ignore=tests/test_p18_serialization.py)",
+      "Bash(python -m pytest tests/ -q --ignore=tests/test_p9_training.py --ignore=tests/test_p18_serialization.py)",
+      "Bash(python -m pytest tests/ --ignore=tests/test_p9_training.py --ignore=tests/test_p18_serialization.py -x)",
+      "Bash(mkdocs --version)",
+      "Bash(pip show *)",
+      "Bash(cp /tmp/body_doc.md /workspaces/2026_python_toy_project_1/docs_src/api/body.md)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(mkdocs gh-deploy *)",
+      "Bash(git push *)"
     ],
     "additionalDirectories": [
-      "/workspaces/2026_python_toy_project_1/src/forge3d"
+      "/workspaces/2026_python_toy_project_1/src/forge3d",
+      "/workspaces/2026_python_toy_project_1/archive",
+      "/workspaces/2026_python_toy_project_1/examples"
     ]
   }
 }

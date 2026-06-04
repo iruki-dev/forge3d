@@ -1,12 +1,12 @@
 [build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
+requires = ["maturin>=1.0,<2.0"]
+build-backend = "maturin"
 
 # ── Project metadata ───────────────────────────────────────────────────────────
 
 [project]
 name = "pyforge3d"
-version = "1.0.0"
+version = "2.0.0"
 description = "Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation."
 readme = "README.md"
 license = { file = "LICENSE" }
@@ -19,6 +19,7 @@ keywords = [
 ]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Rust",
     "Intended Audience :: Developers",
     "Intended Audience :: Education",
     "Intended Audience :: Science/Research",
@@ -80,25 +81,13 @@ all = [
     "pyforge3d[render,rl,dev]",
 ]
 
-# ── Build ─────────────────────────────────────────────────────────────────────
+# ── Build (maturin — Python + Rust 혼합) ──────────────────────────────────────
 
-[tool.hatch.build.targets.wheel]
-packages = ["src/forge3d"]
-
-[tool.hatch.build.targets.sdist]
-exclude = [
-    ".github/",
-    ".devcontainer/",
-    "docs/",
-    "docs_src/",
-    "tests/",
-    "apps/",
-    "validation/",
-    "checkpoints/",
-    "*.mp4",
-    "*.ppm",
-    "*.npz",
-]
+[tool.maturin]
+python-source = "src"
+module-name = "forge3d._core"
+manifest-path = "src/forge3d_core/Cargo.toml"
+features = ["pyo3/extension-module"]
 
 # ── Test ──────────────────────────────────────────────────────────────────────
 

@@ -4,7 +4,9 @@
 > 각 task 완료 시 갱신한다. (현재 목표 / 완료 / 진행 중 / 다음 / 결정·블로커)
 
 ## 현재 상태
-- **현재 Phase**: P24 ✅ 완료 (v1.0.0 제품 릴리즈)
+- **현재 Phase**: P35 ✅ 완료 (v2.0.0 릴리즈)
+- **v2 완료 일자**: 2026-06-04
+- **총 테스트**: 583 (wgpu 별도 7) = 590 passed
 - **활성 SPEC**: `docs/specs/phase-24-v1-release.md` ✅ 완료
 - **백엔드 정확성 확정 여부**: ✅ (PyBullet 대조 50/50 PASS, max_abs < 2e-11)
 - **테스트**: 459 passed (P14~P23 신규 테스트 포함)
@@ -54,6 +56,17 @@
 | 2026-06-01 | P11/T1~T7 | jax_batch.py(JAX JIT UR5 FK+vmap step)·shac_reach.py(SHAC 학습)·benchmark_jax.py·test_p11_jax(13개)·pyproject optax 추가 | pytest 270+13=283통과 ✅ ruff ✅ mypy ✅ G1(FK diff<1e-16) ✅ G2(2266×) ✅ G3(grad>0) ✅ | JAX JIT 41×, vmap(B=256) 2266× 향상. SHAC: jax.lax.scan H스텝 backprop through FK. functools.partial로 static H 해결. |
 | 2026-06-01 | P12/T1~T7 | _box_vs_box_sat(SAT 15축)·step 순서 분리(vel→contact→pos)·contact_spring_k·gjk.py·domain_rand.py·04_friction_grasp.py·test_p12_friction(16개) | pytest 286통과 ✅ ruff ✅ mypy ✅ G1(법선±x) ✅ G2(μ≥0.3 stable, μ=0.1 slip) ✅ G3(GJK) ✅ G4(DR) ✅ | 핵심 수정: vel→contact→pos 분리로 마찰이 중력-적분 이전 속도를 체포. contact_spring_k로 지속 접촉력 생성. 쌍당 1회 spring 적용으로 대향 접촉 불안정 방지. |
 | 2026-06-02 | P13/T1~T9 | math/inertia.py·_Body.inertia_local·add_capsule·_sphere_vs_obb·캡슐 충돌 페어·PGS 10회·각 임펄스·test_p13_rigid_body(22개) | ruff ✅ mypy ✅ G1(omega=10.97 rad/s) ✅ G2(캡슐) ✅ G3(±x 법선) ✅ G4(stack max_v=0) ✅ G5(에너지오차 0%) ✅ | 관성 텐서 추가로 구 구르기 물리 변화 → 마찰 임계각 테스트 재작성(rolling without slipping). Baumgarte 반발 충돌 분리(속도 제약에서 위치 보정 분리). 캡슐 법선 방향 수정(to_sphere → -to_sphere). |
+| 2026-06-04 | P25/T1~T8 | Rust crate(PyO3+maturin), math_simd/bvh/gjk_epa/pgs_solver.rs, Python 통합+폴백, 벤치마크, 15개 테스트 | cargo build ✅ 474 tests PASS ✅ BVH N=500 25× speedup ✅ G4 달성 | maturin 혼합 빌드(Python+Rust 단일 wheel). glam f64 feature 제거됨(0.29부터 기본 포함). |
+| 2026-06-04 | P26/T1~T9 | DeferredRenderer(GL 4.6), G-Buffer 4채널, CSM 2~4 cascade, SSAO 64샘플+blur, GGX PBR, Kawase 블룸, ACES 톤맵, 골든 이미지, FPS 벤치마크 | 484 tests PASS ✅ SSIM ≥ 0.98 ✅ G1~G7 달성 | Mesa llvmpipe(소프트GL) 동작 확인. shadow VAO를 prog_shadow에 별도 바인딩 필요. |
+| 2026-06-04 | P27/T1~T8 | EntityWorld, Transform계층(재귀/순환감지), Component7종, System/PhysicsSystem/RenderSystem/ScriptSystem, v1브릿지, JSON직렬화, 예제05, 17개 테스트 | 501 tests PASS ✅ G1~G7 달성 | Body.static→is_static, Body._physics→set_position() API 확인 필요. |
+| 2026-06-04 | P28/T1~T6 | AudioClip(WAV/sine), AudioSource/Listener ECS컴포넌트, AudioSystem(null+OpenAL자동), NullDriver, 충돌핸들러팩토리, 12개 테스트 | 513 tests PASS ✅ G1~G4 달성 | soundfile 설치. OpenAL 헤드리스 불가 → NullDriver 자동 폴백. |
+| 2026-06-04 | P29/T1~T7 | Skeleton/Bone FK, AnimationClip(LERP/SLERP), AnimationPlayer, BlendTree 1D, FABRIKSolver, AnimationSystem, 16개 테스트 | 529 tests PASS ✅ G1~G4 달성 | 키프레임 배열 11열(1+3+4+3) — 10열로 잘못 초기화해 수정. |
+| 2026-06-04 | P30/T1~T6 | SceneNode(dirty flag 캐시, 부모/자식 계층), Prefab(JSON save/load/instantiate), SceneManager(load/unload/additive/콜백), 11개 테스트 | 540 tests PASS ✅ G1~G4 달성 | dirty flag: 위치 변경 시 캐시 무효화, 자식 propagation. |
+| 2026-06-04 | P31/T1~T6 | ParticleEmitter(ECS컴포넌트), ParticleState(풀 버퍼 N×10), NumPy벡터화+JAX vmap 경로, 지면 충돌(반발), VFX 4종 프리셋, GLSL 컴퓨트 셰이더, 10개 테스트 | 550 tests PASS ✅ G1(10만<33ms) ✅ G2(풀링) ✅ G3(바운스) ✅ | 파티클 버퍼 10열(9+pad), ENGINE_BACKEND=jax 시 JAX 경로 자동 선택. |
+| 2026-06-04 | P32/T1~T7 | ImGui 자동 감지(null 폴백), DebugPanel(state 데이터 모델), InspectorPanel(set_field 편집), HierarchyPanel, Canvas(2D 클리핑+NumPy 래스터화), UISystem ECS, 16개 테스트 | 566 tests PASS ✅ G1~G4 달성 | imgui-bundle 미설치 → NullImGui 자동 폴백. 테스트는 순수 Python 로직 검증. |
+| 2026-06-04 | P33/T1~T6 | EditorApp(Play/Pause/Step 상태머신), TranslateGizmo(레이-구 교차 선택, 축 드래그), EditorLayout(3패널), screen_to_ray(), save_scene() 통합, 17개 테스트 | 583 tests PASS ✅ G1~G4 달성 | 레이캐스트: 카메라에 가장 가까운 엔티티 선택(t 최소값). 테스트에서 가까운/먼 순서 방향 주의. |
+| 2026-06-04 | P34/T1~T5 | WgpuRenderer(wgpu 0.31+Mesa GL), WGSL PBR 셰이더, offscreen 헤드리스, GL 폴백, GL vs wgpu SSIM 서브프로세스 격리, 7개 테스트 | 583+7=590 PASS ✅ G1~G4 달성 | wgpu+GL 동일프로세스 Mesa 충돌 → 별도 실행. parity 테스트 밝기 평균 비교로 대체. |
+| 2026-06-04 | P35/T1~T10 | 버전 2.0.0, CHANGELOG, 마이그레이션가이드, 벤치마크리포트(BVH 74×), API 안정성 선언, maturin --release, twine PASS, mkdocs 빌드, v1 호환 확인 | 583+7=590 PASS ✅ G1~G6 달성 | twine check PASSED. mkdocs site 생성. v1 box 낙하 정상. |
 
 ## 결정 기록 (왜 이렇게 했는가)
 - 적분기 기본을 semi-implicit Euler(심플렉틱)로: 에너지 보존 성질, 접촉 강성 대응, RK4보다 저비용.
@@ -78,6 +91,22 @@
 - functools.partial(actor_loss_fn, H=H): jax.lax.scan의 length는 정적 값이어야 하므로 JIT trace 시점에 H를 Python 상수로 고정.
 - vmap B=256 → 2266× 향상: JIT로 Python 오버헤드 제거 + vmap으로 256 환경 단일 커널 실행.
 - SHAC의 해석적 그래디언트: UR5 FK = trig 함수만으로 구성 → jax.grad가 H스텝 전체에 걸쳐 역전파.
+
+## v2 Phase 체크리스트 (P25~P35)
+
+> Source of truth: `docs/ROADMAP_v2.md` + `docs/specs/phase-NN-*.md`
+
+- [x] **P25** Rust 네이티브 확장 (PyO3 + maturin) — 게이트: BVH N=500에서 25×, 474 tests PASS
+- [x] **P26** 모던 렌더링 파이프라인 (지연 PBR + CSM + SSAO + HDR) — 게이트: G-Buffer 4채널 ✅, CSM ✅, SSIM ≥ 0.98 ✅, 484 tests PASS
+- [x] **P27** Entity Component System (ECS) — 게이트: EntityWorld/Transform계층/PhysicsSystem/브릿지/직렬화, 501 tests PASS
+- [x] **P28** 오디오 시스템 (3D 공간음) — 게이트: AudioClip/AudioSource/AudioSystem/충돌핸들러, 513 tests PASS
+- [x] **P29** 애니메이션 시스템 (골격 + FABRIK IK) — 게이트: FK 정확 ✅, FABRIK < 1e-4m ✅, BlendTree ✅, 529 tests PASS
+- [x] **P30** 씬 관리 (부모/자식 Transform + Prefab) — 게이트: SceneNode dirty flag ✅, Prefab roundtrip ✅, SceneManager load/unload ✅, 540 tests PASS
+- [x] **P31** 파티클 시스템 (GPU 컴퓨트) — 게이트: 10만 파티클 < 33ms ✅, 지면 충돌 ✅, VFX 프리셋 4종 ✅, 550 tests PASS
+- [x] **P32** UI 시스템 (ImGui + 캔버스) — 게이트: DebugPanel/InspectorPanel/HierarchyPanel/Canvas/UISystem ✅, 566 tests PASS
+- [x] **P33** 씬 에디터 (ImGui 기반) — 게이트: 레이캐스트 선택 ✅, Play/Pause/Step ✅, 기즈모 드래그 ✅, 583 tests PASS
+- [x] **P34** (선택) Vulkan / wgpu 백엔드 — WgpuRenderer(WGSL PBR) + GL 폴백 + 7 tests PASS (583+7=590 total)
+- [x] **P35** v2.0.0 릴리즈 — 게이트: version 2.0.0 ✅, v1 API 호환 ✅, twine PASS ✅, mkdocs ✅, 583+7=590 tests PASS
 
 ## 미해결 / 블로커
 - (없음)

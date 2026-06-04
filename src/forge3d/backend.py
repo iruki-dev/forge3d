@@ -116,3 +116,31 @@ else:
     raise ValueError(
         f"Unknown ENGINE_BACKEND={_BACKEND!r}. Set the environment variable to 'numpy' or 'jax'."
     )
+
+# ── Rust 네이티브 확장 (P25) ──────────────────────────────────────────────────
+# USE_RUST_CORE=0 → 강제 Python 폴백
+# USE_RUST_CORE=1 → 강제 Rust (빌드 실패 시 ImportError)
+# (기본) → Rust 임포트 성공 시 활성화, 실패 시 Python 폴백
+
+_RUST_ENV = os.environ.get("USE_RUST_CORE", "auto").lower()
+_rust_core: Any = None
+
+if _RUST_ENV != "0":
+    try:
+        from forge3d import _core as _rust_core_module
+
+        _rust_core = _rust_core_module
+    except ImportError as _exc:
+        if _RUST_ENV == "1":
+            raise ImportError(
+                "USE_RUST_CORE=1 이지만 forge3d._core 빌드를 찾을 수 없습니다. "
+                "maturin build 후 재설치하세요."
+            ) from _exc
+        # auto: Python 폴백으로 조용히 계속
+
+USE_RUST_CORE: bool = _rust_core is not None
+
+
+def rust_core() -> Any:
+    """Rust 네이티브 확장 모듈 반환. USE_RUST_CORE=False면 None."""
+    return _rust_core

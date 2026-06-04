@@ -68,8 +68,53 @@ from forge3d.input import Input, InputBuilder, Key
 from forge3d.io.world_snapshot import StateRecorder
 from forge3d.recorder import Recorder
 from forge3d.viewer import Viewer
+# Editor (P33)
+from forge3d.editor import EditorApp, PlayState
+# UI system (P32)
+from forge3d.ui import DebugPanel, InspectorPanel, HierarchyPanel, Canvas, UISystem
+# Particle system (P31)
+from forge3d.particle import ParticleEmitter, ParticleSystem
+from forge3d.particle.presets import sparks as particle_sparks, smoke as particle_smoke
+# Scene management (P30)
+from forge3d.scene import SceneNode, Prefab, SceneManager
+# Animation (P29)
+from forge3d.animation import (
+    Bone, Skeleton, AnimationClip, AnimationPlayer, BlendTree,
+    IKTarget, FABRIKSolver, AnimationSystem,
+)
+# Audio (P28)
+from forge3d.audio import AudioClip, AudioSource, AudioListener, AudioSystem
+# ECS (P27)
+from forge3d.ecs import (
+    EntityWorld,
+    EntityNotFoundError,
+    Component,
+    Transform,
+    MeshRenderer,
+    Rigidbody,
+    Collider,
+    CameraComponent,
+    LightComponent,
+    Script,
+    System,
+    PhysicsSystem,
+    RenderSystem,
+    ScriptSystem,
+    body_to_entity,
+    save_scene,
+    load_scene,
+)
 
-__version__ = "1.1.0"
+__version__ = "2.0.0"
+
+# ── API 안정성 선언 ───────────────────────────────────────────────────────────
+# Stable (v3까지 Breaking change 없음):
+#   World, Body, Shape, Material, App, Viewer, Recorder, Input, OrbitCamera
+#   EntityWorld, Transform, Rigidbody, Collider, MeshRenderer, Script
+#   PhysicsSystem, RenderSystem, AudioSystem, AnimationPlayer, FABRIKSolver
+#   SceneManager, Prefab, ParticleEmitter, DebugPanel, Canvas
+# Experimental (v2.x에서 변경 가능):
+#   forge3d._core, forge3d.render.wgpu_backend, forge3d.editor
 __all__ = [
     # Core
     "World",
@@ -106,4 +151,38 @@ __all__ = [
     "TerrainSnapshot",
     # Version
     "__version__",
+    # Editor (P33)
+    "EditorApp", "PlayState",
+    # UI system (P32)
+    "DebugPanel", "InspectorPanel", "HierarchyPanel", "Canvas", "UISystem",
+    # Particle system (P31)
+    "ParticleEmitter", "ParticleSystem",
+    # Scene management (P30)
+    "SceneNode", "Prefab", "SceneManager",
+    # Animation (P29)
+    "Bone", "Skeleton", "AnimationClip", "AnimationPlayer",
+    "BlendTree", "IKTarget", "FABRIKSolver", "AnimationSystem",
+    # Audio (P28)
+    "AudioClip",
+    "AudioSource",
+    "AudioListener",
+    "AudioSystem",
+    # ECS (P27)
+    "EntityWorld",
+    "EntityNotFoundError",
+    "Component",
+    "Transform",
+    "MeshRenderer",
+    "Rigidbody",
+    "Collider",
+    "CameraComponent",
+    "LightComponent",
+    "Script",
+    "System",
+    "PhysicsSystem",
+    "RenderSystem",
+    "ScriptSystem",
+    "body_to_entity",
+    "save_scene",
+    "load_scene",
 ]

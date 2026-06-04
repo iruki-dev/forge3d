@@ -54,6 +54,7 @@ def solve_contacts(
     contacts: list[ContactPoint],
     spring_k: float = 0.0,
     dt: float = 1.0 / 60.0,
+    _use_rust: bool | None = None,
 ) -> list[Any]:
     """Impulse-based contact solver: sequential PGS with pre-computed batch data.
 
@@ -65,6 +66,14 @@ def solve_contacts(
     """
     if not contacts:
         return list(bodies)
+
+    # ── Rust PGS 경로 ──────────────────────────────────────────────────────────
+    # 선형 속도만 있는(각 운동량 무시 가능) 단순 씬에서 Rust 가속 사용.
+    # spring_k, restitution, angular dynamics 포함 씬은 Python 경로 유지.
+    from forge3d.backend import USE_RUST_CORE
+    _rust = (_use_rust if _use_rust is not None else USE_RUST_CORE)
+    if _rust and spring_k == 0.0 and all(b.inertia_local is None for b in bodies if not b.static):
+        return _solve_contacts_rust(bodies, contacts, dt)
 
     vels:   list[np.ndarray] = [b.vel.copy()   if not b.static else _ZERO3.copy() for b in bodies]
     omegas: list[np.ndarray] = [b.omega.copy() if not b.static else _ZERO3.copy() for b in bodies]
@@ -339,3 +348,76 @@ def _tangent_pair(normal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     t2 = _cross3(n, t1)
     t2 /= np.linalg.norm(t2) + 1e-300
     return t1, t2
+
+
+# ── Rust PGS 가속 경로 ────────────────────────────────────────────────────────
+
+
+def _solve_contacts_rust(
+    bodies: list[Any],
+    contacts: list[ContactPoint],
+    dt: float,
+) -> list[Any]:
+    """Rust pgs_solve 경로 — 선형 속도만 있는 단순 씬 전용.
+
+    각 운동량(omega)은 이 경로에서 무시된다.
+    복잡한 씬(angular, spring_k, restitution)은 Python 경로가 처리.
+    """
+    from dataclasses import replace
+
+    from forge3d.backend import rust_core
+
+    core = rust_core()
+    nb = len(bodies)
+    nc = len(contacts)
+
+    # (N, 6) 속도 배열 — 선형만 사용
+    vel_arr = np.zeros((nb, 6), dtype=np.float64)
+    mass_arr = np.zeros(nb, dtype=np.float64)
+    for i, b in enumerate(bodies):
+        if not b.static:
+            vel_arr[i, :3] = b.vel
+            mass_arr[i] = b.mass
+        else:
+            mass_arr[i] = 1e30  # 사실상 무한 질량
+
+    # (C, 10) 접촉 배열
+    contact_arr = np.zeros((nc, 10), dtype=np.float64)
+    body_idx_arr = np.zeros((nc, 2), dtype=np.int32)
+    for ci, c in enumerate(contacts):
+        contact_arr[ci, :3] = c.pos
+        contact_arr[ci, 3:6] = c.normal
+        contact_arr[ci, 6] = max(0.0, c.depth)
+        ia, ib = c.body_a_idx, c.body_b_idx
+        b_static = ib < 0 or bodies[ib].static
+        b_fric = bodies[ib].friction if ib >= 0 else 0.0
+        mu = bodies[ia].friction if b_static else 0.5 * (bodies[ia].friction + b_fric)
+        contact_arr[ci, 7] = mu
+        body_idx_arr[ci, 0] = ia
+        body_idx_arr[ci, 1] = ib if ib >= 0 else nb  # 경계 밖 인덱스 → Rust에서 정적으로 처리
+
+    new_vel = np.asarray(core.pgs_solve(contact_arr, body_idx_arr, vel_arr, mass_arr, dt, N_ITER))
+
+    # Baumgarte 위치 보정 (Python에서 처리)
+    poss = [b.pos.copy() for b in bodies]
+    for c in contacts:
+        ia, ib = c.body_a_idx, c.body_b_idx
+        b_static = ib < 0 or bodies[ib].static
+        excess = max(0.0, c.depth - PENETRATION_SLOP)
+        if excess < 1e-6:
+            continue
+        inv_ma = 0.0 if bodies[ia].static else 1.0 / bodies[ia].mass
+        inv_mb = 0.0 if b_static or ib < 0 else 1.0 / bodies[ib].mass
+        total_inv = inv_ma + inv_mb
+        if total_inv < 1e-12:
+            continue
+        corr = BAUMGARTE_BETA * excess
+        poss[ia] += corr * (inv_ma / total_inv) * c.normal
+        if not b_static and ib >= 0:
+            poss[ib] -= corr * (inv_mb / total_inv) * c.normal
+
+    result: list[Any] = list(bodies)
+    for i, b in enumerate(bodies):
+        if not b.static:
+            result[i] = replace(b, vel=new_vel[i, :3], omega=b.omega, pos=poss[i])
+    return result

@@ -99,6 +99,7 @@ nav:
   - Contributing: contributing.md
   - Changelog: changelog.md
   - What's New:
+    - v2.0.0 — Migration Guide: migration_v2.md
     - v1.1.0 — Game-Ready: whats_new_v1_1.md
 
 extra:

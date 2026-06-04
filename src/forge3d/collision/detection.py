@@ -712,9 +712,26 @@ def _mesh_vs_plane(
 def _gjk_epa_pair(a: Any, ia: int, b: Any, ib: int) -> list[ContactPoint]:
     """Generic convex-body collision via GJK + EPA.
 
-    Used when at least one body is a 'mesh' shape type.
-    Returns up to one contact point with the penetration normal from EPA.
+    Prefers Rust _core path when USE_RUST_CORE=True; falls back to Python.
     """
+    from forge3d.backend import USE_RUST_CORE, rust_core
+
+    # ── Rust 경로 ──
+    if USE_RUST_CORE:
+        verts_a = _body_hull_world(a)
+        verts_b = _body_hull_world(b)
+        if verts_a is not None and verts_b is not None:
+            core = rust_core()
+            colliding, normal_arr, depth = core.gjk_query(verts_a, verts_b)
+            if not colliding or depth <= 0.0:
+                return []
+            normal = np.asarray(normal_arr)
+            pa = _body_support_world(a, normal)
+            pb = _body_support_world(b, -normal)
+            contact_pos = (pa + pb) * 0.5
+            return [ContactPoint(ia, ib, contact_pos, normal.copy(), float(depth))]
+
+    # ── Python 폴백 ──
     from forge3d.collision.gjk import gjk_contact
 
     result = gjk_contact(a, b)
@@ -725,11 +742,33 @@ def _gjk_epa_pair(a: Any, ia: int, b: Any, ib: int) -> list[ContactPoint]:
     if depth <= 0.0:
         return []
 
-    # Contact position: average of deepest support points
     pa = _body_support_world(a, normal)
     pb = _body_support_world(b, -normal)
     contact_pos = (pa + pb) * 0.5
     return [ContactPoint(ia, ib, contact_pos, normal.copy(), float(depth))]
+
+
+def _body_hull_world(body: Any) -> np.ndarray | None:
+    """볼록 hull 정점을 월드 좌표로 반환. hull 없으면 None."""
+    st = body.shape_type
+    if st == "mesh":
+        hull = body.shape_params.get("hull_vertices")
+        if hull is None:
+            return None
+        R = _quat_to_rot_unit(body.quat)
+        return body.pos + hull @ R.T
+    if st == "sphere":
+        # 구의 경우 단일 정점(중심)만 사용
+        return body.pos.reshape(1, 3)
+    if st == "box":
+        h = np.asarray(body.shape_params["half_extents"], dtype=float)
+        corners = np.array([
+            [sx * h[0], sy * h[1], sz * h[2]]
+            for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)
+        ])
+        R = _quat_to_rot_unit(body.quat)
+        return body.pos + corners @ R.T
+    return None
 
 
 def _body_support_world(body: Any, d: np.ndarray) -> np.ndarray:

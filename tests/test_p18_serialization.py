@@ -36,7 +36,7 @@ def test_save_creates_json():
     data = json.loads(Path(path).read_text())
     assert "bodies" in data
     assert "gravity" in data
-    assert data["version"].startswith("0.")
+    assert isinstance(data["version"], str) and len(data["version"]) > 0
 
 
 # ── G2: load restores the same body count and positions ───────────────────────

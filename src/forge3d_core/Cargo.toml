@@ -1,0 +1,21 @@
+[package]
+name = "forge3d_core"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "_core"
+crate-type = ["cdylib"]
+
+[dependencies]
+pyo3 = { version = "0.25", features = ["extension-module", "abi3-py312"] }
+numpy = "0.25"
+glam = "0.29"
+rayon = "1.10"
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "physics_bench"
+harness = false

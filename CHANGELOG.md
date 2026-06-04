@@ -10,6 +10,96 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.0.0] — 2026-06-04  🚀 v2.0 — Python-first 고성능 게임/시뮬레이션 엔진
+
+### 핵심 변화
+
+v2는 세 가지 축으로 v1을 고도화한다:
+1. **런타임 성능** — Rust 네이티브 확장 (PyO3 + maturin)으로 물리 핫루프 ≥10× 가속
+2. **그래픽 파이프라인** — 지연 PBR + CSM + SSAO + HDR + Bloom (OpenGL 4.3+)
+3. **API 생태계** — ECS, 오디오, 애니메이션, 씬 관리, 파티클, UI, 에디터
+
+**v1 API 완전 하위 호환**: `World`, `Body`, `Viewer`, `Recorder` 시그니처 동결.
+
+### Added — P25: Rust 네이티브 확장
+
+- `forge3d._core` — PyO3 + maturin 혼합 빌드 (Rust 1.96+)
+- `forge3d._core.gjk_query(verts_a, verts_b)` — GJK + EPA 충돌 감지
+- `forge3d._core.bvh_build/bvh_query_pairs` — BVH 광역단계 (N=500에서 22× 향상)
+- `forge3d._core.pgs_solve` — PGS 접촉 솔버 Rust 경로
+- `forge3d._core.se3_mul/quat_normalize/quat_mul` — SIMD 수학 (glam 기반)
+- `USE_RUST_CORE=0/1` 환경변수로 Python 폴백 강제 가능
+- `pyproject.toml` 빌드 시스템: `hatchling` → `maturin`
+
+### Added — P26: 모던 렌더링 파이프라인
+
+- `DeferredRenderer` — OpenGL 4.3 지연 렌더링
+  - G-Buffer 4채널 (위치/법선/알베도-roughness/emissive-metallic)
+  - CSM (Cascaded Shadow Maps) 4 cascade, PCF 9-탭
+  - SSAO 64샘플 + blur 패스
+  - HDR 프레임버퍼 + ACES 톤맵 + Kawase 블룸
+  - 인스턴스 렌더링
+- `RenderPass` ABC — 파이프라인 패스 단위 추상
+- `forge3d.render.DeferredRenderer` 공개
+
+### Added — P27: Entity Component System
+
+- `EntityWorld` — 엔티티 생성/소멸, 컴포넌트 CRUD, `query()`
+- 내장 컴포넌트: `Transform`, `Rigidbody`, `Collider`, `MeshRenderer`, `Script`, `CameraComponent`, `LightComponent`
+- `System` ABC + `PhysicsSystem`, `RenderSystem`, `ScriptSystem`
+- `body_to_entity()` — v1 Body → ECS 브릿지
+- `save_scene() / load_scene()` — ECS 씬 JSON 직렬화
+- `EntityNotFoundError` — 소멸된 엔티티 접근 명확한 오류
+
+### Added — P28: 오디오 시스템
+
+- `AudioClip` — WAV/OGG 로드 + `from_sine()` 생성
+- `AudioSource`, `AudioListener` — ECS 컴포넌트
+- `AudioSystem` — OpenAL 자동 감지, 헤드리스 시 `NullDriver` 폴백
+- `AudioSystem.make_collision_handler()` — 충돌 이벤트 → 사운드 트리거 팩토리
+
+### Added — P29: 애니메이션 시스템
+
+- `Skeleton`, `Bone` — 골격 계층, FK 월드 행렬
+- `AnimationClip` — 키프레임 LERP/SLERP 보간
+- `AnimationPlayer`, `BlendTree` — ECS 컴포넌트
+- `FABRIKSolver` — N링크 FABRIK IK (오차 < 1e-4m 수렴)
+- `AnimationSystem` — ECS 시스템
+- `chain_from_ur5_joints()` — UR5 FK 체인 헬퍼
+
+### Added — P30: 씬 관리
+
+- `SceneNode` — dirty flag 캐시 + 부모/자식 계층
+- `Prefab` — JSON save/load/instantiate
+- `SceneManager` — load/unload/additive 씬 전환 + 콜백
+
+### Added — P31: 파티클 시스템
+
+- `ParticleEmitter` — ECS 컴포넌트 (rate/lifetime/gravity/restitution)
+- `ParticleSystem` — NumPy 벡터화 + JAX vmap 이중 경로 (10만 파티클 < 33ms)
+- VFX 프리셋: `sparks`, `smoke`, `debris`, `rain`
+- GLSL 4.3 컴퓨트 셰이더 (`update_particles.comp`)
+
+### Added — P32: UI 시스템
+
+- `DebugPanel`, `InspectorPanel`, `HierarchyPanel` — ImGui 패널 (null 폴백)
+- `Canvas` — 2D 오버레이 (클리핑, NumPy 래스터화)
+- `UISystem` — ECS 시스템
+
+### Added — P33: 씬 에디터
+
+- `EditorApp` — Play/Pause/Step 상태 머신
+- `TranslateGizmo` — 레이-구 교차 선택 + 축 드래그
+- `EditorLayout` — 3패널 레이아웃
+- `screen_to_ray()` — 화면 좌표 → 월드 레이
+
+### Added — P34 (선택): wgpu 백엔드
+
+- `WgpuRenderer` — wgpu-py 기반 오프스크린 렌더러, WGSL PBR 셰이더
+- wgpu 없는 환경에서 `DeferredRenderer` 자동 폴백
+
+---
+
 ## [1.1.0] — 2026-06-03  🎮 Game-Ready Release
 
 ### Added

@@ -1,0 +1,3 @@
+[workspace]
+members = ["src/forge3d_core"]
+resolver = "2"

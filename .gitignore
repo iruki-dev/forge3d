@@ -1,6 +1,7 @@
 __pycache__/
 *.py[cod]
 *.so
+*.pyd
 .eggs/
 *.egg-info/
 dist/
@@ -25,3 +26,10 @@ site/
 Thumbs.db
 *.log
 *.ppm
+
+# Rust / maturin 빌드 산출물
+target/
+*.whl
+
+# Claude Code 로컬 설정 (개인 권한 설정 포함)
+.claude/settings.local.json

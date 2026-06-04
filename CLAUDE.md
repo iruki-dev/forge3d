@@ -15,6 +15,17 @@
 - 써도 되는 패키지: NumPy, JAX, PyTorch, SciPy, SymPy, Gymnasium, optax/flax/equinox, stable-baselines3. (이들은 동역학을 *대신 풀지 않는다*.) **그래픽 출력용** `moderngl`/`pyglet`/`glfw`/`imgui`/`imageio`/`ffmpeg`도 허용 — 단, **물리·접촉 연산에는 절대 쓰지 않는다.**
 - **GPU 제약 해석: "GPU 불가"는 물리·학습 연산 한정이다. 화면에 삼각형을 그리는 그래픽용 OpenGL은 허용**한다(없으면 실시간 렌더링 불가). 단 헤드리스에서 OpenGL 가속 여부가 불확실하면 가정하지 말고 EGL/Xvfb 가능성부터 확인하고 보고한다.
 
+## 0c. 다중 언어 정책 (v2 신규) — YOU MUST
+
+> v2(P25~)부터 적용. Python이 핵심이지만 성능 임계 경로는 다른 언어 허용.
+
+- **Python**: 공개 API, 게임 로직, ML 연동. 모든 사용자 접점은 Python.
+- **Rust (PyO3 + maturin)**: 물리 솔버 핫루프(GJK/EPA, BVH, PGS), SIMD 수학. `src/forge3d_core/` crate에만 존재. `src/forge3d/` 안에서 Rust 코드 직접 작성 금지.
+- **GLSL**: 렌더링 셰이더 전용 (`src/forge3d/render/shaders/`). 물리 연산 불가.
+- **C/C++ (CFFI/ctypes)**: 오디오 백엔드, imgui 바인딩 등 Rust로 불편한 C 라이브러리 바인딩에 한함. 물리 코어 금지.
+- **폴백 규칙**: Rust 확장 빌드 실패 시 Python 구현으로 자동 폴백. Rust 없이도 전체 테스트 PASS 필수.
+- **판단 기준**: "이 코드를 Rust로 쓰는 이유가 성능인가, 아니면 외부 엔진 의존인가?" → 성능이면 허용. 외부 물리 엔진 호출이면 금지.
+
 ## 0b. 라이브러리 ↔ 응용 분리 — YOU MUST
 
 - 이 프로젝트는 **라이브러리(`src/forge3d/`, 1급 산출물)** 와 **응용(`apps/robot_rl/`)** 의 2층이다. 응용은 라이브러리를 **외부인처럼 import해서만** 쓴다. 응용을 짜려고 라이브러리 내부를 고쳐야 한다면 추상화가 실패한 것이니 멈추고 보고한다.
@@ -23,7 +34,7 @@
 
 ## 1. 작업 방식 — 기획안(SPEC) 기반
 
-- **전체 순서의 기준은 `docs/ROADMAP.md`**, 개별 작업의 기준은 `docs/specs/`의 해당 Phase SPEC이다. 이 둘이 source of truth다.
+- **전체 순서의 기준은 `docs/ROADMAP.md`(P0~P24) 및 `docs/ROADMAP_v2.md`(P25~P35)**, 개별 작업의 기준은 `docs/specs/`의 해당 Phase SPEC이다. 이 셋이 source of truth다.
 - 작업 전 해당 SPEC을 읽고, **거기 정의된 범위·파일·완료 조건만** 다룬다. SPEC에 없는 변경은 하지 않는다.
 - **Phase 게이트: 이전 Phase의 검증 기준을 통과하기 전에는 다음 Phase로 넘어가지 않는다.** (ROADMAP의 검증 기준 표 참조)
 - 여러 파일을 건드리거나 접근이 불확실한 작업은 **먼저 plan mode**로 탐색·계획하고, SPEC과 대조해 승인받은 뒤 구현한다.
@@ -59,10 +70,14 @@
 ## 5. 명령어 (Claude가 추측할 수 없는 것)
 
 - 백엔드 스위치: `ENGINE_BACKEND=numpy` 또는 `ENGINE_BACKEND=jax` (기본 numpy).
+- Rust 코어 ON/OFF: `USE_RUST_CORE=1` 또는 `USE_RUST_CORE=0` (기본 자동 감지).
 - 공개 API 스모크: `python -c "import forge3d"` 가 동작해야 한다.
 - 테스트(단일 우선, 성능 위해 전체 스위트 지양): `[pytest tests/test_xxx.py -q]`
 - 린트/포맷: `[ruff check . && ruff format --check .]`
 - 타입: `[mypy src/]`
+- **Rust 빌드** (P25~): `maturin develop` (개발), `maturin build --release` (배포)
+- **Rust 테스트** (P25~): `cargo test --workspace`
+- **Rust 벤치** (P25~): `cargo bench --workspace`
 - 컨테이너: `[docker compose run --rm dev pytest -q]`
 - CPU 멀티코어: `XLA_FLAGS`, `OMP_NUM_THREADS` 등 스레드 환경변수를 명시적으로 설정.
 
