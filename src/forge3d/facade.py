@@ -157,6 +157,9 @@ class Body:
         # Pending per-frame force/torque accumulators (applied by World.step)
         self._force_accum: np.ndarray = np.zeros(3)
         self._torque_accum: np.ndarray = np.zeros(3)
+        # Per-body velocity damping (applied by World.step, per second)
+        self._linear_damping: float = 0.0
+        self._angular_damping: float = 0.0
 
     def _state(self) -> _Body:
         return self._pw._get_body(self._id)
@@ -248,6 +251,55 @@ class Body:
         from dataclasses import replace
 
         self._pw._replace_body(self._id, replace(b, omega=np.asarray(omega, dtype=float)))
+
+    # ── Runtime physics property setters ─────────────────────────────────────
+
+    @property
+    def friction(self) -> float:
+        """Coulomb friction coefficient (>= 0). Can be changed at runtime."""
+        return self._state().friction
+
+    @friction.setter
+    def friction(self, value: float) -> None:
+        from dataclasses import replace
+        b = self._state()
+        self._pw._replace_body(self._id, replace(b, friction=max(0.0, float(value))))
+
+    @property
+    def restitution(self) -> float:
+        """Coefficient of restitution [0, 1]. Can be changed at runtime."""
+        return self._state().restitution
+
+    @restitution.setter
+    def restitution(self, value: float) -> None:
+        from dataclasses import replace
+        b = self._state()
+        self._pw._replace_body(self._id, replace(b, restitution=float(np.clip(value, 0.0, 1.0))))
+
+    @property
+    def linear_damping(self) -> float:
+        """Linear velocity damping coefficient (per second, >= 0).
+
+        Applied automatically each ``world.step()``.  A value of 0.1 removes
+        ~10% of linear velocity per second.
+        """
+        return self._linear_damping
+
+    @linear_damping.setter
+    def linear_damping(self, value: float) -> None:
+        self._linear_damping = max(0.0, float(value))
+
+    @property
+    def angular_damping(self) -> float:
+        """Angular velocity damping coefficient (per second, >= 0).
+
+        Applied automatically each ``world.step()``.
+        """
+        return self._angular_damping
+
+    @angular_damping.setter
+    def angular_damping(self, value: float) -> None:
+        self._angular_damping = max(0.0, float(value))
 
     @property
     def is_sleeping(self) -> bool:
@@ -376,25 +428,61 @@ class World:
         name: str = "",
         restitution: float = 0.3,
         friction: float = 0.5,
+        static: bool = False,
     ) -> Body:
-        """Add a box-shaped rigid body."""
+        """Add a box-shaped rigid body.
+
+        Parameters
+        ----------
+        static : If True, creates an immovable static box (mass is ignored).
+        """
         from forge3d.errors import require_all_positive, require_nonneg, require_positive, require_range, require_sequence
-        require_positive(float(mass), "mass", "World.add_box()")
         require_sequence(size, 3, "size", "World.add_box()")
         require_all_positive(size, "size", "World.add_box()")
         require_range(float(restitution), 0.0, 1.0, "restitution", "World.add_box()")
         require_nonneg(float(friction), "friction", "World.add_box()")
+        if not static:
+            require_positive(float(mass), "mass", "World.add_box()")
         mat_id, mat = _resolve_material(material)
         if mat:
             self._materials[mat_id] = mat
-        bid = self._physics.add_box(
-            size=size,
-            position=position,
-            mass=mass,
-            material=mat_id,
-            name=name,
-            restitution=restitution,
-            friction=friction,
+        if static:
+            bid = self._physics.add_static_box(
+                size=size, position=position,
+                material=mat_id, name=name,
+                restitution=restitution, friction=friction,
+            )
+        else:
+            bid = self._physics.add_box(
+                size=size, position=position, mass=mass,
+                material=mat_id, name=name,
+                restitution=restitution, friction=friction,
+            )
+        body = Body(self._physics, bid)
+        self._bodies[bid] = body
+        return body
+
+    def add_static_box(
+        self,
+        size: Any = (1.0, 1.0, 1.0),
+        position: Any = (0.0, 0.0, 0.0),
+        material: Material | str = "default",
+        name: str = "",
+        restitution: float = 0.3,
+        friction: float = 0.5,
+    ) -> Body:
+        """Add a static (non-moving) box and register it in world.bodies.
+
+        Equivalent to ``add_box(..., static=True)`` — exposes ``_physics.add_static_box``
+        as a properly tracked public method.
+        """
+        mat_id, mat = _resolve_material(material)
+        if mat:
+            self._materials[mat_id] = mat
+        bid = self._physics.add_static_box(
+            size=size, position=position,
+            material=mat_id, name=name,
+            restitution=restitution, friction=friction,
         )
         body = Body(self._physics, bid)
         self._bodies[bid] = body
@@ -411,10 +499,15 @@ class World:
         name: str = "",
         restitution: float = 0.3,
         friction: float = 0.5,
+        static: bool = False,
     ) -> Body:
         """Add a capsule-shaped rigid body (cylinder + two hemispherical caps).
 
         The capsule axis is aligned with body-local +Z.  Use ``quat`` to orient it.
+
+        Parameters
+        ----------
+        static : If True, creates an immovable static capsule.
         """
         mat_id, mat = _resolve_material(material)
         if mat:
@@ -429,6 +522,7 @@ class World:
             name=name,
             restitution=restitution,
             friction=friction,
+            static=static,
         )
         body = Body(self._physics, bid)
         self._bodies[bid] = body
@@ -538,10 +632,15 @@ class World:
         """
         from forge3d.collision.heightfield import Heightfield
 
+        mat_id, mat = _resolve_material(material)
+        if mat:
+            self._materials[mat_id] = mat
+
         hf = Heightfield(
             heights=np.asarray(heights, dtype=np.float32),
             cell_size=float(cell_size),
             origin=np.asarray(origin, dtype=float),
+            material_id=mat_id,
         )
         self._physics._heightfields.append(hf)
         return hf
@@ -668,19 +767,43 @@ class World:
         body: Body,
         anchor: Body,
         local_offset: Any = None,
+        local_rotation: Any = None,
     ) -> None:
         """Attach *body* kinematically to *anchor* (weld constraint).
 
-        After welding, ``body`` will follow ``anchor`` rigidly each ``step()``.
+        After welding, ``body`` follows ``anchor`` rigidly each ``step()``,
+        preserving both relative position and relative orientation.
+
+        Parameters
+        ----------
+        local_offset   : Position offset in *anchor* local frame.  Computed
+                         automatically from current positions if omitted.
+        local_rotation : Quaternion [w, x, y, z] expressing *body*'s rotation
+                         relative to *anchor*.  Computed automatically if omitted.
         """
-        from forge3d.math.quaternion import quat_to_rot
+        from forge3d.math.quaternion import quat_multiply, quat_to_rot
+
+        a_state = anchor._state()
+        b_state = body._state()
+        R_anchor = quat_to_rot(a_state.quat)
 
         if local_offset is None:
-            a_state = anchor._state()
-            b_state = body._state()
-            R_anchor = quat_to_rot(a_state.quat)
             local_offset = R_anchor.T @ (b_state.pos - a_state.pos)
-        self._welds[body._id] = (anchor._id, np.asarray(local_offset, dtype=float))
+
+        if local_rotation is None:
+            # Relative rotation: R_anchor^T @ R_body = rotation of body in anchor frame
+            from forge3d.math.quaternion import quat_conjugate
+            # rel_q = q_anchor^-1 * q_body
+            q_anc_inv = quat_conjugate(a_state.quat)
+            rel_q = quat_multiply(q_anc_inv, b_state.quat)
+        else:
+            rel_q = np.asarray(local_rotation, dtype=float)
+
+        self._welds[body._id] = (
+            anchor._id,
+            np.asarray(local_offset, dtype=float),
+            np.asarray(rel_q, dtype=float),
+        )
 
     def release(self, body: Body) -> None:
         """Remove weld constraint from *body* (body resumes normal physics)."""
@@ -815,9 +938,10 @@ class World:
         """Advance simulation by dt seconds (default: 1/60 s).
 
         1. Flush per-body force/torque accumulators (apply_force / apply_torque).
-        2. Physics step (gravity → contacts → impulses → position update).
-        3. Apply weld constraints.
-        4. Dispatch collision events.
+        2. Apply per-body linear/angular damping.
+        3. Physics step (gravity → contacts → impulses → position update).
+        4. Apply weld constraints.
+        5. Dispatch collision events (reuses cached contacts — no double detection).
         """
         _dt = dt if dt is not None else self.DEFAULT_DT
         # Flush accumulators before physics step
@@ -826,17 +950,46 @@ class World:
                 np.any(body._force_accum != 0) or np.any(body._torque_accum != 0)
             ):
                 body._flush_accumulators(_dt)
+            # Apply per-body damping (exponential decay, dt-corrected)
+            if body._linear_damping > 0 or body._angular_damping > 0:
+                self._apply_body_damping(body, _dt)
         self._physics.step(_dt)
         self._apply_welds()
-        # Always dispatch so _prev_contacts stays up to date (enables on_end after late registration)
+        # Dispatch events using cached contacts from physics step (no re-detection)
         self._dispatch_events()
 
+    def _apply_body_damping(self, body: "Body", dt: float) -> None:
+        """Apply per-body linear/angular damping (exponential decay, dt-corrected)."""
+        import math
+        b = body._state()
+        if b.static or b.mass <= 0:
+            return
+        from dataclasses import replace
+        new_vel   = b.vel
+        new_omega = b.omega
+        if body._linear_damping > 0:
+            factor = math.exp(-body._linear_damping * dt)
+            new_vel = b.vel * factor
+        if body._angular_damping > 0:
+            factor = math.exp(-body._angular_damping * dt)
+            new_omega = b.omega * factor
+        if new_vel is not b.vel or new_omega is not b.omega:
+            self._physics._replace_body(body._id, replace(b, vel=new_vel, omega=new_omega))
+
     def _dispatch_events(self) -> None:
-        """Detect current contacts and dispatch begin/stay/end callbacks."""
-        from forge3d.collision.detection import detect_contacts
+        """Dispatch collision begin/stay/end callbacks.
+
+        Reuses contacts cached by _physics.step() to avoid double detection.
+        Falls back to fresh detection if cache is empty (e.g., first frame).
+        """
         from forge3d.events import CollisionEvent
 
-        contacts_raw = detect_contacts(self._physics._bodies)
+        # Reuse contacts cached during _physics.step() — no double detect_contacts
+        contacts_raw = self._physics._last_contacts
+        if not contacts_raw:
+            # Only re-detect if no cache (step() hasn't run yet)
+            from forge3d.collision.detection import detect_contacts
+            contacts_raw = detect_contacts(self._physics._bodies)
 
         class _EvtContact:
             __slots__ = ["body_id_a", "body_id_b", "contact_point", "normal",
@@ -934,18 +1087,28 @@ class World:
     def _apply_welds(self) -> None:
         if not self._welds:
             return
-        from forge3d.math.quaternion import quat_to_rot
+        from forge3d.math.quaternion import quat_multiply, quat_to_rot
 
         _ZEROS3 = np.zeros(3)
-        for body_id, (anchor_id, offset) in self._welds.items():
+        for body_id, weld_data in self._welds.items():
+            # Support both old 2-tuple format (pos only) and new 3-tuple (pos + rot)
+            if len(weld_data) == 2:
+                anchor_id, offset = weld_data
+                rel_q = None
+            else:
+                anchor_id, offset, rel_q = weld_data
             try:
                 anchor = self._physics._get_body(anchor_id)
             except RuntimeError:
                 continue
             R_anchor = quat_to_rot(anchor.quat)
             new_pos = anchor.pos + R_anchor @ offset
+            if rel_q is not None:
+                new_quat = quat_multiply(anchor.quat, rel_q)
+            else:
+                new_quat = anchor.quat
             self._physics.update_body_pose(
-                body_id, new_pos, anchor.quat, vel=_ZEROS3, omega=_ZEROS3
+                body_id, new_pos, new_quat, vel=_ZEROS3, omega=_ZEROS3
             )
 
     def _sync_robot(self, robot: Any) -> None:
@@ -1007,6 +1170,53 @@ class World:
         """
         from forge3d.io.world_snapshot import load_world
         return load_world(path)  # type: ignore[return-value]
+
+    # ── Raycast ───────────────────────────────────────────────────────────────
+
+    def raycast(
+        self,
+        origin: Any,
+        direction: Any,
+        max_dist: float = 100.0,
+    ) -> Any | None:
+        """Cast a ray from *origin* along *direction* and return the first hit.
+
+        Tests the ray against all physics bodies (AABB then exact shape) and
+        returns the closest intersection, or ``None`` if nothing is hit.
+
+        Parameters
+        ----------
+        origin    : (3,) ray start in world frame (m).
+        direction : (3,) ray direction — need not be normalised.
+        max_dist  : Maximum hit distance (m).
+
+        Returns
+        -------
+        A :class:`RayHit` namedtuple with fields
+        ``(body, point, normal, distance)`` or ``None``.
+
+        Example::
+
+            hit = world.raycast((0, 0, 5), (0, 0, -1), max_dist=10)
+            if hit:
+                print(hit.body.name, hit.distance)
+        """
+        from forge3d.collision.raycast import ray_cast
+        result = ray_cast(
+            np.asarray(origin, dtype=float),
+            np.asarray(direction, dtype=float),
+            float(max_dist),
+            self._physics._bodies,
+        )
+        if result is None:
+            return None
+        body_id, point, normal, dist = result
+        body = self._bodies.get(body_id)
+        if body is None:
+            return None
+        from collections import namedtuple
+        RayHit = namedtuple("RayHit", ["body", "point", "normal", "distance"])
+        return RayHit(body=body, point=point, normal=normal, distance=dist)
 
     def __repr__(self) -> str:
         return (

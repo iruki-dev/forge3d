@@ -10,6 +10,58 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [1.1.0] — 2026-06-03  🎮 Game-Ready Release
+
+### Added
+
+**Physics API 확장**
+
+- `World.add_box(static=True)` — 정적 박스를 공개 API에서 직접 생성 (기존: 내부 `_physics.add_static_box()` 직접 호출 필요)
+- `World.add_capsule(static=True)` — 정적 캡슐 지원
+- `World.add_static_box(...)` — 공개 편의 메서드; `world.bodies`에 자동 등록
+- `Body.friction` / `Body.restitution` setter — 런타임 마찰·반발 계수 변경
+- `Body.linear_damping` / `Body.angular_damping` — 속도 감쇠 계수 (dt 보정 지수 감쇠, `world.step()` 내 자동 적용)
+- `World.weld(body, anchor, local_rotation=...)` — 자식 body의 상대 회전 저장 지원
+- `World.raycast(origin, direction, max_dist)` → `RayHit(body, point, normal, distance)` — 기본 레이캐스트 API
+
+**렌더링 — Heightfield 지형 시각화**
+
+- `TerrainSnapshot` 데이터클래스 추가 (`forge3d.TerrainSnapshot`)
+- `World.add_terrain()` 시 `SceneSnapshot.terrains` 에 자동 포함 → 렌더러에 전달
+- `RealtimeRenderer` — heightfield 삼각 메시 생성·렌더링 (shadow pass 포함)
+- `WindowRenderer` (apps/game) — 동일 terrain 렌더링 지원
+- `render.realtime.meshes.heightfield_mesh(heights, cell_size, origin)` 공개 함수
+
+**카메라**
+
+- `FollowCamera(frame="local")` — 차체 로컬 프레임 오프셋; 차가 회전해도 항상 뒤에서 추적
+- `FollowCamera(smoothing_hz=6.0)` — FPS 독립 지수 감쇠 스무딩 (기존 `alpha` per-frame 대체)
+- `FollowCamera.to_snapshot(dt=...)` — dt 파라미터로 FPS 독립 스무딩
+
+**입력**
+
+- `forge3d.InputBuilder` — 공개 클래스 (기존: `_InputBuilder` 비공개)
+- `InputBuilder.feed_pygame_event(event)` — pygame 이벤트를 `f3d.Input`/`Key` 시스템에 주입
+
+**Viewer**
+
+- `Viewer.draw_text(text, x, y, size, color, bg_alpha, anchor)` — HUD 텍스트 오버레이
+
+**직렬화**
+
+- `World.save()` — 조인트(Hinge/Spring/Distance/Ball/Fixed/Prismatic) 직렬화 포함
+- `World.load()` — 저장된 조인트 자동 복원
+
+### Performance
+
+- `World.step()` 내 `detect_contacts` 이중 호출 제거: physics step의 캐시된 contact를 이벤트 디스패치에서 재활용 → ~2× 이벤트 처리 속도 향상
+
+### Fixed
+
+- `World.add_terrain()` 의 `material` 파라미터가 Heightfield 렌더에 전달되지 않던 문제
+
+---
+
 ## [1.0.0] — 2026-06-03  ★ STABLE RELEASE
 
 ### Added (P15 — MkDocs 문서 사이트)

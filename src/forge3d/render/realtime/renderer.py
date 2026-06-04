@@ -28,6 +28,7 @@ from forge3d.render.realtime.context import XvfbProcess, create_standalone_conte
 from forge3d.render.realtime.meshes import (
     axes_lines,
     grid_lines,
+    heightfield_mesh,
     mesh_from_data,
     unit_box,
     unit_capsule,
@@ -163,6 +164,8 @@ class RealtimeRenderer(Renderer):
         self._textures: dict[str, Any] = {}
         # default white texture (used when no albedo texture is specified)
         self._white_tex: Any = None
+        # terrain VAOs keyed by id(TerrainSnapshot)
+        self._terrain_vaos: dict[int, Any] = {}
 
     # ── Context manager ───────────────────────────────────────────────────────
 
@@ -390,6 +393,21 @@ class RealtimeRenderer(Renderer):
             pass
         return tex
 
+    # ── Terrain VAO (built on first render per unique terrain shape) ──────────
+
+    def _get_terrain_vaos(self, terrain: Any) -> tuple[Any, Any]:
+        """Return (solid, shadow) VAO tuple for a TerrainSnapshot.
+
+        Keyed by the terrain's data identity (id of heights array).
+        """
+        key = id(terrain.heights)
+        if key not in self._terrain_vaos:
+            verts, idx = heightfield_mesh(terrain.heights, terrain.cell_size, terrain.origin)
+            solid  = self._make_solid_vao(self._ctx, verts, idx)
+            shadow = self._make_shadow_vao(self._ctx, verts, idx)
+            self._terrain_vaos[key] = (solid, shadow)
+        return self._terrain_vaos[key]
+
     # ── Main render method ────────────────────────────────────────────────────
 
     def render(self, snapshot: SceneSnapshot) -> Frame | None:
@@ -429,6 +447,8 @@ class RealtimeRenderer(Renderer):
         ctx.enable(ctx.DEPTH_TEST)
         ctx.depth_func = "<"
 
+        I4 = np.eye(4, dtype=np.float32)  # identity model matrix for terrain
+
         for body in snapshot.bodies:
             vaos = self._get_body_vaos(body)
             if vaos is None:
@@ -437,6 +457,17 @@ class RealtimeRenderer(Renderer):
             scale = self._body_scale(body)
             M = self._model_matrix(body, scale).astype(np.float32)
             light_MVP = (light_VP @ M).astype(np.float32)
+            svao, sn = shadow_vao_t
+            try:
+                self._shadow_prog["u_light_MVP"].write(_col_major(light_MVP))
+            except KeyError:
+                pass
+            svao.render(mode=ctx.TRIANGLES, vertices=sn)
+
+        # Terrain shadow pass
+        for terrain in getattr(snapshot, "terrains", []):
+            _, shadow_vao_t = self._get_terrain_vaos(terrain)
+            light_MVP = (light_VP @ I4).astype(np.float32)
             svao, sn = shadow_vao_t
             try:
                 self._shadow_prog["u_light_MVP"].write(_col_major(light_MVP))
@@ -507,6 +538,27 @@ class RealtimeRenderer(Renderer):
             except KeyError:
                 pass
 
+            vao, n_idx = solid_vao_t
+            vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
+
+        # Terrain main pass
+        for terrain in getattr(snapshot, "terrains", []):
+            solid_vao_t, _ = self._get_terrain_vaos(terrain)
+            mat_obj = mat_lookup.get(terrain.material_id, mat_lookup.get("ground"))
+            snap_mat = snapshot.materials.get(terrain.material_id)
+            tex_path = getattr(snap_mat, "texture_path", None)
+            bound_tex = self._set_material_uniforms(prog, mat_obj, tex_path)
+            if bound_tex is not None:
+                bound_tex.use(location=1)
+            else:
+                self._white_tex.use(location=1)
+            try:
+                prog["u_MVP"].write(_col_major((P @ V @ I4).astype(np.float32)))
+                prog["u_M"].write(_col_major(I4))
+                prog["u_NM"].write(np.eye(3, dtype=np.float32).tobytes())
+                prog["u_light_MVP"].write(_col_major((light_VP @ I4).astype(np.float32)))
+            except KeyError:
+                pass
             vao, n_idx = solid_vao_t
             vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
 

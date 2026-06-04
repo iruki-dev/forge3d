@@ -22,7 +22,7 @@ import moderngl
 import numpy as np
 import pygame
 
-from forge3d.render.realtime.meshes import grid_lines, heightfield_mesh, unit_box, unit_sphere
+from forge3d.render.realtime.meshes import grid_lines, unit_box, unit_sphere
 from forge3d.render.realtime.shaders import (
     FLAT_FRAG,
     FLAT_VERT,
@@ -152,8 +152,6 @@ class WindowRenderer:
         self._white_tex: Any = None
         # HUD texture cache: avoid GPU allocations every frame
         self._hud_cache: dict[str, Any] = {}  # text → (tex, vbo, vao, tw, th, x0, y0)
-        # Terrain VAO cache keyed by id(heights array)
-        self._terrain_vaos: dict[int, Any] = {}
 
     # ── Initialisation ─────────────────────────────────────────────────────────
 
@@ -252,35 +250,6 @@ class WindowRenderer:
         M[3, 3] = 1.0
         return M
 
-    def _get_terrain_main_vao(self, terrain: Any) -> tuple[Any, int]:
-        key = (id(terrain.heights), "main")
-        if key not in self._terrain_vaos:
-            verts, idx = heightfield_mesh(terrain.heights, terrain.cell_size, terrain.origin)
-            vbo = self._ctx.buffer(verts.tobytes())
-            ibo = self._ctx.buffer(idx.tobytes())
-            vao = self._ctx.vertex_array(
-                self._main_prog,
-                [(vbo, "3f 3f 2f", "in_position", "in_normal", "in_uv")],
-                index_buffer=ibo,
-            )
-            self._terrain_vaos[key] = (vao, len(idx))
-        return self._terrain_vaos[key]
-
-    def _get_terrain_shadow_vao(self, terrain: Any) -> tuple[Any, int]:
-        key = (id(terrain.heights), "shadow")
-        if key not in self._terrain_vaos:
-            verts, idx = heightfield_mesh(terrain.heights, terrain.cell_size, terrain.origin)
-            pos_only = np.ascontiguousarray(verts.reshape(-1, 8)[:, :3])
-            vbo = self._ctx.buffer(pos_only.tobytes())
-            ibo = self._ctx.buffer(idx.tobytes())
-            vao = self._ctx.vertex_array(
-                self._shadow_prog,
-                [(vbo, "3f", "in_position")],
-                index_buffer=ibo,
-            )
-            self._terrain_vaos[key] = (vao, len(idx))
-        return self._terrain_vaos[key]
-
     # ── Render ─────────────────────────────────────────────────────────────────
 
     def render(
@@ -325,8 +294,6 @@ class WindowRenderer:
         ctx.enable(ctx.DEPTH_TEST)
         ctx.depth_func = "<"
 
-        I4 = np.eye(4, dtype=np.float32)
-
         for body in snapshot.bodies:
             sk = self._vao_key(body) + "_shadow"
             if sk not in self._vaos:
@@ -335,16 +302,6 @@ class WindowRenderer:
             M = self._model_matrix(body, scale)
             light_MVP = (light_VP @ M).astype(np.float32)
             svao, sn = self._vaos[sk]
-            try:
-                self._shadow_prog["u_light_MVP"].write(_mat_bytes(light_MVP))
-            except KeyError:
-                pass
-            svao.render(mode=ctx.TRIANGLES, vertices=sn)
-
-        # Terrain shadow pass
-        for terrain in getattr(snapshot, "terrains", []):
-            svao, sn = self._get_terrain_shadow_vao(terrain)
-            light_MVP = (light_VP @ I4).astype(np.float32)
             try:
                 self._shadow_prog["u_light_MVP"].write(_mat_bytes(light_MVP))
             except KeyError:
@@ -409,28 +366,6 @@ class WindowRenderer:
                 pass
             vao, n_idx = self._vaos[vk]
             vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
-
-        # Terrain main pass
-        for terrain in getattr(snapshot, "terrains", []):
-            solid_vao, n_idx = self._get_terrain_main_vao(terrain)
-            mat = mat_lookup.get(terrain.material_id) or mat_lookup.get("ground")
-            color = np.array(mat.color if mat else (0.3, 0.45, 0.2), dtype=np.float32)
-            roughness = float(mat.roughness) if mat else 0.9
-            metallic  = float(mat.metallic)  if mat else 0.0
-            MVP = (P @ V @ I4).astype(np.float32)
-            light_M = (light_VP @ I4).astype(np.float32)
-            try:
-                prog["u_MVP"].write(_mat_bytes(MVP))
-                prog["u_M"].write(_mat_bytes(I4))
-                prog["u_NM"].write(np.eye(3, dtype=np.float32).tobytes())
-                prog["u_light_MVP"].write(_mat_bytes(light_M))
-                prog["u_mat_color"].write(color.tobytes())
-                prog["u_roughness"].value = roughness
-                prog["u_metallic"].value  = metallic
-                prog["u_has_texture"].value = 0
-            except KeyError:
-                pass
-            solid_vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
 
         # Grid (no depth test so it's always visible)
         VP = (P @ V).astype(np.float32)

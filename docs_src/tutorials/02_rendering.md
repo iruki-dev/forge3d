@@ -119,4 +119,90 @@ rec.run_policy(model, env, duration=5.0)
 
 ---
 
+## Heightfield terrain rendering (v1.1.0)
+
+Before v1.1.0, `world.add_terrain()` was collision-only — the terrain was invisible.
+In v1.1.0, terrain automatically appears as a shaded triangle mesh with shadow casting:
+
+```python
+import numpy as np
+
+rng = np.random.default_rng(42)
+heights = (
+    3.0 * np.sin(np.linspace(0, 2*np.pi, 48))[:, None] *
+          np.cos(np.linspace(0, 3*np.pi, 48))[None, :] +
+    rng.uniform(-0.3, 0.3, (48, 48))
+).astype(np.float32)
+heights = np.clip(heights - heights.min(), 0, 8)
+
+world.add_terrain(
+    heights=heights,
+    cell_size=2.5,
+    origin=(-60, -60, 0),
+    material=f3d.Material(color=(0.28, 0.42, 0.16), roughness=0.95),
+)
+
+viewer = f3d.Viewer(world)
+while viewer.is_open:
+    world.step()
+    viewer.draw()    # terrain rendered as smooth mesh with normals and shadows
+```
+
+The terrain mesh is generated lazily on the first render call, cached, and reused every frame.
+
+---
+
+## HUD text overlay (v1.1.0)
+
+`Viewer.draw_text()` renders a text overlay after the 3D scene:
+
+```python
+score = 0
+while viewer.is_open:
+    world.step()
+    viewer.draw()                                 # 3D scene
+
+    viewer.draw_text(f"Score: {score}", x=10, y=10, size=24)
+    viewer.draw_text("PAUSE", x=640, y=360,
+                     size=48, color=(1, 0.8, 0), anchor="center")
+    viewer.draw_text("ESC to quit", x=1270, y=10,
+                     size=18, anchor="topright")
+```
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `x, y` | `10, 10` | Pixel position |
+| `size` | `20` | Font size (px) |
+| `color` | `(1,1,1)` | RGB in [0,1] |
+| `bg_alpha` | `0.6` | Background box opacity |
+| `anchor` | `"topleft"` | `"topleft"` / `"center"` / `"topright"` |
+
+---
+
+## FollowCamera — local frame (v1.1.0)
+
+For vehicle games, use `frame="local"` so the camera always stays behind the body:
+
+```python
+car = world.add_box(size=(2, 1, 0.5), position=(0, 0, 0.3), mass=20)
+
+cam = f3d.FollowCamera(
+    car,
+    offset=(-8, 0, 3),      # 8 m behind, 3 m up (car's local frame)
+    frame="local",
+    smoothing_hz=8,          # snappy tracking
+    fov_deg=60,
+)
+
+while viewer.is_open:
+    world.step()
+    viewer.set_camera(cam.to_snapshot(dt=viewer.dt))
+    viewer.draw()
+```
+
+With `frame="world"` (default), the camera offset is always world-aligned regardless
+of where the car points. With `frame="local"`, the camera rotates with the car.
+
+---
+
 ## Next: [Robot arm tutorial](03_robot.md)

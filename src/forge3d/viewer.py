@@ -206,6 +206,120 @@ class Viewer:
         self._world.step(dt)
         return self.draw()
 
+    def draw_text(
+        self,
+        text: str,
+        x: int = 10,
+        y: int = 10,
+        size: int = 20,
+        color: tuple = (1.0, 1.0, 1.0),
+        bg_alpha: float = 0.6,
+        anchor: str = "topleft",
+    ) -> None:
+        """Render a HUD text overlay on top of the current frame.
+
+        Uses pygame font rendering (if pygame is available) to blit text as
+        an OpenGL texture quad.  Must be called *after* :meth:`draw`.
+
+        Parameters
+        ----------
+        text      : Text string to display.
+        x, y      : Pixel position of the anchor point.
+        size      : Font size in pixels.
+        color     : RGB colour in [0, 1] (white by default).
+        bg_alpha  : Background rectangle alpha [0, 1].
+        anchor    : ``"topleft"`` (default), ``"center"`` or ``"topright"``.
+
+        Example::
+
+            while viewer.is_open:
+                world.step()
+                viewer.draw()
+                viewer.draw_text(f"Speed: {speed:.0f} m/s", x=10, y=10)
+        """
+        if self._renderer is None:
+            return
+        try:
+            import pygame
+            import numpy as _np
+            import moderngl as _mgl
+        except ImportError:
+            return
+
+        if not pygame.font.get_init():
+            pygame.font.init()
+
+        r_int = tuple(int(c * 255) for c in color)
+        font = pygame.font.SysFont("monospace", size, bold=True)
+        txt_surf = font.render(text, True, r_int)
+        pad = 4
+        tw = txt_surf.get_width() + pad * 2
+        th = txt_surf.get_height() + pad * 2
+        bg = pygame.Surface((tw, th), pygame.SRCALPHA)
+        bg.fill((0, 0, 0, int(bg_alpha * 255)))
+        bg.blit(txt_surf, (pad, pad))
+        raw = pygame.image.tostring(bg, "RGBA", False)
+
+        ctx = self._renderer._ctx
+        if ctx is None:
+            return
+
+        # Anchor offset
+        if anchor == "center":
+            x -= tw // 2
+            y -= th // 2
+        elif anchor == "topright":
+            x -= tw
+
+        x0, y0 = float(x), float(y)
+        x1, y1 = x0 + tw, y0 + th
+        W, H = self._width, self._height
+
+        tex = ctx.texture((tw, th), 4, raw)
+        tex.filter = _mgl.NEAREST, _mgl.NEAREST
+
+        _HUD_V = """
+#version 330 core
+uniform vec2 u_screen;
+in vec2 in_pos; in vec2 in_uv; out vec2 v_uv;
+void main() {
+    vec2 ndc = (in_pos / u_screen) * 2.0 - 1.0;
+    ndc.y = -ndc.y;
+    gl_Position = vec4(ndc, 0.0, 1.0);
+    v_uv = in_uv;
+}
+"""
+        _HUD_F = """
+#version 330 core
+uniform sampler2D u_tex;
+in vec2 v_uv; out vec4 fc;
+void main() {
+    vec4 c = texture(u_tex, v_uv);
+    if (c.a < 0.02) discard;
+    fc = c;
+}
+"""
+        prog = ctx.program(vertex_shader=_HUD_V, fragment_shader=_HUD_F)
+        verts = _np.array([
+            [x0, y0, 0.0, 0.0], [x1, y0, 1.0, 0.0],
+            [x0, y1, 0.0, 1.0], [x1, y0, 1.0, 0.0],
+            [x1, y1, 1.0, 1.0], [x0, y1, 0.0, 1.0],
+        ], dtype=_np.float32)
+        vbo = ctx.buffer(verts.tobytes())
+        vao = ctx.vertex_array(prog, [(vbo, "2f 2f", "in_pos", "in_uv")])
+
+        ctx.disable(ctx.DEPTH_TEST)
+        ctx.enable(ctx.BLEND)
+        ctx.blend_func = ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA
+        tex.use(0)
+        prog["u_tex"] = 0
+        prog["u_screen"].write(_np.array([W, H], dtype=_np.float32).tobytes())
+        vao.render()
+        ctx.disable(ctx.BLEND)
+        ctx.enable(ctx.DEPTH_TEST)
+
+        vao.release(); vbo.release(); tex.release(); prog.release()
+
     # ── Cleanup ───────────────────────────────────────────────────────────────
 
     def close(self) -> None:

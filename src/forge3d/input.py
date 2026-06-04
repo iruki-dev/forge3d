@@ -165,7 +165,7 @@ class Input:
 EMPTY_INPUT: Input = Input()
 
 
-# ── Mutable builder — used internally by Viewer ───────────────────────────────
+# ── Public InputBuilder ───────────────────────────────────────────────────────
 
 
 class _InputBuilder:
@@ -241,3 +241,46 @@ class _InputBuilder:
         self._keys_released.clear()
         self._scroll_accum = 0.0
         self._prev_mouse_pos = self._mouse_pos
+
+    def feed_pygame_event(self, event: Any) -> None:
+        """Feed a pygame event into the builder.
+
+        Allows using :class:`InputBuilder` with a pygame window instead of
+        the forge3d :class:`Viewer`.  Call this for each event in
+        ``pygame.event.get()`` and then :meth:`build` + :meth:`end_frame`
+        to get a standard :class:`Input` snapshot each frame.
+
+        Example::
+
+            builder = f3d.InputBuilder()
+            while running:
+                for ev in pygame.event.get():
+                    builder.feed_pygame_event(ev)
+                inp = builder.build()
+                builder.end_frame()
+                ...
+        """
+        try:
+            import pygame  # optional dependency
+        except ImportError:
+            return
+        if event.type == pygame.KEYDOWN:
+            name = pygame.key.name(event.key).lower()
+            self.on_key_down(name)
+        elif event.type == pygame.KEYUP:
+            name = pygame.key.name(event.key).lower()
+            self.on_key_up(name)
+        elif event.type == pygame.MOUSEMOTION:
+            self.on_mouse_move(float(event.pos[0]), float(event.pos[1]))
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            btn_map = {1: 0, 2: 2, 3: 1}
+            self.on_mouse_down(btn_map.get(event.button, event.button - 1))
+        elif event.type == pygame.MOUSEBUTTONUP:
+            btn_map = {1: 0, 2: 2, 3: 1}
+            self.on_mouse_up(btn_map.get(event.button, event.button - 1))
+        elif event.type == pygame.MOUSEWHEEL:
+            self.on_scroll(float(event.y))
+
+
+# Public alias — no leading underscore
+InputBuilder = _InputBuilder

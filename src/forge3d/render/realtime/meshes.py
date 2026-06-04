@@ -201,6 +201,82 @@ def mesh_from_data(mesh_data: Any) -> tuple[np.ndarray, np.ndarray]:
     return mesh_data.interleaved(), np.asarray(mesh_data.indices, dtype=np.uint32)
 
 
+# ── Heightfield terrain mesh ──────────────────────────────────────────────────
+
+
+def heightfield_mesh(
+    heights: np.ndarray,
+    cell_size: float,
+    origin: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Convert a heightfield to a triangle mesh with smooth normals.
+
+    Parameters
+    ----------
+    heights  : (rows, cols) float32 height values.
+    cell_size: World-space size of each grid cell (m).
+    origin   : (3,) world-space position of the (0, 0) grid corner.
+
+    Returns
+    -------
+    verts : (rows*cols, 8) float32  — [px, py, pz, nx, ny, nz, u, v]
+    idx   : (2*(rows-1)*(cols-1)*3,) uint32  — triangle indices
+    """
+    rows, cols = heights.shape
+    verts = np.zeros((rows * cols, 8), dtype=np.float32)
+
+    ox, oy, oz = float(origin[0]), float(origin[1]), float(origin[2])
+
+    for r in range(rows):
+        for c in range(cols):
+            x = ox + c * cell_size
+            y = oy + r * cell_size
+            z = oz + float(heights[r, c])
+            # UV: 0..1 over the whole terrain
+            u = c / (cols - 1) if cols > 1 else 0.0
+            v = r / (rows - 1) if rows > 1 else 0.0
+            verts[r * cols + c, :3] = [x, y, z]
+            verts[r * cols + c, 6:8] = [u, v]
+
+    # Compute normals by finite difference
+    # Central difference for interior, forward/backward at edges
+    for r in range(rows):
+        for c in range(cols):
+            # dz/dx (along col axis)
+            if c == 0:
+                dzdc = float(heights[r, 1] - heights[r, 0]) / cell_size
+            elif c == cols - 1:
+                dzdc = float(heights[r, cols-1] - heights[r, cols-2]) / cell_size
+            else:
+                dzdc = float(heights[r, c+1] - heights[r, c-1]) / (2 * cell_size)
+            # dz/dy (along row axis)
+            if r == 0:
+                dzdr = float(heights[1, c] - heights[0, c]) / cell_size
+            elif r == rows - 1:
+                dzdr = float(heights[rows-1, c] - heights[rows-2, c]) / cell_size
+            else:
+                dzdr = float(heights[r+1, c] - heights[r-1, c]) / (2 * cell_size)
+            # Normal = (-dz/dx, -dz/dy, 1) normalised
+            nx, ny, nz = -dzdc, -dzdr, 1.0
+            n = (nx*nx + ny*ny + nz*nz) ** 0.5
+            verts[r * cols + c, 3:6] = [nx/n, ny/n, nz/n]
+
+    # Build triangle indices (two triangles per quad)
+    idx_list = []
+    for r in range(rows - 1):
+        for c in range(cols - 1):
+            a = r * cols + c
+            b = a + 1
+            c_ = a + cols
+            d = c_ + 1
+            # Lower-left triangle
+            idx_list.extend([a, b, c_])
+            # Upper-right triangle
+            idx_list.extend([b, d, c_])
+
+    return verts, np.array(idx_list, dtype=np.uint32)
+
+
 # ── Grid / axes helpers ───────────────────────────────────────────────────────
 
 

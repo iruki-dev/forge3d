@@ -47,12 +47,27 @@ The physics code never changes — only the renderer does. That is the [SceneSna
 |---|---|
 | **Physics** | Rigid-body (RNEA / CRBA / ABA), semi-implicit Euler, SAT OBB-OBB, sphere, capsule, GJK/EPA |
 | **Contact** | Impulse PGS solver (10 iterations), Coulomb friction, Baumgarte, angular impulse |
-| **Rendering** | Real-time PBR (OpenGL via moderngl); HQ software ray-tracer |
-| **Joints** | Hinge, Prismatic, Ball, Fixed, Distance, Spring |
+| **Rendering** | Real-time PBR (OpenGL via moderngl); HQ software ray-tracer; **heightfield terrain rendering** |
+| **Joints** | Hinge, Prismatic, Ball, Fixed, Distance, Spring — serialized in `World.save/load` |
 | **Robots** | UR5 FK/IK, DH parameters, Jacobian |
 | **RL** | Gymnasium-compatible `ReachEnv` / `PickPlaceEnv` |
-| **Performance** | JAX JIT + vmap: 2,000× throughput; AABB broad-phase |
+| **Performance** | JAX JIT + vmap: 2,000× throughput; AABB broad-phase; contact cache (no double detection) |
 | **Typed** | Full `py.typed` — works with mypy, pyright |
+
+### New in v1.1.0 — Game-Ready
+
+| Feature | API |
+|---------|-----|
+| Static bodies everywhere | `add_box(static=True)`, `add_capsule(static=True)`, `add_static_box()` |
+| Runtime physics properties | `body.friction = 0.1`, `body.restitution = 0.9` |
+| Per-body damping | `body.linear_damping = 1.0`, `body.angular_damping = 2.0` |
+| Terrain rendering | `add_terrain()` now appears in `Viewer` as a shaded mesh |
+| Local-frame camera | `FollowCamera(frame="local")` — always follows from behind a vehicle |
+| Raycast | `world.raycast(origin, direction, max_dist)` → `RayHit` |
+| pygame input bridge | `InputBuilder.feed_pygame_event(event)` |
+| HUD text | `viewer.draw_text(text, x, y, size, color)` |
+| Weld rotation | `world.weld(child, parent, local_rotation=...)` |
+| Joint save/load | `World.save()` now includes all joint types |
 
 ---
 

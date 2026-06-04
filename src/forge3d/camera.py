@@ -182,44 +182,90 @@ class FollowCamera:
     """Camera that smoothly tracks a :class:`~forge3d.facade.Body`.
 
     The camera sits at *body.position + offset* and looks at *body.position*.
-    A smoothing factor ``alpha`` low-pass filters position changes
-    (0 = frozen, 1 = instant snap).
+    Supports world-frame and body-local-frame offsets, and uses
+    dt-corrected exponential smoothing (FPS-independent).
 
     Parameters
     ----------
-    body    : The :class:`Body` to follow.
-    offset  : Camera offset from the body in world frame (x, y, z).
-    alpha   : Smoothing factor per frame [0, 1].  Default 0.1 (smooth).
-    fov_deg : Vertical field-of-view.
+    body         : The :class:`Body` to follow.
+    offset       : Camera offset from the body in *frame* coordinates.
+    frame        : ``"world"`` (default) — offset is world-aligned; stays
+                   fixed regardless of body rotation.
+                   ``"local"`` — offset is body-local; camera always sits
+                   *behind* the body as it turns (ideal for vehicles).
+    smoothing_hz : Smoothing speed in Hz (reciprocal of time constant τ).
+                   Higher = snappier.  Default 6 ≈ 0.17 s settling time.
+                   Pass ``smoothing_hz=None`` for legacy per-frame ``alpha``.
+    alpha        : Legacy per-frame lerp factor (ignored when smoothing_hz
+                   is set).  Kept for backward compatibility.
+    fov_deg      : Vertical field-of-view in degrees.
 
-    Usage::
+    Examples
+    --------
+    >>> # World-frame offset (original behaviour)
+    >>> cam = f3d.FollowCamera(ball, offset=(0, -8, 4))
 
-        cam = f3d.FollowCamera(ball, offset=(0, -8, 4), alpha=0.08)
-        # each frame:
-        viewer.set_camera(cam.to_snapshot())
+    >>> # Body-local offset — always behind the car
+    >>> cam = f3d.FollowCamera(car, offset=(-8, 0, 3), frame="local",
+    ...                        smoothing_hz=8)
+
+    Usage (per-frame)::
+
+        viewer.set_camera(cam.to_snapshot(dt=viewer.dt))
     """
 
     def __init__(
         self,
         body: Body,
         offset: Any = (0.0, -8.0, 4.0),
+        frame: str = "world",
+        smoothing_hz: float | None = 6.0,
         alpha: float = 0.1,
         fov_deg: float = 45.0,
     ) -> None:
         self._body = body
         self.offset = np.asarray(offset, dtype=float)
+        self.frame = frame.lower()
+        if self.frame not in ("world", "local"):
+            raise ValueError(f"frame must be 'world' or 'local', got {frame!r}")
+        self.smoothing_hz = smoothing_hz
         self.alpha = float(np.clip(alpha, 0.0, 1.0))
         self.fov_deg = float(fov_deg)
         # Smoothed eye position — initialised to exact value
-        self._eye: np.ndarray = body.position + self.offset
+        self._eye: np.ndarray = body.position + np.asarray(offset, dtype=float)
 
-    def to_snapshot(self) -> CameraSnapshot:
-        """Update smoothed position and return a CameraSnapshot."""
+    def _desired_eye(self) -> np.ndarray:
+        """Compute world-space desired eye position."""
+        if self.frame == "local":
+            from forge3d.math.quaternion import quat_to_rot
+            R = quat_to_rot(self._body.orientation)
+            world_offset = R @ self.offset
+        else:
+            world_offset = self.offset
+        return self._body.position + world_offset
+
+    def to_snapshot(self, dt: float | None = None) -> "CameraSnapshot":
+        """Update smoothed position and return a :class:`CameraSnapshot`.
+
+        Parameters
+        ----------
+        dt : Elapsed time since last call (seconds).  When provided, uses
+             dt-corrected exponential smoothing; otherwise falls back to the
+             legacy per-frame ``alpha`` factor.
+        """
+        import math
         from forge3d.render.snapshot import CameraSnapshot
 
         target = self._body.position.copy()
-        desired_eye = target + self.offset
-        self._eye = self._eye + self.alpha * (desired_eye - self._eye)
+        desired = self._desired_eye()
+
+        if dt is not None and self.smoothing_hz is not None:
+            # Exponential decay: FPS-independent, τ = 1 / smoothing_hz
+            factor = 1.0 - math.exp(-self.smoothing_hz * dt)
+        else:
+            factor = self.alpha
+
+        self._eye = self._eye + factor * (desired - self._eye)
 
         return CameraSnapshot(
             position=self._eye.copy(),
@@ -230,6 +276,6 @@ class FollowCamera:
 
     def __repr__(self) -> str:
         return (
-            f"FollowCamera(body={self._body!r}, "
-            f"offset={self.offset.tolist()}, alpha={self.alpha:.2f})"
+            f"FollowCamera(body={self._body!r}, frame={self.frame!r}, "
+            f"offset={self.offset.tolist()}, smoothing_hz={self.smoothing_hz})"
         )

@@ -77,6 +77,23 @@ BUILTIN_MATERIALS: dict[str, Material] = {
 
 
 @dataclass
+class TerrainSnapshot:
+    """Pure-data description of a heightfield terrain for renderers.
+
+    Attributes:
+        heights: 2D float32 array of shape (rows, cols).
+        cell_size: World-space size of each grid cell (m).
+        origin: World-space (x, y, z) of the grid (0, 0) corner.
+        material_id: Key into SceneSnapshot.materials.
+    """
+
+    heights: Any       # np.ndarray (rows, cols) float32
+    cell_size: float
+    origin: Any        # np.ndarray (3,) float64
+    material_id: str = "ground"
+
+
+@dataclass
 class SceneSnapshot:
     """Pure-data frame description.
 
@@ -85,6 +102,7 @@ class SceneSnapshot:
     """
 
     bodies: list[BodySnapshot] = field(default_factory=list)
+    terrains: list[TerrainSnapshot] = field(default_factory=list)
     camera: CameraSnapshot | None = None
     lights: list[LightSnapshot] = field(default_factory=list)
     materials: dict[str, Material] = field(default_factory=dict)

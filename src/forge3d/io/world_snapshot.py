@@ -71,11 +71,45 @@ def save_world(world: Any, path: str | Path) -> None:
             "material": state.material_id,
         })
 
+    # Serialize constraints (joints)
+    constraints_data = []
+    for c in world._physics._constraints:
+        ctype = type(c).__name__
+        try:
+            entry: dict[str, Any] = {"type": ctype, "id_a": c.id_a, "id_b": c.id_b}
+            # Common anchors
+            if hasattr(c, "anchor_a"):
+                entry["anchor_a"] = np.asarray(c.anchor_a).tolist()
+            if hasattr(c, "anchor_b"):
+                entry["anchor_b"] = np.asarray(c.anchor_b).tolist()
+            # Joint-type specifics
+            if ctype == "HingeJoint":
+                entry["axis"] = np.asarray(c.axis_a).tolist()  # stored as axis_a
+                entry["limits"] = list(c.limits) if c.limits is not None else None
+                entry["motor_velocity"] = c.motor_velocity
+                entry["motor_max_torque"] = c.motor_max_torque
+            elif ctype == "PrismaticJoint":
+                axis = getattr(c, "axis_a", None) or getattr(c, "axis", None)
+                entry["axis"] = np.asarray(axis).tolist() if axis is not None else [0,0,1]
+                entry["limits"] = list(c.limits) if c.limits is not None else None
+                entry["motor_velocity"] = c.motor_velocity
+                entry["motor_max_force"] = c.motor_max_force
+            elif ctype == "SpringJoint":
+                entry["stiffness"] = c.stiffness
+                entry["damping"] = c.damping
+                entry["rest_length"] = c.rest_length
+            elif ctype == "DistanceJoint":
+                entry["target_distance"] = c.target_distance
+            constraints_data.append(entry)
+        except Exception:
+            pass
+
     data = {
         "version": __version__,
         "gravity": world._physics._gravity.tolist(),
         "time": float(world.time),
         "bodies": bodies_data,
+        "constraints": constraints_data,
     }
 
     path = Path(path)
@@ -157,6 +191,61 @@ def load_world(path: str | Path) -> Any:
                     omega=np.asarray(omega, dtype=float),
                 ),
             )
+
+    # Restore joints / constraints
+    for c in data.get("constraints", []):
+        try:
+            ctype = c.get("type", "")
+            jtype_map = {
+                "FixedJoint":     "fixed",
+                "BallJoint":      "ball",
+                "HingeJoint":     "hinge",
+                "PrismaticJoint": "prismatic",
+                "DistanceJoint":  "distance",
+                "SpringJoint":    "spring",
+            }
+            jtype = jtype_map.get(ctype)
+            if jtype is None:
+                continue
+
+            id_a = int(c["id_a"])
+            id_b = int(c.get("id_b", -1))
+
+            # Find facade bodies by physics id
+            body_a = world._bodies.get(id_a)
+            body_b = world._bodies.get(id_b) if id_b >= 0 else None
+            if body_a is None:
+                continue
+
+            kwargs: dict[str, Any] = {
+                "joint_type": jtype,
+                "body_a": body_a,
+                "body_b": body_b,
+                "anchor_a": c.get("anchor_a", [0, 0, 0]),
+                "anchor_b": c.get("anchor_b", [0, 0, 0]),
+            }
+            if "axis" in c:
+                kwargs["axis"] = c["axis"]
+            if c.get("limits") is not None:
+                kwargs["limits"] = tuple(c["limits"])
+            if "motor_velocity" in c:
+                kwargs["motor_velocity"] = c["motor_velocity"]
+            if "motor_max_torque" in c:
+                kwargs["motor_max_torque"] = c["motor_max_torque"]
+            if "motor_max_force" in c:
+                kwargs["motor_max_torque"] = c["motor_max_force"]
+            if "stiffness" in c:
+                kwargs["stiffness"] = c["stiffness"]
+            if "damping" in c:
+                kwargs["damping"] = c["damping"]
+            if "rest_length" in c:
+                kwargs["rest_length"] = c["rest_length"]
+            if "target_distance" in c:
+                kwargs["target_distance"] = c["target_distance"]
+
+            world.add_joint(**kwargs)
+        except Exception:
+            pass
 
     return world
 

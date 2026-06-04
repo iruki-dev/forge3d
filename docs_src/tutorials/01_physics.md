@@ -129,4 +129,72 @@ print(f"Energy drift: {abs(E - E0) / E0 * 100:.2f}%")  # < 1%
 
 ---
 
+## Static bodies (v1.1.0)
+
+All body types now support `static=True`:
+
+```python
+# Before v1.1.0 — required internal API
+bid = world._physics.add_static_box(size=(10, 0.5, 3), ...)
+
+# v1.1.0 — clean public API
+wall  = world.add_box(size=(10, 0.5, 3), position=(0, 5, 1.5), static=True)
+post  = world.add_capsule(radius=0.1, half_length=2.0, position=(3, 0, 2),
+                          static=True)
+shelf = world.add_static_box(size=(4, 0.2, 0.1), position=(0, 0, 2))
+```
+
+Static bodies have zero mass, are never moved by physics, and are automatically
+excluded from the outer collision loop — they don't slow down the simulation.
+
+---
+
+## Runtime physics properties (v1.1.0)
+
+`friction` and `restitution` can now be changed after creation:
+
+```python
+ice = world.add_box(size=(10, 10, 0.1), position=(0, 0, 0), static=True)
+ice.friction = 0.02       # near-frictionless
+
+rubber = world.add_sphere(radius=0.5, position=(0, 0, 3), mass=1)
+rubber.restitution = 0.95  # very bouncy
+```
+
+---
+
+## Per-body velocity damping (v1.1.0)
+
+Instead of manually zeroing velocity each frame, use damping properties:
+
+```python
+car = world.add_box(size=(2, 1, 0.5), position=(0, 0, 0.3), mass=20)
+
+# Applied automatically every world.step()
+car.linear_damping  = 1.0   # removes 63% of speed per second
+car.angular_damping = 3.0   # removes 95% of spin per second
+```
+
+The formula is `v_new = v * exp(-damping * dt)`, which is **FPS-independent**.
+
+---
+
+## Raycast (v1.1.0)
+
+Find which body a ray hits:
+
+```python
+# Cast downward from above to detect what's below
+hit = world.raycast(origin=(0, 0, 10), direction=(0, 0, -1), max_dist=20)
+if hit:
+    print(f"Hit: {hit.body.name}")
+    print(f"Point: {hit.point}")
+    print(f"Normal: {hit.normal}")
+    print(f"Distance: {hit.distance:.2f} m")
+```
+
+Supported shapes: sphere, box (OBB), capsule (approximate).
+
+---
+
 ## Next: [Rendering tutorial](02_rendering.md)

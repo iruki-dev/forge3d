@@ -1,4 +1,30 @@
-# forge3d 데모 프로그램
+# pyforge3d 데모 프로그램
+
+---
+
+## 데모 (신규) — Cascade Gauntlet 종합 기능 쇼케이스
+
+pyforge3d의 주요 기능을 한 번에 보여주는 3장면 HQ 렌더링 데모.
+
+```bash
+python demos/cascade_gauntlet.py                   # 기본 (480×320, spp=1)
+python demos/cascade_gauntlet.py --hq              # 640×400, spp=2
+python demos/cascade_gauntlet.py --ultra           # 800×500, spp=4
+python demos/cascade_gauntlet.py --scene 1        # 특정 장면만 (1/2/3)
+python demos/cascade_gauntlet.py -o my_demo.mp4   # 출력 파일명 지정
+```
+
+| 장면 | 내용 | 주요 기능 |
+|------|------|-----------|
+| 핀볼 아레나 | spring 범퍼, hinge 패들, 트리거존 득점 | spring/hinge joint, CollisionLayer, TriggerZone, on_collision_begin, CollisionHandler |
+| 철거의 탑 | 진자 쇄도 공 + 6층 타워 붕괴 | distance joint, weld/release, capsule chain, World.save/load, is_sleeping |
+| 지형 슬라이드 | heightfield 지형 위 PBR 구 슬라이드 | add_terrain, PBR Material, StateRecorder, apply_torque, teleport, on_collision_stay |
+
+결과: `cascade_gauntlet.mp4` (약 24초, 24fps)
+
+---
+
+## 이전 데모 (archive/demos/ 로 이동됨)
 
 세 가지 데모를 바로 실행할 수 있습니다.
 

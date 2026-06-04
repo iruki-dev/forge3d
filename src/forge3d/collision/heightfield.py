@@ -24,11 +24,13 @@ class Heightfield:
             the terrain height (z) at grid cell (r, c).
         cell_size: World-space size of each grid cell (m).
         origin: World-space position of the (0, 0) grid corner (x, y, z).
+        material_id: Material identifier for rendering (default: "ground").
     """
 
     heights: np.ndarray    # (rows, cols) float32
     cell_size: float
     origin: np.ndarray     # (3,) float64 — world position of grid corner
+    material_id: str = "ground"
 
     @property
     def rows(self) -> int:

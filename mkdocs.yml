@@ -98,6 +98,8 @@ nav:
     - Backend (NumPy / JAX): api/backends.md
   - Contributing: contributing.md
   - Changelog: changelog.md
+  - What's New:
+    - v1.1.0 — Game-Ready: whats_new_v1_1.md
 
 extra:
   social:

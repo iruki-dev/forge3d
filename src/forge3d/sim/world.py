@@ -88,6 +88,8 @@ class PhysicsWorld:
         self._ignored_pairs: set[frozenset[int]] = set()
         # Heightfield terrain list
         self._heightfields: list[Any] = []
+        # Cached contacts from last step (reused by facade._dispatch_events)
+        self._last_contacts: list[Any] = []
         # Island sleeping — count of consecutive steps below threshold
         self._sleep_counters: dict[int, int] = {}  # body_id → sleep_frames
         # Sleeping parameters
@@ -203,13 +205,15 @@ class PhysicsWorld:
         name: str = "",
         restitution: float = 0.3,
         friction: float = 0.5,
+        static: bool = False,
     ) -> int:
         """Add a capsule (cylinder + hemispherical caps), axis = body z. Returns body_id."""
-        m = float(mass)
+        is_static = static or (mass == 0.0)
+        m = 0.0 if is_static else float(mass)
         r = float(radius)
         half_len = float(half_length)
         q = np.asarray(quat, dtype=float) if quat is not None else np.array([1.0, 0.0, 0.0, 0.0])
-        I_cap = capsule_inertia(m, r, half_len)
+        I_cap = capsule_inertia(m, r, half_len) if not is_static else None
         body = _Body(
             body_id=self._next_id,
             name=name or f"capsule_{self._next_id}",
@@ -218,14 +222,14 @@ class PhysicsWorld:
             vel=np.zeros(3),
             omega=np.zeros(3),
             mass=m,
-            static=False,
+            static=is_static,
             restitution=float(restitution),
             friction=float(friction),
             shape_type="capsule",
             shape_params={"radius": r, "half_length": half_len},
             material_id=material,
             inertia_local=I_cap,
-            inertia_inv_local=np.diag(1.0 / np.diag(I_cap)),
+            inertia_inv_local=np.diag(1.0 / np.diag(I_cap)) if I_cap is not None else None,
         )
         self._append_body(body)
         self._next_id += 1
@@ -452,7 +456,7 @@ class PhysicsWorld:
         # Step 2: narrow-phase collision detection
         contacts = detect_contacts(self._bodies, self._ignored_pairs if self._ignored_pairs else None)
 
-        # Heightfield contacts
+        # Heightfield contacts (dynamic bodies only — static bodies skip automatically)
         if self._heightfields:
             from forge3d.collision.heightfield import box_vs_heightfield, sphere_vs_heightfield
             for idx, body in enumerate(self._bodies):
@@ -484,6 +488,9 @@ class PhysicsWorld:
         # Keep id→index cache consistent after list replacement
         self._rebuild_index()
 
+        # Cache contacts for reuse by World._dispatch_events (avoids double detection)
+        self._last_contacts = contacts
+
         # Step 6: update sleep counters
         if self._sleeping_enabled:
             self._update_sleep_counters(contacts)
@@ -506,6 +513,7 @@ class PhysicsWorld:
             CameraSnapshot,
             LightSnapshot,
             SceneSnapshot,
+            TerrainSnapshot,
             Transform,
         )
 
@@ -555,8 +563,20 @@ class PhysicsWorld:
             )
         ]
 
+        # Terrain snapshots (heightfields)
+        terrain_snaps = [
+            TerrainSnapshot(
+                heights=hf.heights.copy(),
+                cell_size=float(hf.cell_size),
+                origin=hf.origin.copy(),
+                material_id=getattr(hf, "material_id", "ground"),
+            )
+            for hf in self._heightfields
+        ]
+
         return SceneSnapshot(
             bodies=body_snaps,
+            terrains=terrain_snaps,
             camera=cam,
             lights=lights,
             materials=dict(BUILTIN_MATERIALS),

@@ -2,6 +2,10 @@
 
 A handle to a single rigid body in the simulation. Returned by every `World.add_*` call.
 
+---
+
+## Class reference
+
 ::: forge3d.facade.Body
     options:
       members:
@@ -11,7 +15,14 @@ A handle to a single rigid body in the simulation. Returned by every `World.add_
         - angular_velocity
         - name
         - is_static
+        - is_sleeping
         - mass
+        - friction
+        - restitution
+        - linear_damping
+        - angular_damping
+        - collision_layer
+        - collision_mask
         - apply_force
         - apply_torque
         - set_position
@@ -21,16 +32,62 @@ A handle to a single rigid body in the simulation. Returned by every `World.add_
 
 ---
 
-## Examples
+## Usage examples
+
+### Reading state
 
 ```python
-world = f3d.World()
 box = world.add_box(size=(1,1,1), position=(0,0,5), mass=2.0)
+print(box.position)     # array([0., 0., 5.])
+print(box.mass)         # 2.0
+print(box.is_static)    # False
+print(box.is_sleeping)  # False
+```
 
-print(box.position)           # [0. 0. 5.]
-print(box.mass)               # 2.0
+### Runtime setters (v1.1.0)
 
-box.apply_force((10, 0, 0))   # 10 N in +x for the next step
+```python
+# Change physics material at runtime
+box.friction    = 0.05   # ice-slippery (default: 0.5)
+box.restitution = 0.95   # very bouncy  (default: 0.3)
+```
+
+### Velocity damping (v1.1.0)
+
+```python
+# Exponential decay — dt-corrected, FPS-independent
+box.linear_damping  = 1.0  # removes 63% of speed per second
+box.angular_damping = 2.0  # removes 86% of spin per second
+
+# Applied automatically every world.step()
+```
+
+| `linear_damping` | Speed remaining after 1 s |
+|-----------------|--------------------------|
+| 0.0 | 100% (no damping) |
+| 0.5 | 61% |
+| 1.0 | 37% |
+| 2.0 | 14% |
+
+### Applying forces
+
+```python
+box.apply_force((0, 0, 50))    # 50 N upward (reset each step)
+box.apply_torque((0, 0, 10))   # 10 N·m yaw torque
+
 world.step(dt=1/60)
-print(box.velocity)           # v_x ≈ 0.083 m/s
+print(box.velocity)
+```
+
+### Collision layers
+
+```python
+from forge3d import CollisionLayer
+
+player = world.add_sphere(radius=0.5, position=(0,0,3), mass=1)
+player.collision_layer = CollisionLayer.PLAYER
+player.collision_mask  = CollisionLayer.ALL
+
+ghost = world.add_sphere(radius=1.0, position=(5,0,0), mass=0.1)
+ghost.collision_layer = CollisionLayer.NONE   # no collision
 ```
