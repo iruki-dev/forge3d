@@ -32,6 +32,7 @@ from forge3d.input import EMPTY_INPUT, Input, InputBuilder
 from forge3d.render.realtime.meshes import (
     grid_lines,
     heightfield_mesh,
+    mesh_from_data,
     unit_box,
     unit_sphere,
 )
@@ -301,6 +302,7 @@ class WindowedRealtimeRenderer:
         self._white_tex: Any = None
         self._vaos: dict[str, Any] = {}
         self._terrain_vaos: dict[Any, tuple] = {}
+        self._mesh_vaos: dict[int, tuple] = {}   # mesh_id → (solid_t, shadow_t)
         self._grid_vao: Any = None
         self._grid_n: int = 0
         self._rect_vbo: Any = None
@@ -471,6 +473,30 @@ class WindowedRealtimeRenderer:
             self._terrain_vaos[key] = (vao, len(idx))
         return self._terrain_vaos[key]
 
+    # ── Mesh VAO helpers ───────────────────────────────────────────────────────
+
+    def _get_mesh_vaos(self, mesh_data: Any) -> tuple[tuple, tuple]:
+        """Return (solid_vao_tuple, shadow_vao_tuple) for a custom mesh, cached."""
+        mid = mesh_data.mesh_id
+        if mid not in self._mesh_vaos:
+            verts, idx = mesh_from_data(mesh_data)
+            ctx = self._ctx
+            vbo_main   = ctx.buffer(verts.tobytes())
+            ibo        = ctx.buffer(idx.tobytes())
+            pos_only   = np.ascontiguousarray(verts.reshape(-1, 8)[:, :3])
+            vbo_shadow = ctx.buffer(pos_only.tobytes())
+            main_vao = ctx.vertex_array(
+                self._main_prog,
+                [(vbo_main, "3f 3f 2f", "in_position", "in_normal", "in_uv")],
+                index_buffer=ibo,
+            )
+            shadow_vao = ctx.vertex_array(
+                self._shadow_prog, [(vbo_shadow, "3f", "in_position")], index_buffer=ibo
+            )
+            n = len(idx)
+            self._mesh_vaos[mid] = ((main_vao, n), (shadow_vao, n))
+        return self._mesh_vaos[mid]
+
     # ── Shape helpers ──────────────────────────────────────────────────────────
 
     @staticmethod
@@ -590,6 +616,21 @@ class WindowedRealtimeRenderer:
         for body in snapshot.bodies:
             if body.name in self._excluded_names:
                 continue
+            # ── Custom mesh shape ──────────────────────────────────────────────
+            if body.shape_type == "mesh":
+                mesh_data = body.shape_params.get("mesh_data")
+                if mesh_data is None:
+                    continue
+                _, shadow_t = self._get_mesh_vaos(mesh_data)
+                svao, sn = shadow_t
+                M = self._model_matrix(body, np.ones(3, np.float32))
+                with contextlib.suppress(KeyError):
+                    self._shadow_prog["u_light_MVP"].write(
+                        _col_major((light_VP @ M).astype(np.float32))
+                    )
+                svao.render(mode=ctx.TRIANGLES, vertices=sn)
+                continue
+            # ── Primitive shapes ───────────────────────────────────────────────
             sk = self._vao_key(body) + "_shadow"
             if sk not in self._vaos:
                 continue
@@ -632,6 +673,36 @@ class WindowedRealtimeRenderer:
         for body in snapshot.bodies:
             if body.name in self._excluded_names:
                 continue
+
+            # ── Custom mesh shape ──────────────────────────────────────────────
+            if body.shape_type == "mesh":
+                mesh_data = body.shape_params.get("mesh_data")
+                if mesh_data is None:
+                    continue
+                solid_t, _ = self._get_mesh_vaos(mesh_data)
+                vao, n_idx = solid_t
+                scale = np.ones(3, np.float32)
+                M   = self._model_matrix(body, scale)
+                MVP = (P @ V @ M).astype(np.float32)
+                NM  = body.transform.rotation.astype(np.float32)
+                lM  = (light_VP @ M).astype(np.float32)
+                mat = mat_lookup.get(body.material_id) or mat_lookup.get("default")
+                color = np.array(mat.color if mat else (0.75, 0.75, 0.75), np.float32)
+                try:
+                    prog["u_MVP"].write(_col_major(MVP))
+                    prog["u_M"].write(_col_major(M))
+                    prog["u_NM"].write(NM.T.tobytes())
+                    prog["u_light_MVP"].write(_col_major(lM))
+                    prog["u_mat_color"].write(color.tobytes())
+                    prog["u_roughness"].value = float(mat.roughness) if mat else 0.5
+                    prog["u_metallic"].value  = float(mat.metallic)  if mat else 0.0
+                    prog["u_has_texture"].value = 0
+                except KeyError:
+                    pass
+                vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
+                continue
+
+            # ── Primitive shapes ───────────────────────────────────────────────
             vk = self._vao_key(body)
             if vk not in self._vaos:
                 continue
@@ -846,6 +917,11 @@ class WindowedRealtimeRenderer:
             for v in self._terrain_vaos.values():
                 if isinstance(v, tuple) and hasattr(v[0], "release"):
                     v[0].release()
+            for solid_t, shadow_t in self._mesh_vaos.values():
+                if hasattr(solid_t[0], "release"):
+                    solid_t[0].release()
+                if hasattr(shadow_t[0], "release"):
+                    shadow_t[0].release()
             if self._grid_vao:
                 self._grid_vao.release()
             if self._rect_vao:
