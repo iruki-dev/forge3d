@@ -40,35 +40,45 @@ while viewer.is_open:
     viewer.draw()
 ```
 
-### With pygame (via InputBuilder, v1.1.0)
+### With a custom window (advanced)
 
-`InputBuilder.feed_pygame_event()` bridges pygame events into the standard `f3d.Input` / `f3d.Key` system, so you can use forge3d's input API in pygame-based games:
+`InputBuilder` exposes low-level callback methods that any windowing library
+can drive.  For example, wiring up a raw glfw window manually:
 
 ```python
-import pygame
+import glfw
 import forge3d as f3d
 
 builder = f3d.InputBuilder()
 
-clock = pygame.time.Clock()
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            break
-        builder.feed_pygame_event(event)   # translate to f3d events
+def key_cb(win, key, sc, action, mods):
+    from forge3d.render.realtime.window_renderer import _glfw_key_name
+    name = _glfw_key_name(key, sc)
+    if name:
+        if action in (glfw.PRESS, glfw.REPEAT):
+            builder.on_key_down(name)
+        elif action == glfw.RELEASE:
+            builder.on_key_up(name)
 
+glfw.set_key_callback(window, key_cb)
+
+while not glfw.window_should_close(window):
+    glfw.poll_events()
     inp = builder.build()
 
-    # Now use the standard forge3d input API
     if inp.key_held(f3d.Key.W):
         car.apply_force(forward * 500)
-    if inp.key_pressed(f3d.Key.R):
-        world.teleport(car, start_pos)
 
     world.step()
     builder.end_frame()
-    clock.tick(60)
 ```
+
+!!! note "pygame bridge (deprecated)"
+    `InputBuilder.feed_pygame_event(event)` is kept for backward compatibility
+    with code that still uses pygame as a standalone window.
+    It is a no-op when pygame is not installed.
+    New code should use `f3d.Viewer` directly — glfw callbacks are wired up
+    automatically.
 
 ### Key constants reference
 

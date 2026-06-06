@@ -181,11 +181,7 @@ class App:
         viewer.close()
 
     def __repr__(self) -> str:
-        return (
-            f"App(title={self._title!r}, "
-            f"{self._width}×{self._height}, "
-            f"fps={self._fps:.0f})"
-        )
+        return f"App(title={self._title!r}, {self._width}×{self._height}, fps={self._fps:.0f})"
 
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
@@ -200,17 +196,20 @@ def _call_flexible(func: Callable, *positional: Any) -> Any:
     """
     try:
         sig = inspect.signature(func)
-        n = len([
-            p for p in sig.parameters.values()
-            if p.kind in (
-                inspect.Parameter.POSITIONAL_ONLY,
-                inspect.Parameter.POSITIONAL_OR_KEYWORD,
-            )
-        ])
+        n = len(
+            [
+                p
+                for p in sig.parameters.values()
+                if p.kind
+                in (
+                    inspect.Parameter.POSITIONAL_ONLY,
+                    inspect.Parameter.POSITIONAL_OR_KEYWORD,
+                )
+            ]
+        )
         # If a parameter has VAR_POSITIONAL (*args), pass everything
         has_var_positional = any(
-            p.kind == inspect.Parameter.VAR_POSITIONAL
-            for p in sig.parameters.values()
+            p.kind == inspect.Parameter.VAR_POSITIONAL for p in sig.parameters.values()
         )
         if has_var_positional:
             return func(*positional)

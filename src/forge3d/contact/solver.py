@@ -71,18 +71,19 @@ def solve_contacts(
     # 선형 속도만 있는(각 운동량 무시 가능) 단순 씬에서 Rust 가속 사용.
     # spring_k, restitution, angular dynamics 포함 씬은 Python 경로 유지.
     from forge3d.backend import USE_RUST_CORE
-    _rust = (_use_rust if _use_rust is not None else USE_RUST_CORE)
+
+    _rust = _use_rust if _use_rust is not None else USE_RUST_CORE
     if _rust and spring_k == 0.0 and all(b.inertia_local is None for b in bodies if not b.static):
         return _solve_contacts_rust(bodies, contacts, dt)
 
-    vels:   list[np.ndarray] = [b.vel.copy()   if not b.static else _ZERO3.copy() for b in bodies]
+    vels: list[np.ndarray] = [b.vel.copy() if not b.static else _ZERO3.copy() for b in bodies]
     omegas: list[np.ndarray] = [b.omega.copy() if not b.static else _ZERO3.copy() for b in bodies]
-    poss:   list[np.ndarray] = [b.pos.copy() for b in bodies]
+    poss: list[np.ndarray] = [b.pos.copy() for b in bodies]
 
     I_inv: list[np.ndarray] = [_inv_inertia_world(b) for b in bodies]
 
     nc = len(contacts)
-    lambda_n  = np.zeros(nc)
+    lambda_n = np.zeros(nc)
     lambda_t1 = np.zeros(nc)
     lambda_t2 = np.zeros(nc)
 
@@ -95,34 +96,61 @@ def solve_contacts(
         if v_n_pre < -RESTITUTION_THRESHOLD:
             ia, ib = c.body_a_idx, c.body_b_idx
             b_static = ib < 0 or bodies[ib].static
-            e = bodies[ia].restitution if b_static else 0.5 * (bodies[ia].restitution + bodies[ib].restitution)
+            e = (
+                bodies[ia].restitution
+                if b_static
+                else 0.5 * (bodies[ia].restitution + bodies[ib].restitution)
+            )
             v_n_target[ci] = -e * v_n_pre
 
     # Pre-computed per-contact constants
-    c_ia     = [c.body_a_idx for c in contacts]
-    c_ib     = [c.body_b_idx for c in contacts]
+    c_ia = [c.body_a_idx for c in contacts]
+    c_ib = [c.body_b_idx for c in contacts]
     c_static = [ib < 0 or bodies[ib].static for ib in c_ib]
     c_inv_ma = [0.0 if bodies[ia].static else 1.0 / bodies[ia].mass for ia in c_ia]
-    c_inv_mb = [0.0 if (bs or ib < 0) else 1.0 / bodies[ib].mass for ib, bs in zip(c_ib, c_static)]
-    c_I_a    = [I_inv[ia] for ia in c_ia]
-    c_I_b    = [I_inv[ib] if not bs and ib >= 0 else _ZERO33 for ib, bs in zip(c_ib, c_static)]
-    c_r_a    = [c.pos - bodies[ia].pos for c, ia in zip(contacts, c_ia)]
-    c_r_b    = [c.pos - bodies[ib].pos if not bs and ib >= 0 else _ZERO3 for c, ib, bs in zip(contacts, c_ib, c_static)]
-    c_K_n    = [_eff_K(ra, rb, c.normal, ima, imb, Ia, Ib)
-                for c, ra, rb, ima, imb, Ia, Ib in zip(contacts, c_r_a, c_r_b, c_inv_ma, c_inv_mb, c_I_a, c_I_b)]
-    c_K_t    = [(_eff_K(ra, rb, t1, ima, imb, Ia, Ib), _eff_K(ra, rb, t2, ima, imb, Ia, Ib))
-                for (t1, t2), ra, rb, ima, imb, Ia, Ib in zip(tangents, c_r_a, c_r_b, c_inv_ma, c_inv_mb, c_I_a, c_I_b)]
-    c_mu     = [bodies[ia].friction if bs else 0.5 * (bodies[ia].friction + bodies[ib].friction)
-                for ia, ib, bs in zip(c_ia, c_ib, c_static)]
+    c_inv_mb = [
+        0.0 if (bs or ib < 0) else 1.0 / bodies[ib].mass
+        for ib, bs in zip(c_ib, c_static, strict=False)
+    ]
+    c_I_a = [I_inv[ia] for ia in c_ia]
+    c_I_b = [
+        I_inv[ib] if not bs and ib >= 0 else _ZERO33 for ib, bs in zip(c_ib, c_static, strict=False)
+    ]
+    c_r_a = [c.pos - bodies[ia].pos for c, ia in zip(contacts, c_ia, strict=False)]
+    c_r_b = [
+        c.pos - bodies[ib].pos if not bs and ib >= 0 else _ZERO3
+        for c, ib, bs in zip(contacts, c_ib, c_static, strict=False)
+    ]
+    c_K_n = [
+        _eff_K(ra, rb, c.normal, ima, imb, Ia, Ib)
+        for c, ra, rb, ima, imb, Ia, Ib in zip(
+            contacts, c_r_a, c_r_b, c_inv_ma, c_inv_mb, c_I_a, c_I_b, strict=False
+        )
+    ]
+    c_K_t = [
+        (_eff_K(ra, rb, t1, ima, imb, Ia, Ib), _eff_K(ra, rb, t2, ima, imb, Ia, Ib))
+        for (t1, t2), ra, rb, ima, imb, Ia, Ib in zip(
+            tangents, c_r_a, c_r_b, c_inv_ma, c_inv_mb, c_I_a, c_I_b, strict=False
+        )
+    ]
+    c_mu = [
+        bodies[ia].friction if bs else 0.5 * (bodies[ia].friction + bodies[ib].friction)
+        for ia, ib, bs in zip(c_ia, c_ib, c_static, strict=False)
+    ]
 
     spring_pairs: set[tuple[int, int]] = set()
 
     for _iteration in range(N_ITER):
         for ci, c in enumerate(contacts):
-            ia = c_ia[ci]; ib = c_ib[ci]; b_static = c_static[ci]
-            inv_ma = c_inv_ma[ci]; inv_mb = c_inv_mb[ci]
-            I_a = c_I_a[ci]; I_b = c_I_b[ci]
-            r_a = c_r_a[ci]; r_b = c_r_b[ci]
+            ia = c_ia[ci]
+            ib = c_ib[ci]
+            b_static = c_static[ci]
+            inv_ma = c_inv_ma[ci]
+            inv_mb = c_inv_mb[ci]
+            I_a = c_I_a[ci]
+            I_b = c_I_b[ci]
+            r_a = c_r_a[ci]
+            r_b = c_r_b[ci]
             K_n = c_K_n[ci]
             if K_n < 1e-12:
                 continue
@@ -140,7 +168,9 @@ def solve_contacts(
             actual_n = lambda_n_new - lambda_n[ci]
             lambda_n[ci] = lambda_n_new
             if abs(actual_n) > 1e-14:
-                _apply_impulse(ia, ib, actual_n * c.normal, r_a, r_b, inv_ma, inv_mb, I_a, I_b, vels, omegas)
+                _apply_impulse(
+                    ia, ib, actual_n * c.normal, r_a, r_b, inv_ma, inv_mb, I_a, I_b, vels, omegas
+                )
 
             mu = c_mu[ci]
             if mu < 1e-12 or lambda_n[ci] < 1e-12:
@@ -152,7 +182,7 @@ def solve_contacts(
                 if K_t < 1e-12:
                     continue
                 v_a_c = vels[ia] + _cross3(omegas[ia], r_a)
-                v_b_c = (vels[ib] + _cross3(omegas[ib], r_b) if not b_static and ib >= 0 else _ZERO3)
+                v_b_c = vels[ib] + _cross3(omegas[ib], r_b) if not b_static and ib >= 0 else _ZERO3
                 v_t = float(np.dot(v_a_c - v_b_c, t_vec))
                 lt_max = mu * lambda_n[ci]
                 raw = lt[idx] + (-v_t / K_t)
@@ -160,11 +190,14 @@ def solve_contacts(
                 actual_t = lt_new - lt[idx]
                 lt[idx] = lt_new
                 if abs(actual_t) > 1e-14:
-                    _apply_impulse(ia, ib, actual_t * t_vec, r_a, r_b, inv_ma, inv_mb, I_a, I_b, vels, omegas)
+                    _apply_impulse(
+                        ia, ib, actual_t * t_vec, r_a, r_b, inv_ma, inv_mb, I_a, I_b, vels, omegas
+                    )
 
     # Baumgarte position correction
     for c in contacts:
-        ia = c.body_a_idx; ib = c.body_b_idx
+        ia = c.body_a_idx
+        ib = c.body_b_idx
         b_static = ib < 0 or bodies[ib].static
         excess = max(0.0, c.depth - PENETRATION_SLOP)
         if excess < 1e-6:
@@ -191,11 +224,14 @@ def solve_contacts(
 
 def _bcross(a: np.ndarray, b: np.ndarray) -> np.ndarray:
     """Vectorized cross product for (C, 3) arrays.  Avoids np.cross overhead."""
-    return np.stack([
-        a[:, 1]*b[:, 2] - a[:, 2]*b[:, 1],
-        a[:, 2]*b[:, 0] - a[:, 0]*b[:, 2],
-        a[:, 0]*b[:, 1] - a[:, 1]*b[:, 0],
-    ], axis=1)
+    return np.stack(
+        [
+            a[:, 1] * b[:, 2] - a[:, 2] * b[:, 1],
+            a[:, 2] * b[:, 0] - a[:, 0] * b[:, 2],
+            a[:, 0] * b[:, 1] - a[:, 1] * b[:, 0],
+        ],
+        axis=1,
+    )
 
 
 def _batch_tangent_pairs(
@@ -204,9 +240,11 @@ def _batch_tangent_pairs(
     """Stable tangent frames for all contacts at once.  Returns (t1, t2) each (C, 3)."""
     C = len(normals)
     # Choose reference vector not parallel to n
-    ref = np.where(np.abs(normals[:, 0:1]) < 0.9,
-                   np.broadcast_to([1., 0., 0.], (C, 3)),
-                   np.broadcast_to([0., 1., 0.], (C, 3))).copy()
+    ref = np.where(
+        np.abs(normals[:, 0:1]) < 0.9,
+        np.broadcast_to([1.0, 0.0, 0.0], (C, 3)),
+        np.broadcast_to([0.0, 1.0, 0.0], (C, 3)),
+    ).copy()
     t1 = _bcross(normals, ref)
     t1_len = np.linalg.norm(t1, axis=1, keepdims=True)
     t1 /= np.where(t1_len > 1e-10, t1_len, 1.0)
@@ -231,13 +269,13 @@ def _batch_apply(
 ) -> None:
     """Apply impulse J (C, 3) to all contact body pairs via scatter-add."""
     # Body a
-    np.add.at(vels,   ia, inv_ma[:, None] * J)
+    np.add.at(vels, ia, inv_ma[:, None] * J)
     np.add.at(omegas, ia, np.einsum("cij,cj->ci", I_a, _bcross(r_a, J)))
     # Body b — dynamic only
     dyn_b = ~is_sb
     if dyn_b.any():
         J_b = -J[dyn_b]
-        np.add.at(vels,   ib[dyn_b], inv_mb[dyn_b, None] * J_b)
+        np.add.at(vels, ib[dyn_b], inv_mb[dyn_b, None] * J_b)
         np.add.at(omegas, ib[dyn_b], np.einsum("cij,cj->ci", I_b[dyn_b], _bcross(r_b[dyn_b], J_b)))
 
 
@@ -329,20 +367,14 @@ def _contact_v_n_fast(
 ) -> float:
     """Normal relative velocity using pre-computed r_a / r_b (no body lookup)."""
     v_a = vels[ia] + _cross3(omegas[ia], r_a)
-    if b_static:
-        v_rel = v_a
-    else:
-        v_rel = v_a - (vels[ib] + _cross3(omegas[ib], r_b))
+    v_rel = v_a if b_static else v_a - (vels[ib] + _cross3(omegas[ib], r_b))
     return float(np.dot(v_rel, normal))
 
 
 def _tangent_pair(normal: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Two orthonormal vectors in the contact plane."""
     n = np.asarray(normal, dtype=float)
-    if abs(n[0]) < 0.9:
-        v = np.array([1.0, 0.0, 0.0])
-    else:
-        v = np.array([0.0, 1.0, 0.0])
+    v = np.array([1.0, 0.0, 0.0]) if abs(n[0]) < 0.9 else np.array([0.0, 1.0, 0.0])
     t1 = _cross3(n, v)
     t1 /= np.linalg.norm(t1) + 1e-300
     t2 = _cross3(n, t1)

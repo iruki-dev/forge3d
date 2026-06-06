@@ -8,11 +8,11 @@
   [8]    alive     (1.0=활성, 0.0=비활성)
   [9]    _pad      (정렬용)
 """
+
 from __future__ import annotations
 
 import os
-import time
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -34,7 +34,7 @@ _USE_JAX = os.environ.get("ENGINE_BACKEND", "numpy") == "jax"
 
 def _update_particles_numpy(
     buf: np.ndarray,
-    emitter: "ParticleEmitter",
+    emitter: ParticleEmitter,
     origin: np.ndarray,
     dt: float,
     rng: np.random.Generator,
@@ -91,7 +91,7 @@ def _update_particles_numpy(
 
 def _update_particles_jax(
     buf: np.ndarray,
-    emitter: "ParticleEmitter",
+    emitter: ParticleEmitter,
     origin: np.ndarray,
     dt: float,
     rng: np.random.Generator,
@@ -175,8 +175,12 @@ class ParticleState:
 
         updater = _update_particles_jax if _USE_JAX else _update_particles_numpy
         self.buf = updater(
-            self.buf, self.emitter, np.asarray(origin, dtype=np.float32),
-            dt, self.rng, n_spawn,
+            self.buf,
+            self.emitter,
+            np.asarray(origin, dtype=np.float32),
+            dt,
+            self.rng,
+            n_spawn,
         )
 
     @property
@@ -200,7 +204,7 @@ class ParticleSystem(System):
     def __init__(self) -> None:
         self._states: dict[int, ParticleState] = {}
 
-    def update(self, ew: "EntityWorld", dt: float) -> None:
+    def update(self, ew: EntityWorld, dt: float) -> None:
         for e, tf, emitter in ew.query(Transform, ParticleEmitter):
             entity = int(e)
             transform: Transform = tf  # type: ignore[assignment]

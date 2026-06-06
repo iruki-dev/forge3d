@@ -7,8 +7,9 @@ and Pymunk's collision handler system.
 
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
@@ -65,10 +66,12 @@ class TriggerZone:
     Attributes:
         position: World-space centre (3,).
         half_extents: Box half-extents (3,).
+        enabled: When False, no enter/exit callbacks fire.
     """
 
     position: np.ndarray
     half_extents: np.ndarray
+    enabled: bool = True
     _prev_inside: set[int] = field(default_factory=set)
     _on_enter: list[Callable[[Any], None]] = field(default_factory=list)
     _on_exit: list[Callable[[Any], None]] = field(default_factory=list)
@@ -82,6 +85,19 @@ class TriggerZone:
         """Register a callback for when a body exits this zone."""
         self._on_exit.append(fn)
         return fn
+
+    def set_position(self, position: Any) -> None:
+        """Move the trigger zone centre to *position* (3,).
+
+        Bodies that were inside are re-checked on the next step.
+        """
+        self.position = np.asarray(position, dtype=float)
+        self._prev_inside.clear()
+
+    def set_half_extents(self, half_extents: Any) -> None:
+        """Resize the trigger zone.  Bodies re-checked on the next step."""
+        self.half_extents = np.asarray(half_extents, dtype=float)
+        self._prev_inside.clear()
 
 
 # Backward-compatible alias
@@ -103,6 +119,10 @@ class EventDispatcher:
         # Per-pair handlers — key = frozenset({id_a, id_b})
         self._pair_handlers: dict[frozenset[int], CollisionHandler] = {}
 
+        # Per-body callbacks — body_id → list of (other: Body, event) callbacks
+        self._body_begin: dict[int, list[Callable]] = {}
+        self._body_end: dict[int, list[Callable]] = {}
+
         # Contact state tracking — set of frozenset({id_a, id_b})
         self._prev_contacts: set[frozenset[int]] = set()
 
@@ -122,6 +142,12 @@ class EventDispatcher:
 
     def add_end_listener(self, fn: CollisionCallback) -> None:
         self._on_end.append(fn)
+
+    def add_body_begin_listener(self, body_id: int, fn: Callable) -> None:
+        self._body_begin.setdefault(body_id, []).append(fn)
+
+    def add_body_end_listener(self, body_id: int, fn: Callable) -> None:
+        self._body_end.setdefault(body_id, []).append(fn)
 
     def add_pair_handler(self, id_a: int, id_b: int) -> CollisionHandler:
         key = frozenset({id_a, id_b})
@@ -178,6 +204,13 @@ class EventDispatcher:
             handler = self._pair_handlers.get(key)
             if handler and handler.on_begin:
                 handler.on_begin(event)
+            # Per-body callbacks
+            for bid, other_attr in (
+                (event.body_a._id, event.body_b),
+                (event.body_b._id, event.body_a),
+            ):
+                for fn in self._body_begin.get(bid, ()):
+                    fn(other_attr, event)
 
         for key in stayed:
             event = self._make_event(key, contact_map[key])
@@ -197,7 +230,8 @@ class EventDispatcher:
             if ba is None or bb is None:
                 continue
             event = CollisionEvent(
-                body_a=ba, body_b=bb,
+                body_a=ba,
+                body_b=bb,
                 contact_point=np.zeros(3),
                 normal=np.zeros(3),
                 impulse=0.0,
@@ -208,6 +242,10 @@ class EventDispatcher:
             handler = self._pair_handlers.get(key)
             if handler and handler.on_end:
                 handler.on_end(event)
+            # Per-body callbacks
+            for bid, other_attr in ((ba._id, bb), (bb._id, ba)):
+                for fn in self._body_end.get(bid, ()):
+                    fn(other_attr, event)
 
         self._prev_contacts = curr_contacts
 
@@ -224,12 +262,15 @@ class EventDispatcher:
         n = np.asarray(contact.normal, dtype=float)
         imp = float(getattr(contact, "impulse", 0.0))
         spd = float(getattr(contact, "relative_speed", 0.0))
-        return CollisionEvent(body_a=ba, body_b=bb, contact_point=cp,
-                               normal=n, impulse=imp, relative_speed=spd)
+        return CollisionEvent(
+            body_a=ba, body_b=bb, contact_point=cp, normal=n, impulse=imp, relative_speed=spd
+        )
 
     def _dispatch_triggers(self) -> None:
         """Check which bodies are inside each trigger zone (AABB check)."""
         for zone in self._triggers:
+            if not zone.enabled:
+                continue
             curr_inside: set[int] = set()
             for bid, body in self._bodies.items():
                 try:
@@ -262,6 +303,7 @@ class EventDispatcher:
 
     def unregister_body(self, body_id: int) -> None:
         self._bodies.pop(body_id, None)
-        # Remove from trigger zone tracking
+        self._body_begin.pop(body_id, None)
+        self._body_end.pop(body_id, None)
         for zone in self._triggers:
             zone._prev_inside.discard(body_id)

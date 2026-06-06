@@ -27,10 +27,12 @@ class Heightfield:
         material_id: Material identifier for rendering (default: "ground").
     """
 
-    heights: np.ndarray    # (rows, cols) float32
+    heights: np.ndarray  # (rows, cols) float32
     cell_size: float
-    origin: np.ndarray     # (3,) float64 — world position of grid corner
+    origin: np.ndarray  # (3,) float64 — world position of grid corner
     material_id: str = "ground"
+    friction: float = 0.8
+    collision_layer: int = 0x0008  # CollisionLayer.TERRAIN = 1 << 3
 
     @property
     def rows(self) -> int:
@@ -79,10 +81,7 @@ class Heightfield:
         h11 = float(self.heights[r1, c1])
 
         return (
-            h00 * (1 - tx) * (1 - ty)
-            + h01 * tx * (1 - ty)
-            + h10 * (1 - tx) * ty
-            + h11 * tx * ty
+            h00 * (1 - tx) * (1 - ty) + h01 * tx * (1 - ty) + h10 * (1 - tx) * ty + h11 * tx * ty
         ) + float(self.origin[2])
 
     def normal_at(self, x: float, y: float) -> np.ndarray:
@@ -104,8 +103,8 @@ class Heightfield:
 def sphere_vs_heightfield(
     sphere_body: Any,
     sphere_idx: int,
-    hf: "Heightfield",
-) -> list["ContactPoint"]:
+    hf: Heightfield,
+) -> list[ContactPoint]:
     """Collision between a sphere and a heightfield terrain.
 
     Args:
@@ -134,9 +133,9 @@ def sphere_vs_heightfield(
     return [
         ContactPoint(
             body_a_idx=sphere_idx,
-            body_b_idx=-1,           # static terrain
+            body_b_idx=-1,  # static terrain
             pos=contact_pos,
-            normal=normal,           # pushes sphere up
+            normal=normal,  # pushes sphere up
             depth=depth,
         )
     ]
@@ -145,8 +144,8 @@ def sphere_vs_heightfield(
 def box_vs_heightfield(
     box_body: Any,
     box_idx: int,
-    hf: "Heightfield",
-) -> list["ContactPoint"]:
+    hf: Heightfield,
+) -> list[ContactPoint]:
     """Collision between a box and a heightfield terrain.
 
     Approximates the box as 8 corner point samples against the heightfield.
@@ -169,8 +168,7 @@ def box_vs_heightfield(
     # 8 corners of the box in world frame
     sx = [-1, 1]
     corners_local = [
-        np.array([x * he[0], y * he[1], z * he[2]])
-        for x in sx for y in sx for z in sx
+        np.array([x * he[0], y * he[1], z * he[2]]) for x in sx for y in sx for z in sx
     ]
     corners_world = [pos + R @ c for c in corners_local]
 

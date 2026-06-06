@@ -78,7 +78,7 @@ while viewer.is_open:
     viewer.draw()   # terrain visible as shaded mesh with shadows ✅
 ```
 
-Both `RealtimeRenderer` (headless/Xvfb) and `WindowRenderer` (pygame) support terrain rendering.
+Both `RealtimeRenderer` (headless/Xvfb) and `WindowRenderer` (glfw) support terrain rendering.
 
 ---
 
@@ -124,22 +124,22 @@ Returns a `RayHit(body, point, normal, distance)` namedtuple or `None`.
 
 ---
 
-## 🎮 InputBuilder + pygame Bridge
+## 🎮 InputBuilder — custom window bridge
 
-Use forge3d's `Input`/`Key` system in pygame-based games:
+`InputBuilder` exposes `on_key_down`, `on_key_up`, `on_mouse_move`, `on_mouse_down`, `on_mouse_up`, and `on_scroll` callbacks so any windowing library can drive the standard `f3d.Input` / `f3d.Key` system:
 
 ```python
 import forge3d as f3d
 
 builder = f3d.InputBuilder()
 
-while running:
-    for event in pygame.event.get():
-        builder.feed_pygame_event(event)   # bridges pygame → f3d
+# Wire callbacks to your windowing system (glfw, sdl2, etc.)
+# glfw.set_key_callback(win, lambda w, k, s, a, m: ...)
 
+while running:
+    # feed events via builder.on_key_down(name), etc.
     inp = builder.build()
 
-    # Standard forge3d input API works in pygame games
     if inp.key_held(f3d.Key.W):
         car.apply_force(forward * 500)
     if inp.key_pressed(f3d.Key.R):
@@ -148,6 +148,10 @@ while running:
     world.step()
     builder.end_frame()
 ```
+
+!!! note "v2.1 변경"
+    v2.1부터 `WindowRenderer`의 윈도우 백엔드가 **pygame → glfw**로 교체됐습니다.
+    `feed_pygame_event()` 메서드는 pygame이 설치된 환경에서의 하위 호환을 위해 유지되지만, deprecated입니다.
 
 ---
 

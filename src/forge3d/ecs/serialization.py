@@ -1,4 +1,5 @@
 """ECS 씬 JSON 직렬화/역직렬화."""
+
 from __future__ import annotations
 
 import json
@@ -7,11 +8,11 @@ from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from forge3d.ecs.component import Collider, LightComponent, MeshRenderer, Rigidbody, Script
+from forge3d.ecs.component import Collider, LightComponent, MeshRenderer, Rigidbody
 from forge3d.ecs.transform import Transform
 
 if TYPE_CHECKING:
-    from forge3d.ecs.entity import Entity, EntityWorld
+    from forge3d.ecs.entity import EntityWorld
 
 _COMPONENT_REGISTRY: dict[str, type] = {
     "Transform": Transform,
@@ -22,7 +23,7 @@ _COMPONENT_REGISTRY: dict[str, type] = {
 }
 
 
-def save_scene(ew: "EntityWorld", path: str | Path) -> None:
+def save_scene(ew: EntityWorld, path: str | Path) -> None:
     """EntityWorld를 JSON 파일로 저장한다."""
     data: dict[str, Any] = {"entities": []}
     for e in ew.all_entities():
@@ -36,7 +37,7 @@ def save_scene(ew: "EntityWorld", path: str | Path) -> None:
     Path(path).write_text(json.dumps(data, indent=2))
 
 
-def load_scene(path: str | Path) -> "EntityWorld":
+def load_scene(path: str | Path) -> EntityWorld:
     """JSON 파일에서 EntityWorld를 재구성한다."""
     from forge3d.ecs.entity import EntityWorld
 
@@ -53,6 +54,7 @@ def load_scene(path: str | Path) -> "EntityWorld":
 
 
 # ── 직렬화 헬퍼 ──────────────────────────────────────────────────────────────
+
 
 def _serialize_comp(comp: Any) -> dict[str, Any]:
     out: dict[str, Any] = {}

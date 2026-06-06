@@ -2,6 +2,7 @@
 
 참고: Aristidou & Lasenby (2011), "FABRIK: A fast, iterative solver for the Inverse Kinematics problem"
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -40,10 +41,7 @@ class FABRIKSolver:
         root = positions[0].copy()
 
         # 링크 길이 계산
-        lengths = [
-            float(np.linalg.norm(positions[i + 1] - positions[i]))
-            for i in range(n - 1)
-        ]
+        lengths = [float(np.linalg.norm(positions[i + 1] - positions[i])) for i in range(n - 1)]
         total_length = sum(lengths)
 
         # 목표가 도달 불가능한 거리인지 확인

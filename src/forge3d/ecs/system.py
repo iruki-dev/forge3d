@@ -1,4 +1,5 @@
 """System ABC + 내장 시스템."""
+
 from __future__ import annotations
 
 import logging
@@ -11,7 +12,7 @@ from forge3d.ecs.component import LightComponent, MeshRenderer, Rigidbody, Scrip
 from forge3d.ecs.transform import Transform
 
 if TYPE_CHECKING:
-    from forge3d.ecs.entity import Entity, EntityWorld
+    from forge3d.ecs.entity import EntityWorld
 
 logger = logging.getLogger(__name__)
 
@@ -20,13 +21,13 @@ class System(ABC):
     """ECS 시스템 기반 클래스."""
 
     @abstractmethod
-    def update(self, ew: "EntityWorld", dt: float) -> None: ...
+    def update(self, ew: EntityWorld, dt: float) -> None: ...
 
 
 class ScriptSystem(System):
     """Script 컴포넌트의 on_start/on_update 콜백을 실행한다."""
 
-    def update(self, ew: "EntityWorld", dt: float) -> None:
+    def update(self, ew: EntityWorld, dt: float) -> None:
         for _e, script in ew.query(Script):
             s: Script = script  # type: ignore[assignment]
             if not s._started and s.on_start is not None:
@@ -57,7 +58,7 @@ class PhysicsSystem(System):
     def attach_world(self, world: Any) -> None:
         self._world = world
 
-    def update(self, ew: "EntityWorld", dt: float) -> None:
+    def update(self, ew: EntityWorld, dt: float) -> None:
         if self._world is None:
             return
 
@@ -95,13 +96,13 @@ class RenderSystem(System):
     def __init__(self) -> None:
         self.last_snapshot: Any = None
 
-    def update(self, ew: "EntityWorld", dt: float) -> None:
+    def update(self, ew: EntityWorld, dt: float) -> None:
         from forge3d.render.snapshot import (
-            BUILTIN_MATERIALS,
             BodySnapshot,
-            CameraSnapshot,
             LightSnapshot,
             SceneSnapshot,
+        )
+        from forge3d.render.snapshot import (
             Transform as RenderTransform,
         )
 
@@ -116,22 +117,26 @@ class RenderSystem(System):
             pos = wm[:3, 3]
             rot = wm[:3, :3]
             shape_type, shape_params = _mesh_id_to_shape(mesh_renderer.mesh_id)
-            bodies.append(BodySnapshot(
-                name=f"e{e}",
-                transform=RenderTransform(position=pos, rotation=rot),
-                shape_type=shape_type,
-                shape_params=shape_params,
-                material_id=mesh_renderer.material_id,
-            ))
+            bodies.append(
+                BodySnapshot(
+                    name=f"e{e}",
+                    transform=RenderTransform(position=pos, rotation=rot),
+                    shape_type=shape_type,
+                    shape_params=shape_params,
+                    material_id=mesh_renderer.material_id,
+                )
+            )
 
         for _e, tf, lc in ew.query(Transform, LightComponent):
             transform = tf  # type: ignore[assignment]
             light: LightComponent = lc  # type: ignore[assignment]
-            lights.append(LightSnapshot(
-                direction=np.asarray(light.direction),
-                color=np.asarray(light.color),
-                intensity=light.intensity,
-            ))
+            lights.append(
+                LightSnapshot(
+                    direction=np.asarray(light.direction),
+                    color=np.asarray(light.color),
+                    intensity=light.intensity,
+                )
+            )
 
         self.last_snapshot = SceneSnapshot(
             bodies=bodies,

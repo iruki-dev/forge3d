@@ -6,8 +6,8 @@ build-backend = "maturin"
 
 [project]
 name = "pyforge3d"
-version = "2.0.0"
-description = "Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation."
+version = "2.1.0"
+description = "Pure-Python 3D physics game engine — fast like native, beautiful like simulation."
 readme = "README.md"
 license = { file = "LICENSE" }
 requires-python = ">=3.12"
@@ -53,7 +53,8 @@ Changelog     = "https://github.com/iruki-dev/forge3d/blob/main/CHANGELOG.md"
 [project.optional-dependencies]
 render = [
     "moderngl>=5.10",
-    "pyglet>=2.0",
+    "glfw>=2.5",
+    "Pillow>=10.0",
     "imageio>=2.34",
     "imageio-ffmpeg>=0.5",
 ]
@@ -69,7 +70,8 @@ dev = [
     "mypy>=1.9",
     # render deps for tests
     "moderngl>=5.10",
-    "pyglet>=2.0",
+    "glfw>=2.5",
+    "Pillow>=10.0",
     "imageio>=2.34",
     "imageio-ffmpeg>=0.5",
 ]

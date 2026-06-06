@@ -1,12 +1,13 @@
 """SceneNode — 이름 있는 씬 트리 노드 (dirty flag 캐시 포함)."""
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 
-from forge3d.errors import Forge3dError
 from forge3d.ecs.transform import Transform
+from forge3d.errors import Forge3dError
 
 if TYPE_CHECKING:
     from forge3d.ecs.entity import Entity, EntityWorld
@@ -25,7 +26,7 @@ class SceneNode:
         self,
         name: str,
         entity: Entity,
-        ew: "EntityWorld",
+        ew: EntityWorld,
     ) -> None:
         self.name = name
         self.entity = entity
@@ -37,7 +38,7 @@ class SceneNode:
 
     # ── 자식 관리 ─────────────────────────────────────────────────────────────
 
-    def add_child(self, child: "SceneNode") -> None:
+    def add_child(self, child: SceneNode) -> None:
         if child is self:
             raise Forge3dError("SceneNode는 자기 자신을 자식으로 가질 수 없습니다")
         if child.parent is not None:
@@ -52,7 +53,7 @@ class SceneNode:
             pass
         child._mark_dirty()
 
-    def remove_child(self, child: "SceneNode") -> None:
+    def remove_child(self, child: SceneNode) -> None:
         if child in self.children:
             self.children.remove(child)
             child.parent = None
@@ -110,7 +111,7 @@ class SceneNode:
 
     # ── 유틸 ─────────────────────────────────────────────────────────────────
 
-    def find(self, name: str) -> "SceneNode | None":
+    def find(self, name: str) -> SceneNode | None:
         """이름으로 자신 또는 하위 노드를 검색한다."""
         if self.name == name:
             return self
@@ -120,7 +121,7 @@ class SceneNode:
                 return found
         return None
 
-    def descendants(self) -> list["SceneNode"]:
+    def descendants(self) -> list[SceneNode]:
         """자신을 포함한 모든 하위 노드 리스트."""
         result = [self]
         for child in self.children:

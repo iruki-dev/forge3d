@@ -1,12 +1,13 @@
 """SceneManager — 씬 로드/언로드/additive 로드 + 콜백."""
+
 from __future__ import annotations
 
-from pathlib import Path
-from typing import TYPE_CHECKING, Callable
+import contextlib
+from collections.abc import Callable
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from forge3d.ecs.entity import EntityWorld
-    from forge3d.scene.node import SceneNode
 
 
 class SceneManager:
@@ -15,9 +16,9 @@ class SceneManager:
     씬 파일 = P27 `save_scene()` 포맷의 JSON.
     """
 
-    def __init__(self, ew: "EntityWorld") -> None:
+    def __init__(self, ew: EntityWorld) -> None:
         self._ew = ew
-        self._loaded_entities: list[int] = []     # 현재 씬 엔티티
+        self._loaded_entities: list[int] = []  # 현재 씬 엔티티
         self._loaded_callbacks: list[Callable] = []
         self._unloading_callbacks: list[Callable] = []
 
@@ -35,10 +36,8 @@ class SceneManager:
     def unload_scene(self) -> None:
         """현재 씬의 모든 엔티티를 소멸시킨다."""
         for callback in self._unloading_callbacks:
-            try:
+            with contextlib.suppress(Exception):
                 callback()
-            except Exception:
-                pass
 
         for e in self._loaded_entities:
             try:
@@ -63,7 +62,7 @@ class SceneManager:
     def _load_from_file(self, path: str) -> None:
         from forge3d.ecs.serialization import load_scene
 
-        before = set(self._ew.all_entities())
+        set(self._ew.all_entities())
         temp_ew = load_scene(path)
 
         # temp_ew의 컴포넌트를 현재 ew로 이식
@@ -73,10 +72,8 @@ class SceneManager:
             self._loaded_entities.append(new_entity)
 
         for callback in self._loaded_callbacks:
-            try:
+            with contextlib.suppress(Exception):
                 callback()
-            except Exception:
-                pass
 
     @property
     def entity_count(self) -> int:

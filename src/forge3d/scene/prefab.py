@@ -1,6 +1,8 @@
 """Prefab — 엔티티+컴포넌트 템플릿 JSON 직렬화/인스턴스화."""
+
 from __future__ import annotations
 
+import contextlib
 import json
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -23,7 +25,7 @@ class PrefabNode:
 
     name: str
     components: list[dict[str, Any]] = field(default_factory=list)
-    children: list["PrefabNode"] = field(default_factory=list)
+    children: list[PrefabNode] = field(default_factory=list)
 
 
 class Prefab:
@@ -38,13 +40,13 @@ class Prefab:
     # ── 저장 / 로드 ──────────────────────────────────────────────────────────
 
     @staticmethod
-    def save(node: "SceneNode", path: str | Path) -> None:
+    def save(node: SceneNode, path: str | Path) -> None:
         """SceneNode 트리를 JSON Prefab 파일로 저장한다."""
         data = _scene_node_to_dict(node)
         Path(path).write_text(json.dumps(data, indent=2))
 
     @staticmethod
-    def load(path: str | Path) -> "Prefab":
+    def load(path: str | Path) -> Prefab:
         """JSON 파일에서 Prefab을 로드한다."""
         data = json.loads(Path(path).read_text())
         root = _dict_to_prefab_node(data)
@@ -54,12 +56,11 @@ class Prefab:
 
     def instantiate(
         self,
-        ew: "EntityWorld",
+        ew: EntityWorld,
         position: np.ndarray | None = None,
         rotation: np.ndarray | None = None,
-    ) -> "SceneNode":
+    ) -> SceneNode:
         """Prefab을 EntityWorld에 인스턴스화하고 SceneNode 트리를 반환한다."""
-        from forge3d.scene.node import SceneNode
 
         root_node = _instantiate_node(self._root, ew, parent_entity=None)
 
@@ -88,7 +89,7 @@ _SAVEABLE_COMPONENTS = {
 }
 
 
-def _scene_node_to_dict(node: "SceneNode") -> dict[str, Any]:
+def _scene_node_to_dict(node: SceneNode) -> dict[str, Any]:
     comps = node._ew.components_of(node.entity)
     comp_list = []
     for typ, comp in comps.items():
@@ -112,18 +113,16 @@ def _dict_to_prefab_node(data: dict[str, Any]) -> PrefabNode:
 
 def _instantiate_node(
     pnode: PrefabNode,
-    ew: "EntityWorld",
-    parent_entity: "Entity | None",
-) -> "SceneNode":
+    ew: EntityWorld,
+    parent_entity: Entity | None,
+) -> SceneNode:
     from forge3d.scene.node import SceneNode
 
     # 컴포넌트 역직렬화
     comps = []
     for cd in pnode.components:
-        try:
+        with contextlib.suppress(KeyError, ValueError):
             comps.append(_deserialize_comp(cd["type"], cd["data"]))
-        except (KeyError, ValueError):
-            pass
 
     # ECS 엔티티 생성 (Transform이 없으면 추가)
     has_tf = any(c["type"] == "Transform" for c in pnode.components)

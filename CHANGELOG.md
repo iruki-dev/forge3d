@@ -10,6 +10,41 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.1.0] — 2026-06-06 — API completeness and polish
+
+Bug fixes, missing features, and consistency improvements discovered during development.
+
+### Fixed
+
+- **B-1** `add_terrain(material=Material(...))` 커스텀 재질이 스냅샷에 유실되던 문제 — `TerrainSnapshot.material` / `BodySnapshot.material` 필드에 resolved `Material` 객체 직접 포함
+- **B-2** `Body.name` 읽기 전용 — `name` setter 추가
+- **B-3** `World.restore(path)` 인스턴스 메서드 추가 (in-place 복원); 기존 classmethod `World.load()`는 유지
+- deferred renderer `Material.emissive` scalar → `(R,G,B)` 변환 TypeError 수정
+
+### Added
+
+- `Body.shape_type`, `Body.shape_params`, `Body.rotation_matrix` 프로퍼티
+- `Body.on_collision_begin(cb)` / `on_collision_end(cb)` 개별 바디 충돌 콜백
+- `Material.emissive: float` — 스냅샷 전체 파이프라인 전파
+- `Transform.quaternion` `[w,x,y,z]` / `Transform.matrix4` `(4,4)` 프로퍼티
+- `TriggerZone.set_position()`, `.set_half_extents()`, `.enabled` 런타임 조작
+- `world.raycast_all(origin, dir, max_dist, layer_mask)` — 전체 히트 리스트
+- `world.overlap_sphere(center, radius)` / `world.overlap_box(center, half_extents)` 공간 쿼리
+- `world.add_terrain(..., friction=0.8, layer=CollisionLayer.TERRAIN)` 파라미터
+- `world.step(dt, substeps=1)` 서브스텝 지원
+- `world.update(frame_dt)` 고정 타임스텝 누산기 (`world.fixed_dt`, `world.max_substeps`)
+- `world.add_character(position, height, radius)` → `CharacterController` (move/jump/glide)
+- `world.profiler` → `PhysicsProfiler` — context manager로 step 타이밍 측정
+- `JointType` StrEnum (`HINGE`, `BALL`, `PRISMATIC`, `SPRING`, `FIXED`, `DISTANCE`)
+- `CollisionLayer.mask_for(*layers)` 비트마스크 헬퍼
+- `Viewer(shadow_resolution=N)` — 그림자 해상도 지정; 기본값 512 → **1024**으로 상향
+
+### Changed
+
+- `CollisionLayer.TERRAIN = 0x0008` (기존 `BULLET` 값과 교환; `BULLET = 0x0020`)
+
+---
+
 ## [2.0.0] — 2026-06-04  🚀 v2.0 — Python-first 고성능 게임/시뮬레이션 엔진
 
 ### 핵심 변화

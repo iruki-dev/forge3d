@@ -72,9 +72,15 @@ f3d.Material(color=(0.9, 0.4, 0.1))
 # PBR parameters
 f3d.Material(color="white", roughness=0.1, metallic=0.9)  # mirror-like
 
+# Emissive glow (lava, neon, sci-fi energy cores)
+f3d.Material(color=(1.0, 0.3, 0.0), emissive=3.0)  # glowing orange
+
 # Texture
 f3d.Material(texture_path="assets/textures/brick.png")
 ```
+
+`emissive` is a scalar intensity multiplier on the material colour.
+Set to `0.0` (default) for no emission; typical values are `1.0` – `5.0`.
 
 ---
 
@@ -107,10 +113,10 @@ rec.run(duration=3.0, dt=1/240, fps=60)
 ## Recording a policy rollout
 
 ```python
-from apps.robot_rl.envs.reach_env import ReachEnv
 from stable_baselines3 import PPO
+from forge3d.sim.jax_batch import make_reach_env
 
-env   = ReachEnv(render_mode=None)
+env   = make_reach_env()
 model = PPO.load("reach_policy")
 
 rec = f3d.Recorder(world, mode="hq", output="rollout.mp4")
@@ -202,6 +208,64 @@ while viewer.is_open:
 
 With `frame="world"` (default), the camera offset is always world-aligned regardless
 of where the car points. With `frame="local"`, the camera rotates with the car.
+
+---
+
+## Windowed game viewer (v2.0)
+
+Pass `title` to open a real OS window. The API is identical to the headless
+viewer — only the rendering backend changes.
+
+```python
+import forge3d as f3d
+
+world = f3d.World(gravity=(0, 0, -9.81))
+world.add_ground()
+car = world.add_box(size=(4, 2, 0.55), position=(0, 0, 0.4), mass=1200,
+                    friction=0.05,
+                    material=f3d.Material(color=(0.1, 0.4, 0.9)))
+car.angular_damping = 4.0
+
+cam = f3d.FollowCamera(car, offset=(-10, 0, 3.5), frame="local",
+                       smoothing_hz=9, fov_deg=65)
+
+viewer = f3d.Viewer(world, width=1280, height=720, title="Drive")
+while viewer.is_open:
+    inp = viewer.input
+    if inp.key_held(f3d.Key.W):
+        # rotate forward direction by quaternion, project to XY
+        import numpy as np
+        w, x, y, z = car.orientation
+        fwd = np.array([1-2*(y*y+z*z), 2*(x*y+w*z), 0.0])
+        fwd /= max(np.linalg.norm(fwd), 1e-6)
+        car.apply_force(fwd * 9000)
+    if inp.key_held(f3d.Key.A):
+        car.apply_torque((0, 0,  8000))
+    if inp.key_held(f3d.Key.D):
+        car.apply_torque((0, 0, -8000))
+
+    world.step(dt=viewer.dt)
+    viewer.set_camera(cam.to_snapshot(dt=viewer.dt))
+    viewer.draw()
+
+    speed = float(np.linalg.norm(car.velocity[:2])) * 3.6
+    viewer.draw_text(f"{speed:5.0f} km/h", x=640, y=680, size=32,
+                     color=(1, 1, 1), anchor="center")
+    viewer.draw_text("W/A/D to drive  ESC to quit",
+                     x=10, y=10, size=16, color=(0.8, 0.8, 0.8))
+```
+
+**What changes with `title`:**
+
+| Property | Headless (no title) | Windowed (with title) |
+|----------|--------------------|-----------------------|
+| `viewer.dt` | Fixed `1/60` s | Real wall-clock frame time |
+| `viewer.input` | Always empty | Live keyboard + mouse |
+| `viewer.is_open` | Frame-count limit | Window open + ESC not pressed |
+| `viewer.draw()` | Returns `(H,W,3)` ndarray | Returns `None`, flips display |
+| `draw_text()` | One-shot texture per call | Cached; unchanged text is free |
+
+**ESC** and the window close button automatically end the loop.
 
 ---
 

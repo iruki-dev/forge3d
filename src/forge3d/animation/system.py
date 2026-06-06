@@ -1,4 +1,5 @@
 """AnimationSystem — ECS 시스템, 본 행렬 일괄 업데이트."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -19,7 +20,7 @@ _fabrik = FABRIKSolver()
 class AnimationSystem(System):
     """AnimationPlayer 컴포넌트를 매 프레임 전진시키고 Transform을 동기화한다."""
 
-    def update(self, ew: "EntityWorld", dt: float) -> None:
+    def update(self, ew: EntityWorld, dt: float) -> None:
         # ── 클립/블렌드 트리 재생 ──────────────────────────────────────────
         for _e, player in ew.query(AnimationPlayer):
             anim: AnimationPlayer = player  # type: ignore[assignment]

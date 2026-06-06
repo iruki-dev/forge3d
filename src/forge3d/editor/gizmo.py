@@ -2,11 +2,12 @@
 
 ImGui 없이도 순수 Python 로직으로 동작한다.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -24,10 +25,11 @@ class GizmoMode(Enum):
 @dataclass
 class GizmoState:
     """기즈모 현재 상태."""
-    selected: "Entity | None" = None
+
+    selected: Entity | None = None
     mode: GizmoMode = GizmoMode.TRANSLATE
     dragging: bool = False
-    drag_axis: int = -1       # 0=X, 1=Y, 2=Z, -1=없음
+    drag_axis: int = -1  # 0=X, 1=Y, 2=Z, -1=없음
     drag_delta: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
@@ -43,9 +45,9 @@ class TranslateGizmo:
         self,
         ray_origin: np.ndarray,
         ray_dir: np.ndarray,
-        ew: "EntityWorld",
+        ew: EntityWorld,
         max_dist: float = 100.0,
-    ) -> "Entity | None":
+    ) -> Entity | None:
         """화면 레이로 가장 가까운 엔티티를 선택한다.
 
         각 엔티티의 AABB 구(半경 1m 기본)에 레이-구 교차 테스트.
@@ -53,7 +55,7 @@ class TranslateGizmo:
         from forge3d.ecs.transform import Transform
 
         best_t = max_dist
-        best_entity: "Entity | None" = None
+        best_entity: Entity | None = None
 
         for e, tf in ew.query(Transform):
             transform: Transform = tf  # type: ignore[assignment]
@@ -73,11 +75,12 @@ class TranslateGizmo:
         self.state.dragging = True
         self.state.drag_axis = axis
 
-    def drag(self, delta: float, ew: "EntityWorld") -> None:
+    def drag(self, delta: float, ew: EntityWorld) -> None:
         """delta 거리만큼 선택 축을 따라 엔티티를 이동한다."""
         if not self.state.dragging or self.state.selected is None:
             return
         from forge3d.ecs.transform import Transform
+
         try:
             tf: Transform = ew.get_component(self.state.selected, Transform)
         except (KeyError, Exception):
@@ -92,11 +95,12 @@ class TranslateGizmo:
         self.state.dragging = False
         self.state.drag_axis = -1
 
-    def select(self, entity: "Entity | None") -> None:
+    def select(self, entity: Entity | None) -> None:
         self.state.selected = entity
 
 
 # ── 레이-구 교차 ─────────────────────────────────────────────────────────────
+
 
 def _ray_sphere_intersect(
     origin: np.ndarray,

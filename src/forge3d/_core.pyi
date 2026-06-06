@@ -6,6 +6,7 @@ import numpy as np
 
 class BvhHandle:
     """불투명 BVH 트리 핸들."""
+
     ...
 
 def se3_mul(a: np.ndarray, b: np.ndarray) -> np.ndarray:

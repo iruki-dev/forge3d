@@ -1,5 +1,5 @@
 site_name: forge3d
-site_description: Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation.
+site_description: Pure-Python 3D physics game engine — fast like native, beautiful like simulation.
 site_url: https://forge3d.readthedocs.io
 repo_url: https://github.com/iruki-dev/forge3d
 repo_name: iruki-dev/forge3d
@@ -81,26 +81,34 @@ nav:
     - Installation: install.md
     - Quickstart: quickstart.md
   - Tutorials:
-    - Physics Simulation: tutorials/01_physics.md
-    - Realtime & HQ Rendering: tutorials/02_rendering.md
-    - Robot Arm (FK / IK): tutorials/03_robot.md
-    - Reinforcement Learning: tutorials/04_rl.md
+    - "1 — Physics Simulation": tutorials/01_physics.md
+    - "2 — Realtime & HQ Rendering": tutorials/02_rendering.md
+    - "3 — Robot Arm (FK / IK)": tutorials/03_robot.md
+    - "4 — Reinforcement Learning": tutorials/04_rl.md
   - Architecture: architecture.md
   - API Reference:
-    - forge3d.World: api/world.md
-    - forge3d.Body: api/body.md
-    - forge3d.Shape & Material: api/shapes.md
-    - forge3d.App: api/app.md
-    - forge3d.Input & Key: api/input.md
-    - forge3d.Viewer & Recorder: api/rendering.md
-    - forge3d.Camera: api/camera.md
-    - forge3d.robot: api/robot.md
-    - Backend (NumPy / JAX): api/backends.md
+    - "World": api/world.md
+    - "Body": api/body.md
+    - "Shape & Material": api/shapes.md
+    - "App": api/app.md
+    - "Viewer & Recorder": api/rendering.md
+    - "Input & Key": api/input.md
+    - "Camera": api/camera.md
+    - "Character Controller": api/character.md
+    - "ECS": api/ecs.md
+    - "Animation": api/animation.md
+    - "Audio": api/audio.md
+    - "Particle System": api/particle.md
+    - "Scene Management": api/scene.md
+    - "Profiler": api/profiler.md
+    - "Robot": api/robot.md
+    - "Backend (NumPy / JAX)": api/backends.md
+  - What's New:
+    - "v2.1.0 — Advanced Systems": whats_new_v2_1.md
+    - "v2.0.0 — Migration Guide": migration_v2.md
+    - "v1.1.0 — Game-Ready": whats_new_v1_1.md
   - Contributing: contributing.md
   - Changelog: changelog.md
-  - What's New:
-    - v2.0.0 — Migration Guide: migration_v2.md
-    - v1.1.0 — Game-Ready: whats_new_v1_1.md
 
 extra:
   social:

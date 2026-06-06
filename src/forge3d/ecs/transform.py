@@ -1,8 +1,9 @@
 """Transform 컴포넌트 — 위치/회전/스케일 + 부모/자식 계층."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -36,7 +37,7 @@ class Transform(Component):
         M[:3, 3] = self.position
         return M
 
-    def world_matrix(self, ew: "EntityWorld") -> np.ndarray:
+    def world_matrix(self, ew: EntityWorld) -> np.ndarray:
         """(4,4) 월드 변환 행렬 (부모 계층 포함, 최대 깊이 64)."""
         chain: list[np.ndarray] = [self.local_matrix()]
         visited: set[Entity] = set()
@@ -60,21 +61,24 @@ class Transform(Component):
             M = M @ mat
         return M
 
-    def world_position(self, ew: "EntityWorld") -> np.ndarray:
+    def world_position(self, ew: EntityWorld) -> np.ndarray:
         return self.world_matrix(ew)[:3, 3]
 
-    def world_rotation_matrix(self, ew: "EntityWorld") -> np.ndarray:
+    def world_rotation_matrix(self, ew: EntityWorld) -> np.ndarray:
         return self.world_matrix(ew)[:3, :3]
 
 
 def _quat_to_rot(q: np.ndarray) -> np.ndarray:
     """쿼터니언 [w,x,y,z] → 3×3 회전행렬."""
     w, x, y, z = q
-    return np.array([
-        [1 - 2*(y*y + z*z), 2*(x*y - w*z),     2*(x*z + w*y)],
-        [2*(x*y + w*z),     1 - 2*(x*x + z*z), 2*(y*z - w*x)],
-        [2*(x*z - w*y),     2*(y*z + w*x),     1 - 2*(x*x + y*y)],
-    ], dtype=np.float64)
+    return np.array(
+        [
+            [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+            [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+            [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
+        ],
+        dtype=np.float64,
+    )
 
 
 def jax_batch_world_matrix(transforms: list[Transform]) -> np.ndarray:

@@ -1,7 +1,8 @@
 """Skeleton + Bone — 골격 계층과 순방향 기구학."""
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -57,7 +58,7 @@ class Skeleton:
         return self.world_matrices(local_overrides)[:, :3, 3]
 
     @classmethod
-    def chain(cls, positions: list[np.ndarray], names: list[str] | None = None) -> "Skeleton":
+    def chain(cls, positions: list[np.ndarray], names: list[str] | None = None) -> Skeleton:
         """단일 체인(링크 1개씩 연결) 골격 생성 헬퍼.
 
         positions: [(3,)] 각 관절의 월드 위치 리스트
@@ -65,7 +66,7 @@ class Skeleton:
         if names is None:
             names = [f"bone_{i}" for i in range(len(positions))]
         bones: list[Bone] = []
-        for i, (pos, name) in enumerate(zip(positions, names)):
+        for i, (pos, name) in enumerate(zip(positions, names, strict=False)):
             M = np.eye(4, dtype=np.float64)
             if i == 0:
                 M[:3, 3] = np.asarray(pos)

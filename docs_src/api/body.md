@@ -13,10 +13,13 @@ A handle to a single rigid body in the simulation. Returned by every `World.add_
         - velocity
         - orientation
         - angular_velocity
+        - rotation_matrix
         - name
         - is_static
         - is_sleeping
         - mass
+        - shape_type
+        - shape_params
         - friction
         - restitution
         - linear_damping
@@ -29,6 +32,8 @@ A handle to a single rigid body in the simulation. Returned by every `World.add_
         - set_orientation
         - set_velocity
         - set_angular_velocity
+        - on_collision_begin
+        - on_collision_end
 
 ---
 
@@ -79,6 +84,42 @@ world.step(dt=1/60)
 print(box.velocity)
 ```
 
+### Runtime name change
+
+```python
+head = world.add_sphere(radius=0.21, position=(0,0,1.8), name="head")
+head.name = "player_head"   # settable at any time
+print(head.name)             # "player_head"
+```
+
+### Shape query
+
+```python
+capsule = world.add_capsule(radius=0.3, half_length=0.9, position=(0,0,2))
+print(capsule.shape_type)     # "capsule"
+print(capsule.shape_params)   # {'radius': 0.3, 'half_length': 0.9}
+
+# Rotation as 3×3 matrix (alternative to .orientation quaternion)
+R = capsule.rotation_matrix   # np.ndarray (3, 3)
+```
+
+### Per-body collision callbacks
+
+```python
+player = world.add_capsule(radius=0.3, half_length=0.9, name="player")
+floor  = world.add_ground()
+
+@player.on_collision_begin
+def hit(other, event):
+    print(f"player hit {other.name}  speed={event.relative_speed:.1f} m/s")
+
+@player.on_collision_end
+def left(other, event):
+    print(f"player separated from {other.name}")
+
+# Callbacks fire automatically inside world.step()
+```
+
 ### Collision layers
 
 ```python
@@ -86,7 +127,10 @@ from forge3d import CollisionLayer
 
 player = world.add_sphere(radius=0.5, position=(0,0,3), mass=1)
 player.collision_layer = CollisionLayer.PLAYER
-player.collision_mask  = CollisionLayer.ALL
+player.collision_mask  = CollisionLayer.mask_for(
+    CollisionLayer.TERRAIN,
+    CollisionLayer.ENEMY,
+)  # collide only with terrain and enemies
 
 ghost = world.add_sphere(radius=1.0, position=(5,0,0), mass=0.1)
 ghost.collision_layer = CollisionLayer.NONE   # no collision

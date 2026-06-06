@@ -16,6 +16,7 @@ Usage::
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import Any
 
 # ── Key constants ─────────────────────────────────────────────────────────────
 
@@ -33,22 +34,50 @@ class Key:
     """
 
     # Letters
-    A = "a"; B = "b"; C = "c"; D = "d"; E = "e"  # noqa: E702
-    F = "f"; G = "g"; H = "h"; I = "i"; J = "j"  # noqa: E702,E741
-    K = "k"; L = "l"; M = "m"; N = "n"; O = "o"  # noqa: E702,E741
-    P = "p"; Q = "q"; R = "r"; S = "s"; T = "t"  # noqa: E702
-    U = "u"; V = "v"; W = "w"; X = "x"; Y = "y"  # noqa: E702
+    A = "a"
+    B = "b"
+    C = "c"
+    D = "d"
+    E = "e"  # noqa: E702
+    F = "f"
+    G = "g"
+    H = "h"
+    I = "i"  # noqa: E741
+    J = "j"  # noqa: E702,E741
+    K = "k"
+    L = "l"
+    M = "m"
+    N = "n"
+    O = "o"  # noqa: E702,E741
+    P = "p"
+    Q = "q"
+    R = "r"
+    S = "s"
+    T = "t"  # noqa: E702
+    U = "u"
+    V = "v"
+    W = "w"
+    X = "x"
+    Y = "y"  # noqa: E702
     Z = "z"
 
     # Digits (prefixed to avoid clashing with int literals)
-    N0 = "0"; N1 = "1"; N2 = "2"; N3 = "3"; N4 = "4"  # noqa: E702
-    N5 = "5"; N6 = "6"; N7 = "7"; N8 = "8"; N9 = "9"  # noqa: E702
+    N0 = "0"
+    N1 = "1"
+    N2 = "2"
+    N3 = "3"
+    N4 = "4"  # noqa: E702
+    N5 = "5"
+    N6 = "6"
+    N7 = "7"
+    N8 = "8"
+    N9 = "9"  # noqa: E702
 
     # Special
     SPACE = "space"
     ESCAPE = "escape"
     ENTER = "enter"
-    RETURN = "enter"        # alias
+    RETURN = "enter"  # alias
     BACKSPACE = "backspace"
     DELETE = "delete"
     TAB = "tab"
@@ -70,16 +99,33 @@ class Key:
     SHIFT = "shift"
     CTRL = "ctrl"
     ALT = "alt"
-    SUPER = "super"       # Windows/Command key
+    SUPER = "super"  # Windows/Command key
 
     # Function keys
-    F1 = "f1"; F2 = "f2"; F3 = "f3"; F4 = "f4"    # noqa: E702
-    F5 = "f5"; F6 = "f6"; F7 = "f7"; F8 = "f8"    # noqa: E702
-    F9 = "f9"; F10 = "f10"; F11 = "f11"; F12 = "f12"  # noqa: E702
+    F1 = "f1"
+    F2 = "f2"
+    F3 = "f3"
+    F4 = "f4"  # noqa: E702
+    F5 = "f5"
+    F6 = "f6"
+    F7 = "f7"
+    F8 = "f8"  # noqa: E702
+    F9 = "f9"
+    F10 = "f10"
+    F11 = "f11"
+    F12 = "f12"  # noqa: E702
 
     # Numpad
-    KP0 = "kp0"; KP1 = "kp1"; KP2 = "kp2"; KP3 = "kp3"; KP4 = "kp4"  # noqa: E702
-    KP5 = "kp5"; KP6 = "kp6"; KP7 = "kp7"; KP8 = "kp8"; KP9 = "kp9"  # noqa: E702
+    KP0 = "kp0"
+    KP1 = "kp1"
+    KP2 = "kp2"
+    KP3 = "kp3"
+    KP4 = "kp4"  # noqa: E702
+    KP5 = "kp5"
+    KP6 = "kp6"
+    KP7 = "kp7"
+    KP8 = "kp8"
+    KP9 = "kp9"  # noqa: E702
     KP_ENTER = "kp_enter"
     KP_PLUS = "kp_plus"
     KP_MINUS = "kp_minus"
@@ -153,11 +199,7 @@ class Input:
 
     def __repr__(self) -> str:
         held = sorted(self._keys_held)
-        return (
-            f"Input(held={held}, "
-            f"pos={self._mouse_pos}, "
-            f"scroll={self._scroll_delta:+.1f})"
-        )
+        return f"Input(held={held}, pos={self._mouse_pos}, scroll={self._scroll_delta:+.1f})"
 
 
 # ── Empty singleton — returned when no windowing is available ─────────────────
@@ -243,25 +285,16 @@ class _InputBuilder:
         self._prev_mouse_pos = self._mouse_pos
 
     def feed_pygame_event(self, event: Any) -> None:
-        """Feed a pygame event into the builder.
+        """Feed a pygame event into the builder (deprecated — use glfw callbacks).
 
-        Allows using :class:`InputBuilder` with a pygame window instead of
-        the forge3d :class:`Viewer`.  Call this for each event in
-        ``pygame.event.get()`` and then :meth:`build` + :meth:`end_frame`
-        to get a standard :class:`Input` snapshot each frame.
+        Kept for backward compatibility with code that still uses pygame
+        as a standalone window.  If pygame is not installed, this is a no-op.
 
-        Example::
-
-            builder = f3d.InputBuilder()
-            while running:
-                for ev in pygame.event.get():
-                    builder.feed_pygame_event(ev)
-                inp = builder.build()
-                builder.end_frame()
-                ...
+        New code should use :class:`~forge3d.viewer.Viewer` directly; glfw
+        callbacks are wired up automatically.
         """
         try:
-            import pygame  # optional dependency
+            import pygame  # optional legacy dependency
         except ImportError:
             return
         if event.type == pygame.KEYDOWN:

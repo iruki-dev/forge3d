@@ -1,12 +1,13 @@
 """AnimationClip — 키프레임 저장 + LERP/SLERP 보간."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
 import numpy as np
 
-
 # ── 쿼터니언 헬퍼 ─────────────────────────────────────────────────────────────
+
 
 def _quat_slerp(q0: np.ndarray, q1: np.ndarray, t: float) -> np.ndarray:
     """구면선형 보간 (SLERP). q0, q1은 [w,x,y,z] float64."""
@@ -18,7 +19,7 @@ def _quat_slerp(q0: np.ndarray, q1: np.ndarray, t: float) -> np.ndarray:
         q1 = -q1
         dot = -dot
     if dot > 0.9995:
-        return (q0 + t * (q1 - q0))
+        return q0 + t * (q1 - q0)
     theta0 = np.arccos(dot)
     theta = theta0 * t
     sin_theta = np.sin(theta)
@@ -31,11 +32,14 @@ def _quat_slerp(q0: np.ndarray, q1: np.ndarray, t: float) -> np.ndarray:
 def _quat_to_mat4(q: np.ndarray, pos: np.ndarray, scale: np.ndarray) -> np.ndarray:
     """[w,x,y,z] + 위치 + 스케일 → (4,4) 변환 행렬."""
     w, x, y, z = q / (np.linalg.norm(q) + 1e-15)
-    R = np.array([
-        [1 - 2*(y*y + z*z), 2*(x*y - w*z),     2*(x*z + w*y)],
-        [2*(x*y + w*z),     1 - 2*(x*x + z*z), 2*(y*z - w*x)],
-        [2*(x*z - w*y),     2*(y*z + w*x),     1 - 2*(x*x + y*y)],
-    ], dtype=np.float64)
+    R = np.array(
+        [
+            [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+            [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+            [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
+        ],
+        dtype=np.float64,
+    )
     M = np.eye(4, dtype=np.float64)
     M[:3, :3] = R * scale[None, :]
     M[:3, 3] = pos
@@ -43,6 +47,7 @@ def _quat_to_mat4(q: np.ndarray, pos: np.ndarray, scale: np.ndarray) -> np.ndarr
 
 
 # ── AnimationClip ─────────────────────────────────────────────────────────────
+
 
 @dataclass
 class AnimationClip:
@@ -71,7 +76,7 @@ class AnimationClip:
         name: str,
         duration: float,
         poses: dict[str, tuple[np.ndarray, np.ndarray, np.ndarray]],
-    ) -> "AnimationClip":
+    ) -> AnimationClip:
         """단일 정적 포즈를 상수 클립으로 생성 (테스트용).
 
         poses: {bone_name: (pos(3), quat(4), scale(3))}

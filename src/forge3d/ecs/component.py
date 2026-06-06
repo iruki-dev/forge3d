@@ -1,13 +1,15 @@
 """내장 ECS 컴포넌트 정의."""
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
 if TYPE_CHECKING:
-    from forge3d.render.snapshot import Material as SnapshotMaterial
+    pass
 
 
 class Component:

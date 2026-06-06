@@ -5,7 +5,6 @@ from __future__ import annotations
 import warnings
 from typing import Any
 
-
 # ── Exception hierarchy ───────────────────────────────────────────────────────
 
 
@@ -39,27 +38,21 @@ class AssetError(Forge3dError):
 def require_positive(value: float, name: str, caller: str) -> float:
     """Raise ValidationError if value <= 0."""
     if value <= 0:
-        raise ValidationError(
-            f"{caller} — {name} must be positive, got {name}={value!r}"
-        )
+        raise ValidationError(f"{caller} — {name} must be positive, got {name}={value!r}")
     return value
 
 
 def require_nonneg(value: float, name: str, caller: str) -> float:
     """Raise ValidationError if value < 0."""
     if value < 0:
-        raise ValidationError(
-            f"{caller} — {name} must be ≥ 0, got {name}={value!r}"
-        )
+        raise ValidationError(f"{caller} — {name} must be ≥ 0, got {name}={value!r}")
     return value
 
 
 def require_range(value: float, lo: float, hi: float, name: str, caller: str) -> float:
     """Raise ValidationError if value not in [lo, hi]."""
     if not (lo <= value <= hi):
-        raise ValidationError(
-            f"{caller} — {name} must be in [{lo}, {hi}], got {name}={value!r}"
-        )
+        raise ValidationError(f"{caller} — {name} must be in [{lo}, {hi}], got {name}={value!r}")
     return value
 
 
@@ -69,13 +62,11 @@ def require_sequence(value: Any, length: int, name: str, caller: str) -> Any:
         seq = tuple(value)
     except TypeError:
         raise ValidationError(
-            f"{caller} — {name} must be a {length}-element sequence, "
-            f"got {name}={value!r}"
+            f"{caller} — {name} must be a {length}-element sequence, got {name}={value!r}"
         ) from None
     if len(seq) != length:
         raise ValidationError(
-            f"{caller} — {name} must be a {length}-element sequence, "
-            f"got {len(seq)} elements"
+            f"{caller} — {name} must be a {length}-element sequence, got {len(seq)} elements"
         )
     return value
 
@@ -85,8 +76,7 @@ def require_all_positive(value: Any, name: str, caller: str) -> None:
     for i, v in enumerate(value):
         if v <= 0:
             raise ValidationError(
-                f"{caller} — all {name} components must be positive, "
-                f"got {name}[{i}]={v!r}"
+                f"{caller} — all {name} components must be positive, got {name}[{i}]={v!r}"
             )
 
 

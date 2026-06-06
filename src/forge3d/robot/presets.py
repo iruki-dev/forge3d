@@ -21,12 +21,12 @@ from forge3d.robot.robot import Robot
 # world z-axis — spinning the whole arm horizontally.
 # Joint 1 (shoulder) has alpha=π/2 to tilt the arm frame 90° for shoulder pitch.
 _UR5_DH = [
-    (0.0892,  0.0,     0.0      ),  # joint 0 — base rotation (z)
-    (0.0,    -0.4250,  np.pi/2  ),  # joint 1 — shoulder
-    (0.0,    -0.3922,  0.0      ),  # joint 2 — elbow
-    (0.1093,  0.0,     np.pi/2  ),  # joint 3 — wrist 1
-    (0.0950,  0.0,    -np.pi/2  ),  # joint 4 — wrist 2
-    (0.0823,  0.0,     0.0      ),  # joint 5 — wrist 3
+    (0.0892, 0.0, 0.0),  # joint 0 — base rotation (z)
+    (0.0, -0.4250, np.pi / 2),  # joint 1 — shoulder
+    (0.0, -0.3922, 0.0),  # joint 2 — elbow
+    (0.1093, 0.0, np.pi / 2),  # joint 3 — wrist 1
+    (0.0950, 0.0, -np.pi / 2),  # joint 4 — wrist 2
+    (0.0823, 0.0, 0.0),  # joint 5 — wrist 3
 ]
 _UR5_MASSES = [7.78, 12.93, 3.87, 1.96, 1.96, 0.20]
 _UR5_COMS = [

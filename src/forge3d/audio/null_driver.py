@@ -3,9 +3,10 @@
 오디오 하드웨어가 없는 서버·CI 환경에서 AudioSystem이 예외를 던지지 않도록 한다.
 실제 소리는 출력되지 않는다.
 """
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -24,12 +25,12 @@ class NullDriver:
         self.play_count = 0
         self.play_at_calls = []
 
-    def play(self, clip: "AudioClip", volume: float = 1.0, loop: bool = False) -> None:
+    def play(self, clip: AudioClip, volume: float = 1.0, loop: bool = False) -> None:
         self.play_count += 1
 
     def play_at(
         self,
-        clip: "AudioClip",
+        clip: AudioClip,
         position: np.ndarray,
         volume: float = 1.0,
         pitch: float = 1.0,

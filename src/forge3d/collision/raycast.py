@@ -12,8 +12,10 @@ import numpy as np
 
 
 def _ray_sphere(
-    ro: np.ndarray, rd: np.ndarray,
-    center: np.ndarray, radius: float,
+    ro: np.ndarray,
+    rd: np.ndarray,
+    center: np.ndarray,
+    radius: float,
 ) -> float | None:
     """Ray-sphere intersection. Returns t ≥ 0 or None."""
     oc = ro - center
@@ -22,7 +24,7 @@ def _ray_sphere(
     disc = b * b - c
     if disc < 0:
         return None
-    sq = disc ** 0.5
+    sq = disc**0.5
     t1 = -b - sq
     t2 = -b + sq
     if t2 < 0:
@@ -31,8 +33,11 @@ def _ray_sphere(
 
 
 def _ray_box_obb(
-    ro: np.ndarray, rd: np.ndarray,
-    center: np.ndarray, half_extents: np.ndarray, R: np.ndarray,
+    ro: np.ndarray,
+    rd: np.ndarray,
+    center: np.ndarray,
+    half_extents: np.ndarray,
+    R: np.ndarray,
 ) -> float | None:
     """Ray vs OBB intersection (slab method in box local frame)."""
     # Transform ray into box local frame
@@ -48,7 +53,7 @@ def _ray_box_obb(
                 return None
         else:
             t1 = (-half_extents[i] - ro_l[i]) / rd_l[i]
-            t2 = ( half_extents[i] - ro_l[i]) / rd_l[i]
+            t2 = (half_extents[i] - ro_l[i]) / rd_l[i]
             if t1 > t2:
                 t1, t2 = t2, t1
             t_min = max(t_min, t1)
@@ -126,3 +131,58 @@ def ray_cast(
             best = (body.body_id, hit_p, hit_n, t)
 
     return best
+
+
+def ray_cast_all(
+    ro: np.ndarray,
+    direction: np.ndarray,
+    max_dist: float,
+    bodies: list[Any],
+) -> list[tuple[int, np.ndarray, np.ndarray, float]]:
+    """Cast a ray and return **all** hits sorted by distance (closest first)."""
+    from forge3d.math.quaternion import quat_to_rot
+
+    rd_norm = np.linalg.norm(direction)
+    if rd_norm < 1e-12:
+        return []
+    rd = direction / rd_norm
+
+    hits: list[tuple[float, int, np.ndarray, np.ndarray]] = []
+
+    for body in bodies:
+        st = body.shape_type
+        sp = body.shape_params
+        center = body.pos
+        R = quat_to_rot(body.quat)
+
+        t: float | None = None
+        hit_n = np.array([0.0, 0.0, 1.0])
+
+        if st == "sphere":
+            r = float(sp["radius"])
+            t = _ray_sphere(ro, rd, center, r)
+            if t is not None:
+                hit_p = ro + rd * t
+                hit_n = (hit_p - center) / (np.linalg.norm(hit_p - center) + 1e-12)
+
+        elif st == "box":
+            he = np.asarray(sp["half_extents"], dtype=float)
+            t = _ray_box_obb(ro, rd, center, he, R)
+            if t is not None:
+                hit_p = ro + rd * t
+                local = R.T @ (hit_p - center)
+                hit_n = R @ _box_normal(local, he)
+
+        elif st == "capsule":
+            r = float(sp["radius"]) + float(sp.get("half_length", 0.5))
+            t = _ray_sphere(ro, rd, center, r)
+            if t is not None:
+                hit_p = ro + rd * t
+                hit_n = (hit_p - center) / (np.linalg.norm(hit_p - center) + 1e-12)
+
+        if t is not None and 0 <= t <= max_dist:
+            hit_p = ro + rd * t
+            hits.append((t, body.body_id, hit_p, hit_n))
+
+    hits.sort(key=lambda x: x[0])
+    return [(bid, pt, n, dist) for dist, bid, pt, n in hits]

@@ -12,8 +12,8 @@ import numpy as np
 
 from forge3d.render.hq.scene import HQPrimitive, HQScene
 
-_EPS = np.float32(1e-4)   # self-intersection offset
-_INF = np.float32(1e20)   # "no hit" sentinel
+_EPS = np.float32(1e-4)  # self-intersection offset
+_INF = np.float32(1e20)  # "no hit" sentinel
 
 
 # ── Public entry point ────────────────────────────────────────────────────────
@@ -38,17 +38,11 @@ def render_frame(
     # Camera basis (z-up, right-hand)
     fwd = scene.camera.target - scene.camera.position
     fwd_len = np.linalg.norm(fwd)
-    if fwd_len < 1e-10:
-        fwd = np.array([1.0, 0.0, 0.0])
-    else:
-        fwd = fwd / fwd_len
+    fwd = np.array([1.0, 0.0, 0.0]) if fwd_len < 1e-10 else fwd / fwd_len
 
     right = np.cross(fwd, scene.camera.up)
     right_len = np.linalg.norm(right)
-    if right_len < 1e-10:
-        right = np.array([1.0, 0.0, 0.0])
-    else:
-        right = right / right_len
+    right = np.array([1.0, 0.0, 0.0]) if right_len < 1e-10 else right / right_len
 
     up_cam = np.cross(right, fwd)
     up_cam = up_cam / (np.linalg.norm(up_cam) + 1e-10)

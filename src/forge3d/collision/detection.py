@@ -109,7 +109,7 @@ def _aabb_half_extents(body: Any, R: np.ndarray | None) -> np.ndarray:
 
 def detect_contacts(
     bodies: list[Any],
-    ignored_pairs: "set[frozenset[int]] | None" = None,
+    ignored_pairs: set[frozenset[int]] | None = None,
 ) -> list[ContactPoint]:
     """Detect all contacts in the current body list.
 
@@ -145,9 +145,9 @@ def detect_contacts(
 
             # ── Layer/mask filter ──────────────────────────────────────────────
             layer_a = getattr(a, "collision_layer", 0x0001)
-            mask_a  = getattr(a, "collision_mask",  0xFFFF)
+            mask_a = getattr(a, "collision_mask", 0xFFFF)
             layer_b = getattr(b, "collision_layer", 0x0001)
-            mask_b  = getattr(b, "collision_mask",  0xFFFF)
+            mask_b = getattr(b, "collision_mask", 0xFFFF)
             if not ((layer_a & mask_b) and (layer_b & mask_a)):
                 continue
 
@@ -558,10 +558,7 @@ def _closest_points_segment_segment(
         a_val = float(np.dot(d1, d1))
         denom = a_val * e - b_val * b_val
 
-        if abs(denom) < 1e-14:
-            sc = 0.0
-        else:
-            sc = np.clip((b_val * f - c_val * e) / denom, 0.0, 1.0)
+        sc = 0.0 if abs(denom) < 1e-14 else np.clip((b_val * f - c_val * e) / denom, 0.0, 1.0)
 
         tc = np.clip((b_val * sc + f) / e, 0.0, 1.0)
         sc = np.clip((b_val * tc - c_val) / max(a_val, 1e-14), 0.0, 1.0)
@@ -762,10 +759,14 @@ def _body_hull_world(body: Any) -> np.ndarray | None:
         return body.pos.reshape(1, 3)
     if st == "box":
         h = np.asarray(body.shape_params["half_extents"], dtype=float)
-        corners = np.array([
-            [sx * h[0], sy * h[1], sz * h[2]]
-            for sx in (-1, 1) for sy in (-1, 1) for sz in (-1, 1)
-        ])
+        corners = np.array(
+            [
+                [sx * h[0], sy * h[1], sz * h[2]]
+                for sx in (-1, 1)
+                for sy in (-1, 1)
+                for sz in (-1, 1)
+            ]
+        )
         R = _quat_to_rot_unit(body.quat)
         return body.pos + corners @ R.T
     return None

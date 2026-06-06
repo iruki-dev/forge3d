@@ -16,7 +16,6 @@ from forge3d.constraints.base import (
     BAUMGARTE_SLOP,
     Constraint,
     _quat_to_rot,
-    _skew,
 )
 
 
@@ -74,7 +73,8 @@ class FixedJoint(Constraint):
 
         # Effective mass (3×3)
         K = self._effective_mass_ball(
-            ba, r_a,
+            ba,
+            r_a,
             bb if bb is not None else _StaticProxy(),
             r_b if bb is not None else np.zeros(3),
         )
@@ -86,9 +86,13 @@ class FixedJoint(Constraint):
             impulse = np.zeros(3)
 
         self._apply_impulse_pair(
-            bodies, id_to_idx, self.id_a,
+            bodies,
+            id_to_idx,
+            self.id_a,
             self.id_b if bb is not None else -1,
-            impulse, r_a, r_b,
+            impulse,
+            r_a,
+            r_b,
         )
 
 
@@ -136,7 +140,8 @@ class BallJoint(Constraint):
         bias = (BAUMGARTE_BETA / dt) * np.where(np.abs(C) > BAUMGARTE_SLOP, C, 0.0)
 
         K = self._effective_mass_ball(
-            ba, r_a,
+            ba,
+            r_a,
             bb if bb is not None else _StaticProxy(),
             r_b if bb is not None else np.zeros(3),
         )
@@ -147,9 +152,13 @@ class BallJoint(Constraint):
             impulse = np.zeros(3)
 
         self._apply_impulse_pair(
-            bodies, id_to_idx, self.id_a,
+            bodies,
+            id_to_idx,
+            self.id_a,
             self.id_b if bb is not None else -1,
-            impulse, r_a, r_b,
+            impulse,
+            r_a,
+            r_b,
         )
 
 
@@ -205,11 +214,10 @@ class HingeJoint(Constraint):
             Rb = _quat_to_rot(bb.quat)
             r_b = Rb @ self.anchor_b
             p_b = bb.pos + r_b
-            omega_rel = ba.omega - bb.omega
+            ba.omega - bb.omega
         else:
             r_b = np.zeros(3)
             p_b = self.anchor_b.copy()
-            omega_rel = ba.omega
             bb = None
 
         # ── 1. Point-to-point (ball joint) ────────────────────────────────────
@@ -220,7 +228,8 @@ class HingeJoint(Constraint):
         bias_lin = (BAUMGARTE_BETA / dt) * np.where(np.abs(C_lin) > BAUMGARTE_SLOP, C_lin, 0.0)
 
         K_lin = self._effective_mass_ball(
-            ba, r_a,
+            ba,
+            r_a,
             bb if bb is not None else _StaticProxy(),
             r_b if bb is not None else np.zeros(3),
         )
@@ -231,9 +240,13 @@ class HingeJoint(Constraint):
             impulse_lin = np.zeros(3)
 
         self._apply_impulse_pair(
-            bodies, id_to_idx, self.id_a,
+            bodies,
+            id_to_idx,
+            self.id_a,
             self.id_b if bb is not None else -1,
-            impulse_lin, r_a, r_b,
+            impulse_lin,
+            r_a,
+            r_b,
         )
 
         # Re-fetch (body was replaced)
@@ -247,9 +260,8 @@ class HingeJoint(Constraint):
 
         for perp in (perp1, perp2):
             omega_along_perp = np.dot(omega_rel_updated, perp)
-            K_ang = (
-                (np.dot(perp, self._I_world_inv(ba) @ perp))
-                + (np.dot(perp, self._I_world_inv(bb) @ perp) if bb is not None else 0.0)
+            K_ang = (np.dot(perp, self._I_world_inv(ba) @ perp)) + (
+                np.dot(perp, self._I_world_inv(bb) @ perp) if bb is not None else 0.0
             )
             if abs(K_ang) < 1e-12:
                 continue
@@ -259,9 +271,7 @@ class HingeJoint(Constraint):
             idx_a = id_to_idx[self.id_a]
             baa = bodies[idx_a]
             if not baa.static:
-                bodies[idx_a] = replace(
-                    baa, omega=baa.omega + self._I_world_inv(baa) @ torque_imp
-                )
+                bodies[idx_a] = replace(baa, omega=baa.omega + self._I_world_inv(baa) @ torque_imp)
             if bb is not None:
                 idx_b = id_to_idx[self.id_b]
                 bbb = bodies[idx_b]
@@ -270,9 +280,8 @@ class HingeJoint(Constraint):
                         bbb, omega=bbb.omega - self._I_world_inv(bbb) @ torque_imp
                     )
             # Re-fetch for next iteration
-            omega_rel_updated = (
-                bodies[id_to_idx[self.id_a]].omega
-                - (bodies[id_to_idx[self.id_b]].omega if bb is not None else np.zeros(3))
+            omega_rel_updated = bodies[id_to_idx[self.id_a]].omega - (
+                bodies[id_to_idx[self.id_b]].omega if bb is not None else np.zeros(3)
             )
 
         # ── 3. Motor ──────────────────────────────────────────────────────────
@@ -281,9 +290,8 @@ class HingeJoint(Constraint):
             bb2 = bodies[id_to_idx[self.id_b]] if bb is not None else None
             omega_rel_ax = np.dot(ba2.omega - (bb2.omega if bb2 else np.zeros(3)), axis_world)
             error_vel = self.motor_velocity - omega_rel_ax
-            K_motor = (
-                np.dot(axis_world, self._I_world_inv(ba2) @ axis_world)
-                + (np.dot(axis_world, self._I_world_inv(bb2) @ axis_world) if bb2 else 0.0)
+            K_motor = np.dot(axis_world, self._I_world_inv(ba2) @ axis_world) + (
+                np.dot(axis_world, self._I_world_inv(bb2) @ axis_world) if bb2 else 0.0
             )
             if abs(K_motor) > 1e-12:
                 lam_motor = np.clip(
@@ -295,9 +303,7 @@ class HingeJoint(Constraint):
                 idx_a = id_to_idx[self.id_a]
                 baa = bodies[idx_a]
                 if not baa.static:
-                    bodies[idx_a] = replace(
-                        baa, omega=baa.omega + self._I_world_inv(baa) @ mot_imp
-                    )
+                    bodies[idx_a] = replace(baa, omega=baa.omega + self._I_world_inv(baa) @ mot_imp)
                 if bb2 is not None:
                     idx_b = id_to_idx[self.id_b]
                     bbb = bodies[idx_b]
@@ -375,7 +381,8 @@ class PrismaticJoint(Constraint):
             bias = (BAUMGARTE_BETA / dt) * (C if abs(C) > BAUMGARTE_SLOP else 0.0)
 
             K = self._effective_mass_ball(
-                ba, r_a,
+                ba,
+                r_a,
                 bb if bb else _StaticProxy(),
                 r_b if bb else np.zeros(3),
             )
@@ -385,15 +392,23 @@ class PrismaticJoint(Constraint):
             lam = -(v_perp + bias) / K_perp
             impulse = lam * perp
             self._apply_impulse_pair(
-                bodies, id_to_idx, self.id_a,
+                bodies,
+                id_to_idx,
+                self.id_a,
                 self.id_b if bb else -1,
-                impulse, r_a, r_b,
+                impulse,
+                r_a,
+                r_b,
             )
             # Re-fetch
             ba = bodies[id_to_idx[self.id_a]]
             v_rel_lin = (ba.vel + np.cross(ba.omega, r_a)) - (
-                (bodies[id_to_idx[self.id_b]].vel + np.cross(bodies[id_to_idx[self.id_b]].omega, r_b))
-                if bb else np.zeros(3)
+                (
+                    bodies[id_to_idx[self.id_b]].vel
+                    + np.cross(bodies[id_to_idx[self.id_b]].omega, r_b)
+                )
+                if bb
+                else np.zeros(3)
             )
 
         # Angular constraint — lock all rotation
@@ -402,9 +417,8 @@ class PrismaticJoint(Constraint):
         omega_rel = ba.omega - (bb2.omega if bb2 else np.zeros(3))
         for ax_c in (axis_world, perp1, perp2):
             om_along = np.dot(omega_rel, ax_c)
-            K_ang = (
-                np.dot(ax_c, self._I_world_inv(ba) @ ax_c)
-                + (np.dot(ax_c, self._I_world_inv(bb2) @ ax_c) if bb2 else 0.0)
+            K_ang = np.dot(ax_c, self._I_world_inv(ba) @ ax_c) + (
+                np.dot(ax_c, self._I_world_inv(bb2) @ ax_c) if bb2 else 0.0
             )
             if abs(K_ang) < 1e-12:
                 continue
@@ -433,9 +447,13 @@ class PrismaticJoint(Constraint):
                 axis_world,
             )
             err = self.motor_velocity - v_axis
-            K_m = np.dot(axis_world, self._effective_mass_ball(
-                ba2, r_a, bb2 if bb2 else _StaticProxy(), r_b if bb2 else np.zeros(3)
-            ) @ axis_world)
+            K_m = np.dot(
+                axis_world,
+                self._effective_mass_ball(
+                    ba2, r_a, bb2 if bb2 else _StaticProxy(), r_b if bb2 else np.zeros(3)
+                )
+                @ axis_world,
+            )
             if abs(K_m) > 1e-12:
                 lam_m = np.clip(
                     err / K_m,
@@ -443,9 +461,13 @@ class PrismaticJoint(Constraint):
                     self.motor_max_force * dt,
                 )
                 self._apply_impulse_pair(
-                    bodies, id_to_idx, self.id_a,
+                    bodies,
+                    id_to_idx,
+                    self.id_a,
                     self.id_b if bb else -1,
-                    lam_m * axis_world, r_a, r_b,
+                    lam_m * axis_world,
+                    r_a,
+                    r_b,
                 )
 
 
@@ -517,7 +539,8 @@ class DistanceJoint(Constraint):
 
         bias = (BAUMGARTE_BETA / dt) * C if abs(C) > BAUMGARTE_SLOP else 0.0
         K = self._effective_mass_ball(
-            ba, r_a,
+            ba,
+            r_a,
             bb if bb else _StaticProxy(),
             r_b if bb else np.zeros(3),
         )
@@ -528,9 +551,13 @@ class DistanceJoint(Constraint):
         lam = -(v_rel_n + bias) / K_n
         impulse = lam * n
         self._apply_impulse_pair(
-            bodies, id_to_idx, self.id_a,
+            bodies,
+            id_to_idx,
+            self.id_a,
             self.id_b if bb else -1,
-            impulse, r_a, r_b,
+            impulse,
+            r_a,
+            r_b,
         )
 
 
@@ -603,9 +630,13 @@ class SpringJoint(Constraint):
         # Convert force to velocity impulse: Δv = (F * dt) / m
         impulse = f_total * dt
         self._apply_impulse_pair(
-            bodies, id_to_idx, self.id_a,
+            bodies,
+            id_to_idx,
+            self.id_a,
             self.id_b if bb else -1,
-            impulse, r_a, r_b,
+            impulse,
+            r_a,
+            r_b,
         )
 
 
@@ -615,10 +646,7 @@ class SpringJoint(Constraint):
 def _perp_basis(n: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     """Return two unit vectors perpendicular to n."""
     n = n / (np.linalg.norm(n) + 1e-12)
-    if abs(n[0]) < 0.9:
-        t = np.array([1.0, 0.0, 0.0])
-    else:
-        t = np.array([0.0, 1.0, 0.0])
+    t = np.array([1.0, 0.0, 0.0]) if abs(n[0]) < 0.9 else np.array([0.0, 1.0, 0.0])
     e1 = np.cross(n, t)
     e1 /= np.linalg.norm(e1) + 1e-12
     e2 = np.cross(n, e1)
@@ -627,6 +655,7 @@ def _perp_basis(n: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
 
 class _StaticProxy:
     """Stand-in for a static/world anchor (zero mass, zero inertia)."""
+
     static = True
     mass = 0.0
     inertia_inv_local = None

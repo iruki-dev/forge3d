@@ -3,10 +3,10 @@
 ImGui DrawList 또는 NumPy 버퍼에 렌더링한다.
 좌표 범위를 벗어나면 clip (예외 없음).
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 import numpy as np
 
@@ -18,9 +18,10 @@ Color = tuple[float, float, float, float]  # RGBA [0,1]
 @dataclass
 class DrawCommand:
     """단일 드로우 커맨드 레코드 (테스트 검증용)."""
-    kind: str         # "text" | "rect" | "image"
+
+    kind: str  # "text" | "rect" | "image"
     pos: tuple[int, int]
-    args: dict        # kind별 추가 인수
+    args: dict  # kind별 추가 인수
 
 
 class Canvas:
@@ -61,7 +62,9 @@ class Canvas:
         w, h = size
         if x + w < 0 or y + h < 0 or x > self.width or y > self.height:
             return
-        self._commands.append(DrawCommand("rect", pos, {"size": size, "color": color, "filled": filled}))
+        self._commands.append(
+            DrawCommand("rect", pos, {"size": size, "color": color, "filled": filled})
+        )
         self._imgui_rect(pos, size, color, filled)
 
     def clear(self) -> None:
@@ -88,7 +91,7 @@ class Canvas:
                 r, g, b, a = cmd.args["color"]
                 x0, x1 = max(0, x), min(self.width, x + w)
                 y0, y1 = max(0, y), min(self.height, y + h)
-                buf[y0:y1, x0:x1] = [int(r*255), int(g*255), int(b*255), int(a*255)]
+                buf[y0:y1, x0:x1] = [int(r * 255), int(g * 255), int(b * 255), int(a * 255)]
         return buf
 
     # ── 내부 ─────────────────────────────────────────────────────────────────
@@ -108,8 +111,9 @@ class Canvas:
         except Exception:
             pass
 
-    def _imgui_rect(self, pos: tuple[int, int], size: tuple[int, int],
-                   color: Color, filled: bool) -> None:
+    def _imgui_rect(
+        self, pos: tuple[int, int], size: tuple[int, int], color: Color, filled: bool
+    ) -> None:
         ig = get_imgui()
         if ig is None:
             return

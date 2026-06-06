@@ -55,21 +55,23 @@ def save_world(world: Any, path: str | Path) -> None:
                 shape_params_serializable[k] = v
             # skip non-serializable objects (e.g. MeshData)
 
-        bodies_data.append({
-            "id": state.body_id,
-            "name": state.name,
-            "shape_type": state.shape_type,
-            "shape_params": shape_params_serializable,
-            "position": state.pos.tolist(),
-            "orientation": state.quat.tolist(),
-            "velocity": state.vel.tolist(),
-            "angular_velocity": state.omega.tolist(),
-            "mass": state.mass,
-            "restitution": state.restitution,
-            "friction": state.friction,
-            "is_static": state.static,
-            "material": state.material_id,
-        })
+        bodies_data.append(
+            {
+                "id": state.body_id,
+                "name": state.name,
+                "shape_type": state.shape_type,
+                "shape_params": shape_params_serializable,
+                "position": state.pos.tolist(),
+                "orientation": state.quat.tolist(),
+                "velocity": state.vel.tolist(),
+                "angular_velocity": state.omega.tolist(),
+                "mass": state.mass,
+                "restitution": state.restitution,
+                "friction": state.friction,
+                "is_static": state.static,
+                "material": state.material_id,
+            }
+        )
 
     # Serialize constraints (joints)
     constraints_data = []
@@ -90,7 +92,7 @@ def save_world(world: Any, path: str | Path) -> None:
                 entry["motor_max_torque"] = c.motor_max_torque
             elif ctype == "PrismaticJoint":
                 axis = getattr(c, "axis_a", None) or getattr(c, "axis", None)
-                entry["axis"] = np.asarray(axis).tolist() if axis is not None else [0,0,1]
+                entry["axis"] = np.asarray(axis).tolist() if axis is not None else [0, 0, 1]
                 entry["limits"] = list(c.limits) if c.limits is not None else None
                 entry["motor_velocity"] = c.motor_velocity
                 entry["motor_max_force"] = c.motor_max_force
@@ -154,33 +156,57 @@ def load_world(path: str | Path) -> Any:
             size = [2 * h for h in he]
             if is_static:
                 bid = world._physics.add_static_box(
-                    size=size, position=pos, material=mat, name=name,
-                    restitution=rest, friction=fric,
+                    size=size,
+                    position=pos,
+                    material=mat,
+                    name=name,
+                    restitution=rest,
+                    friction=fric,
                 )
                 body = f3d.Body(world._physics, bid)
                 world._bodies[bid] = body
             else:
-                body = world.add_box(size=size, position=pos, mass=mass,
-                                      material=mat, name=name,
-                                      restitution=rest, friction=fric)
+                body = world.add_box(
+                    size=size,
+                    position=pos,
+                    mass=mass,
+                    material=mat,
+                    name=name,
+                    restitution=rest,
+                    friction=fric,
+                )
 
         elif shape_type == "sphere":
             radius = float(sp.get("radius", 0.5))
-            body = world.add_sphere(radius=radius, position=pos, mass=mass,
-                                     material=mat, name=name,
-                                     restitution=rest, friction=fric,
-                                     static=is_static)
+            body = world.add_sphere(
+                radius=radius,
+                position=pos,
+                mass=mass,
+                material=mat,
+                name=name,
+                restitution=rest,
+                friction=fric,
+                static=is_static,
+            )
 
         elif shape_type == "capsule":
             radius = float(sp.get("radius", 0.2))
             half_length = float(sp.get("half_length", 0.5))
-            body = world.add_capsule(radius=radius, half_length=half_length,
-                                      position=pos, mass=mass, material=mat,
-                                      name=name, restitution=rest, friction=fric)
+            body = world.add_capsule(
+                radius=radius,
+                half_length=half_length,
+                position=pos,
+                mass=mass,
+                material=mat,
+                name=name,
+                restitution=rest,
+                friction=fric,
+            )
 
         if body is not None:
             # Restore orientation and velocity
             from dataclasses import replace as _replace
+
             state = body._state()
             world._physics._replace_body(
                 state.body_id,
@@ -197,12 +223,12 @@ def load_world(path: str | Path) -> Any:
         try:
             ctype = c.get("type", "")
             jtype_map = {
-                "FixedJoint":     "fixed",
-                "BallJoint":      "ball",
-                "HingeJoint":     "hinge",
+                "FixedJoint": "fixed",
+                "BallJoint": "ball",
+                "HingeJoint": "hinge",
                 "PrismaticJoint": "prismatic",
-                "DistanceJoint":  "distance",
-                "SpringJoint":    "spring",
+                "DistanceJoint": "distance",
+                "SpringJoint": "spring",
             }
             jtype = jtype_map.get(ctype)
             if jtype is None:
@@ -325,7 +351,7 @@ class StateRecorder:
         )
 
     @classmethod
-    def load(cls, path: str | Path) -> "StateRecorder":
+    def load(cls, path: str | Path) -> StateRecorder:
         """Load recorded states from an npz file."""
         path = Path(path)
         npz = np.load(str(path))

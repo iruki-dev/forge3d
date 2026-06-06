@@ -1,4 +1,5 @@
 """AnimationPlayer + BlendTree — ECS 컴포넌트."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -20,8 +21,8 @@ class BlendTree:
     parameter in [0.0, 1.0]: 0→clip_a, 1→clip_b
     """
 
-    clip_a: "AnimationClip"
-    clip_b: "AnimationClip"
+    clip_a: AnimationClip
+    clip_b: AnimationClip
     parameter: float = 0.0  # 블렌딩 가중치
 
     def sample(self, t: float) -> dict[str, np.ndarray]:
@@ -43,9 +44,9 @@ class BlendTree:
 class AnimationPlayer(Component):
     """골격 애니메이션 재생기 ECS 컴포넌트."""
 
-    skeleton: "Skeleton"
-    clip: "AnimationClip | None" = None
-    blend_tree: "BlendTree | None" = None
+    skeleton: Skeleton
+    clip: AnimationClip | None = None
+    blend_tree: BlendTree | None = None
     speed: float = 1.0
     loop: bool = True
     _time: float = field(default=0.0, repr=False)
@@ -82,8 +83,8 @@ class AnimationPlayer(Component):
 class IKTarget(Component):
     """FABRIK IK의 목표 위치를 나타내는 ECS 컴포넌트."""
 
-    chain_root: str      # IK 체인 루트 본 이름
-    chain_tip: str       # IK 체인 끝 본 이름
+    chain_root: str  # IK 체인 루트 본 이름
+    chain_tip: str  # IK 체인 끝 본 이름
     target_position: np.ndarray = field(default_factory=lambda: np.zeros(3))
     max_iterations: int = 20
     tolerance: float = 1e-4

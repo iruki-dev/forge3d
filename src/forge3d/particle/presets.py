@@ -1,4 +1,5 @@
 """VFX 프리셋 — ParticleEmitter.preset() 래퍼."""
+
 from __future__ import annotations
 
 from forge3d.particle.emitter import ParticleEmitter

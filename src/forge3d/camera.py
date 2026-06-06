@@ -238,13 +238,14 @@ class FollowCamera:
         """Compute world-space desired eye position."""
         if self.frame == "local":
             from forge3d.math.quaternion import quat_to_rot
+
             R = quat_to_rot(self._body.orientation)
             world_offset = R @ self.offset
         else:
             world_offset = self.offset
         return self._body.position + world_offset
 
-    def to_snapshot(self, dt: float | None = None) -> "CameraSnapshot":
+    def to_snapshot(self, dt: float | None = None) -> CameraSnapshot:
         """Update smoothed position and return a :class:`CameraSnapshot`.
 
         Parameters
@@ -254,6 +255,7 @@ class FollowCamera:
              legacy per-frame ``alpha`` factor.
         """
         import math
+
         from forge3d.render.snapshot import CameraSnapshot
 
         target = self._body.position.copy()

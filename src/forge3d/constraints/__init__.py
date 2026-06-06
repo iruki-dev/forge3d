@@ -14,6 +14,7 @@ SpringJoint     — spring-damper force element (not a hard constraint)
 """
 
 from forge3d.constraints.base import Constraint, JointHandle
+from forge3d.constraints.joint_type import JointType
 from forge3d.constraints.joints import (
     BallJoint,
     DistanceJoint,
@@ -26,6 +27,7 @@ from forge3d.constraints.joints import (
 __all__ = [
     "Constraint",
     "JointHandle",
+    "JointType",
     "FixedJoint",
     "BallJoint",
     "HingeJoint",

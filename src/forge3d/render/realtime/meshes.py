@@ -246,20 +246,20 @@ def heightfield_mesh(
             if c == 0:
                 dzdc = float(heights[r, 1] - heights[r, 0]) / cell_size
             elif c == cols - 1:
-                dzdc = float(heights[r, cols-1] - heights[r, cols-2]) / cell_size
+                dzdc = float(heights[r, cols - 1] - heights[r, cols - 2]) / cell_size
             else:
-                dzdc = float(heights[r, c+1] - heights[r, c-1]) / (2 * cell_size)
+                dzdc = float(heights[r, c + 1] - heights[r, c - 1]) / (2 * cell_size)
             # dz/dy (along row axis)
             if r == 0:
                 dzdr = float(heights[1, c] - heights[0, c]) / cell_size
             elif r == rows - 1:
-                dzdr = float(heights[rows-1, c] - heights[rows-2, c]) / cell_size
+                dzdr = float(heights[rows - 1, c] - heights[rows - 2, c]) / cell_size
             else:
-                dzdr = float(heights[r+1, c] - heights[r-1, c]) / (2 * cell_size)
+                dzdr = float(heights[r + 1, c] - heights[r - 1, c]) / (2 * cell_size)
             # Normal = (-dz/dx, -dz/dy, 1) normalised
             nx, ny, nz = -dzdc, -dzdr, 1.0
-            n = (nx*nx + ny*ny + nz*nz) ** 0.5
-            verts[r * cols + c, 3:6] = [nx/n, ny/n, nz/n]
+            n = (nx * nx + ny * ny + nz * nz) ** 0.5
+            verts[r * cols + c, 3:6] = [nx / n, ny / n, nz / n]
 
     # Build triangle indices (two triangles per quad)
     idx_list = []

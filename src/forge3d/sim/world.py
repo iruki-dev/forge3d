@@ -93,9 +93,9 @@ class PhysicsWorld:
         # Island sleeping — count of consecutive steps below threshold
         self._sleep_counters: dict[int, int] = {}  # body_id → sleep_frames
         # Sleeping parameters
-        self._sleep_vel_threshold: float = 0.01    # m/s
+        self._sleep_vel_threshold: float = 0.01  # m/s
         self._sleep_omega_threshold: float = 0.01  # rad/s
-        self._sleep_frames_required: int = 60       # ~1 s @ 60 Hz
+        self._sleep_frames_required: int = 60  # ~1 s @ 60 Hz
         self._sleeping_enabled: bool = True
 
     # ── Scene construction ────────────────────────────────────────────────────
@@ -454,11 +454,14 @@ class PhysicsWorld:
         self._bodies = [_vel_step_body(b, dt, self._gravity) for b in self._bodies]
 
         # Step 2: narrow-phase collision detection
-        contacts = detect_contacts(self._bodies, self._ignored_pairs if self._ignored_pairs else None)
+        contacts = detect_contacts(
+            self._bodies, self._ignored_pairs if self._ignored_pairs else None
+        )
 
         # Heightfield contacts (dynamic bodies only — static bodies skip automatically)
         if self._heightfields:
             from forge3d.collision.heightfield import box_vs_heightfield, sphere_vs_heightfield
+
             for idx, body in enumerate(self._bodies):
                 if body.static:
                     continue
@@ -583,9 +586,7 @@ class PhysicsWorld:
             time=self._time,
         )
 
-
-# ── Body integration ──────────────────────────────────────────────────────────
-
+    # ── Body integration ──────────────────────────────────────────────────────────
 
     def _update_sleep_counters(self, contacts: list[Any]) -> None:
         """Update sleep counters and mark bodies as sleeping/awake."""
@@ -604,8 +605,7 @@ class PhysicsWorld:
             bid = body.body_id
             v_mag = np.linalg.norm(body.vel)
             w_mag = np.linalg.norm(body.omega)
-            is_slow = (v_mag < self._sleep_vel_threshold and
-                       w_mag < self._sleep_omega_threshold)
+            is_slow = v_mag < self._sleep_vel_threshold and w_mag < self._sleep_omega_threshold
             is_in_contact = bid in active_ids
 
             if is_slow and not is_in_contact:

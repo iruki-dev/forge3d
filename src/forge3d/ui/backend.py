@@ -1,4 +1,5 @@
 """ImGui 백엔드 — imgui-bundle 자동 감지, 없으면 null 드라이버."""
+
 from __future__ import annotations
 
 import os
@@ -10,10 +11,12 @@ _imgui: Any = None
 if _USE_IMGUI != "0":
     try:
         from imgui_bundle import imgui as _imgui_mod  # type: ignore[import]
+
         _imgui = _imgui_mod
     except ImportError:
         try:
             import imgui as _imgui_mod2  # type: ignore[import]
+
             _imgui = _imgui_mod2
         except ImportError:
             _imgui = None

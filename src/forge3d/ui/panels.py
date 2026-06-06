@@ -2,21 +2,22 @@
 
 ImGui가 없으면 내부 상태만 업데이트하고 렌더는 skip.
 """
+
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 import numpy as np
 
-from forge3d.ui.backend import NullImGui, get_imgui, has_imgui
+from forge3d.ui.backend import NullImGui, get_imgui
 
 if TYPE_CHECKING:
     from forge3d.ecs.entity import Entity, EntityWorld
-    from forge3d.ecs.transform import Transform
 
 
 # ── DebugPanel ────────────────────────────────────────────────────────────────
+
 
 @dataclass
 class DebugPanelState:
@@ -62,9 +63,10 @@ class DebugPanel:
 
 # ── InspectorPanel ────────────────────────────────────────────────────────────
 
+
 @dataclass
 class InspectorState:
-    selected: "Entity | None" = None
+    selected: Entity | None = None
     last_edited_field: str = ""
     last_edited_value: object = None
 
@@ -76,11 +78,11 @@ class InspectorPanel:
         self.title = title
         self.state = InspectorState()
 
-    def select(self, entity: "Entity | None") -> None:
+    def select(self, entity: Entity | None) -> None:
         """선택 엔티티를 변경한다."""
         self.state.selected = entity
 
-    def render(self, ew: "EntityWorld", selected: "Entity | None" = None) -> None:
+    def render(self, ew: EntityWorld, selected: Entity | None = None) -> None:
         """컴포넌트 필드를 표시하고 ImGui 가용 시 편집 가능하게 한다."""
         if selected is not None:
             self.state.selected = selected
@@ -106,19 +108,22 @@ class InspectorPanel:
         except Exception:
             pass
 
-    def _render_null(self, e: "Entity", comps: dict, ew: "EntityWorld") -> None:
+    def _render_null(self, e: Entity, comps: dict, ew: EntityWorld) -> None:
         """ImGui 없는 환경에서 컴포넌트 편집 (직접 값 설정)."""
         from forge3d.ecs.transform import Transform
-        for typ, comp in comps.items():
+
+        for _typ, comp in comps.items():
             if isinstance(comp, Transform):
                 # last_edited_field로 테스트 가능한 편집 경로
                 if self.state.last_edited_field == "position":
                     comp.position = np.asarray(self.state.last_edited_value, dtype=np.float64)
 
-    def _render_component_imgui(self, ig: Any, typ: type, comp: Any,
-                                 ew: "EntityWorld", e: "Entity") -> None:
-        from forge3d.ecs.transform import Transform
+    def _render_component_imgui(
+        self, ig: Any, typ: type, comp: Any, ew: EntityWorld, e: Entity
+    ) -> None:
         from forge3d.ecs.component import Rigidbody
+        from forge3d.ecs.transform import Transform
+
         name = typ.__name__
         try:
             if ig.tree_node(name):
@@ -145,19 +150,20 @@ class InspectorPanel:
 
 # ── HierarchyPanel ────────────────────────────────────────────────────────────
 
+
 class HierarchyPanel:
     """ECS 엔티티 목록을 표시하고 선택할 수 있는 패널."""
 
     def __init__(self, title: str = "Hierarchy") -> None:
         self.title = title
-        self._selected: "Entity | None" = None
+        self._selected: Entity | None = None
         self._entity_list: list[int] = []
 
     @property
-    def selected(self) -> "Entity | None":
+    def selected(self) -> Entity | None:
         return self._selected
 
-    def render(self, ew: "EntityWorld", inspector: InspectorPanel | None = None) -> None:
+    def render(self, ew: EntityWorld, inspector: InspectorPanel | None = None) -> None:
         self._entity_list = list(ew.all_entities())
 
         ig = get_imgui()
@@ -169,7 +175,7 @@ class HierarchyPanel:
             for e in self._entity_list:
                 if not ew.is_alive(e):
                     continue
-                is_selected = (e == self._selected)
+                is_selected = e == self._selected
                 clicked, _ = ig.selectable(f"Entity {e}", is_selected)
                 if clicked:
                     self._selected = e
@@ -179,7 +185,7 @@ class HierarchyPanel:
         except Exception:
             pass
 
-    def select(self, entity: "Entity") -> None:
+    def select(self, entity: Entity) -> None:
         self._selected = entity
 
     @property

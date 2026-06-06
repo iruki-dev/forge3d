@@ -3,6 +3,7 @@
 openal-python 패키지가 설치돼 있고 오디오 디바이스가 있을 때만 활성화된다.
 그렇지 않으면 NullDriver로 폴백한다.
 """
+
 from __future__ import annotations
 
 import logging
@@ -20,6 +21,7 @@ def _try_create() -> Any:
     """OpenAL 컨텍스트 생성을 시도한다. 실패하면 None 반환."""
     try:
         from openal import al, alc  # type: ignore[import]
+
         device = alc.alcOpenDevice(None)
         if not device:
             return None
@@ -49,7 +51,7 @@ class OpenALDriver:
         self.play_count = 0
         self.play_at_calls: list[dict] = []
 
-    def _get_buffer(self, clip: "AudioClip") -> int:
+    def _get_buffer(self, clip: AudioClip) -> int:
         if clip.name in self._buf_cache:
             return self._buf_cache[clip.name]
         al = self._al
@@ -68,7 +70,7 @@ class OpenALDriver:
                 return src
         return None
 
-    def play(self, clip: "AudioClip", volume: float = 1.0, loop: bool = False) -> None:
+    def play(self, clip: AudioClip, volume: float = 1.0, loop: bool = False) -> None:
         src = self._next_source()
         if src is None:
             return
@@ -83,7 +85,7 @@ class OpenALDriver:
 
     def play_at(
         self,
-        clip: "AudioClip",
+        clip: AudioClip,
         position: np.ndarray,
         volume: float = 1.0,
         pitch: float = 1.0,

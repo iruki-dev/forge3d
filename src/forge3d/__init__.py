@@ -1,6 +1,6 @@
 """forge3d — pure-Python 3D game engine.
 
-"Easy like pygame, beautiful like simulation."
+"Fast like native, beautiful like simulation."
 Coordinate system: z-up, SI units (metres, kg, seconds).
 
 Minimal example (14 lines)::
@@ -55,57 +55,73 @@ Public API:
 
 from __future__ import annotations
 
+# Animation (P29)
+from forge3d.animation import (
+    AnimationClip,
+    AnimationPlayer,
+    AnimationSystem,
+    BlendTree,
+    Bone,
+    FABRIKSolver,
+    IKTarget,
+    Skeleton,
+)
 from forge3d.app import App
-from forge3d.render.snapshot import TerrainSnapshot
-from forge3d.errors import Forge3dError, PhysicsError, RenderError, ValidationError
+
+# Audio (P28)
+from forge3d.audio import AudioClip, AudioListener, AudioSource, AudioSystem
 from forge3d.backend import backend_name as _backend_name  # noqa: F401
 from forge3d.camera import FollowCamera, OrbitCamera
-from forge3d.constraints import JointHandle
+from forge3d.character import CharacterController
 from forge3d.collision.layers import CollisionLayer
+from forge3d.constraints import JointHandle
+from forge3d.constraints.joint_type import JointType
+
+# ECS (P27)
+from forge3d.ecs import (
+    CameraComponent,
+    Collider,
+    Component,
+    EntityNotFoundError,
+    EntityWorld,
+    LightComponent,
+    MeshRenderer,
+    PhysicsSystem,
+    RenderSystem,
+    Rigidbody,
+    Script,
+    ScriptSystem,
+    System,
+    Transform,
+    body_to_entity,
+    load_scene,
+    save_scene,
+)
+
+# Editor (P33)
+from forge3d.editor import EditorApp, PlayState
+from forge3d.errors import Forge3dError, PhysicsError, RenderError, ValidationError
 from forge3d.events import CollisionEvent, CollisionHandler
 from forge3d.facade import Body, Material, Shape, World
 from forge3d.input import Input, InputBuilder, Key
 from forge3d.io.world_snapshot import StateRecorder
-from forge3d.recorder import Recorder
-from forge3d.viewer import Viewer
-# Editor (P33)
-from forge3d.editor import EditorApp, PlayState
-# UI system (P32)
-from forge3d.ui import DebugPanel, InspectorPanel, HierarchyPanel, Canvas, UISystem
+
 # Particle system (P31)
 from forge3d.particle import ParticleEmitter, ParticleSystem
-from forge3d.particle.presets import sparks as particle_sparks, smoke as particle_smoke
-# Scene management (P30)
-from forge3d.scene import SceneNode, Prefab, SceneManager
-# Animation (P29)
-from forge3d.animation import (
-    Bone, Skeleton, AnimationClip, AnimationPlayer, BlendTree,
-    IKTarget, FABRIKSolver, AnimationSystem,
-)
-# Audio (P28)
-from forge3d.audio import AudioClip, AudioSource, AudioListener, AudioSystem
-# ECS (P27)
-from forge3d.ecs import (
-    EntityWorld,
-    EntityNotFoundError,
-    Component,
-    Transform,
-    MeshRenderer,
-    Rigidbody,
-    Collider,
-    CameraComponent,
-    LightComponent,
-    Script,
-    System,
-    PhysicsSystem,
-    RenderSystem,
-    ScriptSystem,
-    body_to_entity,
-    save_scene,
-    load_scene,
-)
+from forge3d.particle.presets import smoke as particle_smoke
+from forge3d.particle.presets import sparks as particle_sparks
+from forge3d.profiler import PhysicsProfile, PhysicsProfiler
+from forge3d.recorder import Recorder
+from forge3d.render.snapshot import TerrainSnapshot
 
-__version__ = "2.0.0"
+# Scene management (P30)
+from forge3d.scene import Prefab, SceneManager, SceneNode
+
+# UI system (P32)
+from forge3d.ui import Canvas, DebugPanel, HierarchyPanel, InspectorPanel, UISystem
+from forge3d.viewer import Viewer
+
+__version__ = "2.1.0"
 
 # ── API 안정성 선언 ───────────────────────────────────────────────────────────
 # Stable (v3까지 Breaking change 없음):
@@ -123,6 +139,12 @@ __all__ = [
     "Material",
     # Joints
     "JointHandle",
+    "JointType",
+    # Character
+    "CharacterController",
+    # Profiler
+    "PhysicsProfiler",
+    "PhysicsProfile",
     # Events
     "CollisionEvent",
     "CollisionHandler",
@@ -152,16 +174,32 @@ __all__ = [
     # Version
     "__version__",
     # Editor (P33)
-    "EditorApp", "PlayState",
+    "EditorApp",
+    "PlayState",
     # UI system (P32)
-    "DebugPanel", "InspectorPanel", "HierarchyPanel", "Canvas", "UISystem",
+    "DebugPanel",
+    "InspectorPanel",
+    "HierarchyPanel",
+    "Canvas",
+    "UISystem",
     # Particle system (P31)
-    "ParticleEmitter", "ParticleSystem",
+    "ParticleEmitter",
+    "ParticleSystem",
+    "particle_sparks",
+    "particle_smoke",
     # Scene management (P30)
-    "SceneNode", "Prefab", "SceneManager",
+    "SceneNode",
+    "Prefab",
+    "SceneManager",
     # Animation (P29)
-    "Bone", "Skeleton", "AnimationClip", "AnimationPlayer",
-    "BlendTree", "IKTarget", "FABRIKSolver", "AnimationSystem",
+    "Bone",
+    "Skeleton",
+    "AnimationClip",
+    "AnimationPlayer",
+    "BlendTree",
+    "IKTarget",
+    "FABRIKSolver",
+    "AnimationSystem",
     # Audio (P28)
     "AudioClip",
     "AudioSource",

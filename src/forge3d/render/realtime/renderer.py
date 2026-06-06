@@ -19,6 +19,7 @@ Usage::
 
 from __future__ import annotations
 
+import contextlib
 from typing import Any
 
 import numpy as np
@@ -403,7 +404,7 @@ class RealtimeRenderer(Renderer):
         key = id(terrain.heights)
         if key not in self._terrain_vaos:
             verts, idx = heightfield_mesh(terrain.heights, terrain.cell_size, terrain.origin)
-            solid  = self._make_solid_vao(self._ctx, verts, idx)
+            solid = self._make_solid_vao(self._ctx, verts, idx)
             shadow = self._make_shadow_vao(self._ctx, verts, idx)
             self._terrain_vaos[key] = (solid, shadow)
         return self._terrain_vaos[key]
@@ -458,10 +459,8 @@ class RealtimeRenderer(Renderer):
             M = self._model_matrix(body, scale).astype(np.float32)
             light_MVP = (light_VP @ M).astype(np.float32)
             svao, sn = shadow_vao_t
-            try:
+            with contextlib.suppress(KeyError):
                 self._shadow_prog["u_light_MVP"].write(_col_major(light_MVP))
-            except KeyError:
-                pass
             svao.render(mode=ctx.TRIANGLES, vertices=sn)
 
         # Terrain shadow pass
@@ -469,10 +468,8 @@ class RealtimeRenderer(Renderer):
             _, shadow_vao_t = self._get_terrain_vaos(terrain)
             light_MVP = (light_VP @ I4).astype(np.float32)
             svao, sn = shadow_vao_t
-            try:
+            with contextlib.suppress(KeyError):
                 self._shadow_prog["u_light_MVP"].write(_col_major(light_MVP))
-            except KeyError:
-                pass
             svao.render(mode=ctx.TRIANGLES, vertices=sn)
 
         # ── Main PBR pass ─────────────────────────────────────────────────────
@@ -577,10 +574,8 @@ class RealtimeRenderer(Renderer):
         # ── Axes ──────────────────────────────────────────────────────────────
         ax_vao, ax_n, ax_colors = self._vaos["axes"]
         for i in range(3):
-            try:
+            with contextlib.suppress(KeyError):
                 self._flat_prog["u_color"].write(ax_colors[i * 2].tobytes())
-            except KeyError:
-                pass
             ax_vao.render(mode=ctx.LINES, vertices=2, first=i * 2)
 
         ctx.enable(ctx.DEPTH_TEST)
@@ -589,6 +584,103 @@ class RealtimeRenderer(Renderer):
         data = self._render_fbo.read(components=3, dtype="f1")
         frame = np.frombuffer(data, dtype=np.uint8).reshape(self._height, self._width, 3)
         return frame[::-1].copy()  # flip: OpenGL origin is bottom-left
+
+    # ── HUD text overlay ──────────────────────────────────────────────────────
+
+    # Inline shaders for 2-D pixel-space textured quad
+    _HUD_V = """
+#version 330 core
+uniform vec2 u_screen;
+in vec2 in_pos; in vec2 in_uv; out vec2 v_uv;
+void main() {
+    vec2 ndc = (in_pos / u_screen) * 2.0 - 1.0;
+    ndc.y = -ndc.y;
+    gl_Position = vec4(ndc, 0.0, 1.0);
+    v_uv = in_uv;
+}
+"""
+    _HUD_F = """
+#version 330 core
+uniform sampler2D u_tex;
+in vec2 v_uv; out vec4 fc;
+void main() {
+    vec4 c = texture(u_tex, v_uv);
+    if (c.a < 0.02) discard;
+    fc = c;
+}
+"""
+
+    def draw_text(
+        self,
+        text: str,
+        x: int = 10,
+        y: int = 10,
+        size: int = 20,
+        color: tuple = (1.0, 1.0, 1.0),
+        bg_alpha: float = 0.6,
+        anchor: str = "topleft",
+    ) -> None:
+        """Render HUD text on the current offscreen framebuffer.
+
+        Must be called *after* :meth:`render`.  Allocates and releases GPU
+        resources each call (headless mode — no window to cache for).
+        """
+        if self._ctx is None:
+            return
+        try:
+            import moderngl as _mgl
+
+            from forge3d.render.realtime.window_renderer import _render_text_rgba
+        except ImportError:
+            return
+
+        raw, tw, th = _render_text_rgba(text, size, color, bg_alpha, pad=4)
+
+        ctx = self._ctx
+        tex = ctx.texture((tw, th), 4, raw)
+        tex.filter = _mgl.NEAREST, _mgl.NEAREST
+
+        if anchor == "center":
+            x0, y0 = x - tw // 2, y - th // 2
+        elif anchor == "topright":
+            x0, y0 = x - tw, y
+        else:
+            x0, y0 = x, y
+        x1, y1 = x0 + tw, y0 + th
+        W, H = self._width, self._height
+
+        prog = ctx.program(vertex_shader=self._HUD_V, fragment_shader=self._HUD_F)
+        verts = np.array(
+            [
+                [x0, y0, 0.0, 0.0],
+                [x1, y0, 1.0, 0.0],
+                [x0, y1, 0.0, 1.0],
+                [x1, y0, 1.0, 0.0],
+                [x1, y1, 1.0, 1.0],
+                [x0, y1, 0.0, 1.0],
+            ],
+            dtype=np.float32,
+        )
+        vbo = ctx.buffer(verts.tobytes())
+        vao = ctx.vertex_array(prog, [(vbo, "2f 2f", "in_pos", "in_uv")])
+
+        ctx.disable(ctx.DEPTH_TEST)
+        ctx.enable(ctx.BLEND)
+        ctx.blend_func = ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA
+        tex.use(0)
+        try:
+            prog["u_tex"] = 0
+            prog["u_screen"].write(np.array([W, H], dtype=np.float32).tobytes())
+        except KeyError:
+            pass
+        vao.render()
+        ctx.disable(ctx.BLEND)
+        ctx.enable(ctx.DEPTH_TEST)
+
+        vao.release()
+        vbo.release()
+        tex.release()
+        prog.release()
 
     # ── Cleanup ───────────────────────────────────────────────────────────────
 

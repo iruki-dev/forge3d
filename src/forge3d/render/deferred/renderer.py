@@ -9,10 +9,10 @@
 
 SceneSnapshot 계약 유지: 물리 코어는 이 파일을 import하지 않는다.
 """
+
 from __future__ import annotations
 
-import importlib.resources
-import os
+import contextlib
 from pathlib import Path
 from typing import Any
 
@@ -57,10 +57,7 @@ def _perspective(fov_deg: float, aspect: float, near: float, far: float) -> np.n
 def _lookat(eye: np.ndarray, target: np.ndarray, up: np.ndarray) -> np.ndarray:
     f = target - eye
     f_norm = np.linalg.norm(f)
-    if f_norm < 1e-10:
-        f = np.array([0.0, 0.0, -1.0])
-    else:
-        f = f / f_norm
+    f = np.array([0.0, 0.0, -1.0]) if f_norm < 1e-10 else f / f_norm
     s = np.cross(f, up)
     s_norm = np.linalg.norm(s)
     s = s / (s_norm + 1e-10)
@@ -75,8 +72,9 @@ def _lookat(eye: np.ndarray, target: np.ndarray, up: np.ndarray) -> np.ndarray:
     return M
 
 
-def _ortho(left: float, right: float, bottom: float, top: float,
-           near: float, far: float) -> np.ndarray:
+def _ortho(
+    left: float, right: float, bottom: float, top: float, near: float, far: float
+) -> np.ndarray:
     M = np.zeros((4, 4), dtype=np.float32)
     M[0, 0] = 2.0 / (right - left)
     M[1, 1] = 2.0 / (top - bottom)
@@ -160,11 +158,11 @@ class DeferredRenderer(Renderer):
         S = self.SHADOW_SIZE
 
         # ── G-Buffer FBO ──
-        self._g_pos     = ctx.texture((W, H), 3, dtype="f4")
-        self._g_norm    = ctx.texture((W, H), 3, dtype="f2")
-        self._g_ar      = ctx.texture((W, H), 4)              # albedo+rough RGBA8
-        self._g_em      = ctx.texture((W, H), 4)              # emissive+metal RGBA8
-        self._g_depth   = ctx.depth_texture((W, H))
+        self._g_pos = ctx.texture((W, H), 3, dtype="f4")
+        self._g_norm = ctx.texture((W, H), 3, dtype="f2")
+        self._g_ar = ctx.texture((W, H), 4)  # albedo+rough RGBA8
+        self._g_em = ctx.texture((W, H), 4)  # emissive+metal RGBA8
+        self._g_depth = ctx.depth_texture((W, H))
         self._gbuffer_fbo = ctx.framebuffer(
             color_attachments=[self._g_pos, self._g_norm, self._g_ar, self._g_em],
             depth_attachment=self._g_depth,
@@ -181,15 +179,17 @@ class DeferredRenderer(Renderer):
             self._shadow_fbos.append(fbo)
 
         # ── SSAO ──
-        self._ssao_raw  = ctx.texture((W, H), 1, dtype="f1")
+        self._ssao_raw = ctx.texture((W, H), 1, dtype="f1")
         self._ssao_blur = ctx.texture((W, H), 1, dtype="f1")
-        self._ssao_fbo      = ctx.framebuffer(color_attachments=[self._ssao_raw])
+        self._ssao_fbo = ctx.framebuffer(color_attachments=[self._ssao_raw])
         self._ssao_blur_fbo = ctx.framebuffer(color_attachments=[self._ssao_blur])
 
         kernel = _ssao_kernel(self.ssao_samples)
         noise_data = _ssao_noise(self.NOISE_SIZE)
         self._ssao_noise_tex = ctx.texture(
-            (self.NOISE_SIZE, self.NOISE_SIZE), 3, dtype="f4",
+            (self.NOISE_SIZE, self.NOISE_SIZE),
+            3,
+            dtype="f4",
             data=noise_data.astype(np.float32).tobytes(),
         )
         self._ssao_noise_tex.repeat_x = True
@@ -199,7 +199,7 @@ class DeferredRenderer(Renderer):
         # ── HDR + Bloom ──
         self._hdr_color = ctx.texture((W, H), 3, dtype="f2")  # RGB16F HDR
         self._hdr_depth = ctx.depth_texture((W, H))
-        self._hdr_fbo   = ctx.framebuffer(
+        self._hdr_fbo = ctx.framebuffer(
             color_attachments=[self._hdr_color], depth_attachment=self._hdr_depth
         )
         self._bloom_a = ctx.texture((W // 2, H // 2), 3, dtype="f2")
@@ -209,7 +209,7 @@ class DeferredRenderer(Renderer):
 
         # ── 최종 출력 ──
         self._final_color = ctx.texture((W, H), 4)
-        self._final_fbo   = ctx.framebuffer(color_attachments=[self._final_color])
+        self._final_fbo = ctx.framebuffer(color_attachments=[self._final_color])
 
         # ── 셰이더 프로그램 ──
         fs_vert = _load_shader("fullscreen.vert")
@@ -316,7 +316,10 @@ class DeferredRenderer(Renderer):
         return _model_matrix(pos, rot, scale)
 
     def _cascade_light_vps(
-        self, snapshot: SceneSnapshot, view: np.ndarray, proj: np.ndarray,
+        self,
+        snapshot: SceneSnapshot,
+        view: np.ndarray,
+        proj: np.ndarray,
     ) -> tuple[list[np.ndarray], list[float]]:
         cam = snapshot.camera
         near = cam.near if cam else 0.1
@@ -332,9 +335,7 @@ class DeferredRenderer(Renderer):
                 light_dir = d / n
 
         light_vps: list[np.ndarray] = []
-        for i, (z_near, z_far) in enumerate(
-            zip([near] + splits[:-1], splits)
-        ):
+        for _i, (z_near, z_far) in enumerate(zip([near] + splits[:-1], splits, strict=False)):
             # frustum corners in world space (approximate via bounding sphere)
             center_z = (z_near + z_far) * 0.5
             radius = (z_far - z_near) * 0.5 * 1.5
@@ -351,7 +352,9 @@ class DeferredRenderer(Renderer):
 
             lpos = frustum_center - light_dir * (radius + 1.0)
             ltarget = frustum_center
-            lup = np.array([0.0, 0.0, 1.0]) if abs(light_dir[2]) < 0.9 else np.array([0.0, 1.0, 0.0])
+            lup = (
+                np.array([0.0, 0.0, 1.0]) if abs(light_dir[2]) < 0.9 else np.array([0.0, 1.0, 0.0])
+            )
 
             l_view = _lookat(lpos, ltarget, lup)
             l_proj = _ortho(-radius, radius, -radius, radius, 0.1, radius * 2 + 2.0)
@@ -392,7 +395,7 @@ class DeferredRenderer(Renderer):
 
         # ── 1. Shadow pass ──────────────────────────────────────────────
         ctx.enable(ctx.DEPTH_TEST)
-        for ci, (shadow_fbo, light_vp) in enumerate(zip(self._shadow_fbos, light_vps)):
+        for shadow_fbo, light_vp in zip(self._shadow_fbos, light_vps, strict=False):
             shadow_fbo.use()
             ctx.viewport = (0, 0, self.SHADOW_SIZE, self.SHADOW_SIZE)
             ctx.clear(depth=1.0)
@@ -403,10 +406,8 @@ class DeferredRenderer(Renderer):
                 svao, _n = svao_pair
                 M = self._body_model_matrix(body)
                 light_mvp = (light_vp @ M).astype(np.float32)
-                try:
+                with contextlib.suppress(KeyError):
                     self._prog_shadow["u_light_mvp"].write(light_mvp.T.tobytes())
-                except KeyError:
-                    pass
                 svao.render()
 
         # ── 2. G-Buffer pass ─────────────────────────────────────────────
@@ -434,8 +435,12 @@ class DeferredRenderer(Renderer):
                 self._prog_gbuf["u_albedo"].value = tuple(mat.color[:3])
                 self._prog_gbuf["u_roughness"].value = float(mat.roughness)
                 self._prog_gbuf["u_metallic"].value = float(mat.metallic)
-                emissive = getattr(mat, "emissive", (0.0, 0.0, 0.0))
-                self._prog_gbuf["u_emissive"].value = tuple(emissive[:3])
+                emissive_raw = getattr(mat, "emissive", 0.0)
+                if isinstance(emissive_raw, (int, float)):
+                    emissive_val = (float(emissive_raw),) * 3
+                else:
+                    emissive_val = tuple(emissive_raw[:3])
+                self._prog_gbuf["u_emissive"].value = emissive_val
                 self._prog_gbuf["u_has_texture"].value = False
             except KeyError:
                 pass
@@ -471,10 +476,8 @@ class DeferredRenderer(Renderer):
         ctx.clear(1.0, 1.0, 1.0, 1.0)
         self._ssao_raw.use(0)
         fsq_blur = ctx.vertex_array(self._prog_ssao_blur, [])
-        try:
+        with contextlib.suppress(KeyError):
             self._prog_ssao_blur["u_ssao_raw"].value = 0
-        except KeyError:
-            pass
         fsq_blur.render(mode=ctx.TRIANGLE_STRIP, vertices=4)
 
         # ── 4. Lighting pass (HDR FBO) ───────────────────────────────────
@@ -504,7 +507,7 @@ class DeferredRenderer(Renderer):
             self._prog_lighting["u_light_intensity"].value = light_intensity
             self._prog_lighting["u_has_shadow"].value = has_light
             self._prog_lighting["u_view"].write(view.T.astype(np.float32).tobytes())
-            for ci, (lvp, sp) in enumerate(zip(light_vps, splits)):
+            for ci, (lvp, sp) in enumerate(zip(light_vps, splits, strict=False)):
                 self._prog_lighting[f"u_light_vp[{ci}]"].write(lvp.T.tobytes())
                 self._prog_lighting[f"u_cascade_splits[{ci}]"].value = float(sp)
         except KeyError:

@@ -1,8 +1,10 @@
 """EditorApp — ImGui 기반 씬 에디터 메인 클래스."""
+
 from __future__ import annotations
 
+from collections.abc import Callable
 from enum import Enum, auto
-from typing import TYPE_CHECKING, Any, Callable
+from typing import TYPE_CHECKING
 
 import numpy as np
 
@@ -17,9 +19,10 @@ if TYPE_CHECKING:
 
 class PlayState(Enum):
     """에디터 플레이 상태 머신."""
-    EDIT = auto()    # 물리 정지, 에디터 활성
-    PLAY = auto()    # 물리 실행
-    PAUSE = auto()   # 물리 일시정지
+
+    EDIT = auto()  # 물리 정지, 에디터 활성
+    PLAY = auto()  # 물리 실행
+    PAUSE = auto()  # 물리 일시정지
 
 
 class EditorApp:
@@ -31,8 +34,8 @@ class EditorApp:
 
     def __init__(
         self,
-        world: "World",
-        entity_world: "EntityWorld",
+        world: World,
+        entity_world: EntityWorld,
         config: LayoutConfig | None = None,
         dt: float = 1 / 60,
     ) -> None:
@@ -96,6 +99,7 @@ class EditorApp:
     def update(self) -> None:
         """한 프레임을 처리한다 (물리 스텝 + UI 업데이트)."""
         import time
+
         t0 = time.perf_counter()
 
         if self._state == PlayState.PLAY or self._step_requested:
@@ -111,7 +115,6 @@ class EditorApp:
         self._fps = 1.0 / max(self._dt, 1e-6)
 
         # 패널 업데이트
-        from forge3d.ecs.entity import EntityWorld
         body_count = len(self._ew.all_entities())
         self.debug.render(fps=self._fps, body_count=body_count, step_ms=step_ms)
         self.hierarchy.render(ew=self._ew, inspector=self.inspector)
@@ -153,6 +156,7 @@ class EditorApp:
     def save_scene(self, path: str | None = None) -> None:
         """현재 ECS 씬을 JSON으로 저장한다."""
         from forge3d.ecs.serialization import save_scene
+
         target = path or self._scene_path
         save_scene(self._ew, target)
         if self._on_scene_saved:
@@ -174,6 +178,7 @@ class EditorApp:
     def run(self, max_frames: int = 0) -> None:
         """에디터를 실행한다. ImGui 가용 시 실제 창, 없으면 1프레임 headless."""
         from forge3d.ui.backend import has_imgui
+
         if has_imgui():
             self._run_imgui(max_frames)
         else:

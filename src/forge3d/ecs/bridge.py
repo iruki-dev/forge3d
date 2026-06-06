@@ -1,4 +1,5 @@
 """v1 Body ↔ ECS 엔티티 브릿지."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any
@@ -12,7 +13,7 @@ if TYPE_CHECKING:
     from forge3d.ecs.entity import Entity, EntityWorld
 
 
-def body_to_entity(world: Any, body: Any, ew: "EntityWorld") -> "Entity":
+def body_to_entity(world: Any, body: Any, ew: EntityWorld) -> Entity:
     """기존 v1 Body를 ECS 엔티티로 래핑한다 (파괴적 변환 없음).
 
     Args:
@@ -69,4 +70,4 @@ def _shape_to_mesh_id(shape_type: str, body: Any) -> str:
         return "capsule_1"
     sp = getattr(body, "shape_params", {})
     he = sp.get("half_extents", [0.5, 0.5, 0.5])
-    return f"box_{he[0]*2:.1f}x{he[1]*2:.1f}x{he[2]*2:.1f}"
+    return f"box_{he[0] * 2:.1f}x{he[1] * 2:.1f}x{he[2] * 2:.1f}"

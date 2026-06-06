@@ -13,10 +13,59 @@ from typing import Any
 
 @dataclass
 class Transform:
-    """6-DOF pose: position (3,) and rotation matrix (3, 3)."""
+    """6-DOF pose: position (3,) and rotation matrix (3, 3).
+
+    Convenience properties::
+
+        transform.quaternion   # → ndarray [w, x, y, z]
+        transform.matrix4      # → ndarray (4, 4) column-major model matrix
+    """
 
     position: Any  # ndarray (3,) float64
     rotation: Any  # ndarray (3, 3) float64
+
+    @property
+    def quaternion(self) -> Any:
+        """Orientation as a unit quaternion ``[w, x, y, z]``."""
+        import numpy as _np
+
+        R = self.rotation
+        trace = R[0, 0] + R[1, 1] + R[2, 2]
+        if trace > 0.0:
+            s = 0.5 / _np.sqrt(trace + 1.0)
+            w = 0.25 / s
+            x = (R[2, 1] - R[1, 2]) * s
+            y = (R[0, 2] - R[2, 0]) * s
+            z = (R[1, 0] - R[0, 1]) * s
+        elif R[0, 0] > R[1, 1] and R[0, 0] > R[2, 2]:
+            s = 2.0 * _np.sqrt(1.0 + R[0, 0] - R[1, 1] - R[2, 2])
+            w = (R[2, 1] - R[1, 2]) / s
+            x = 0.25 * s
+            y = (R[0, 1] + R[1, 0]) / s
+            z = (R[0, 2] + R[2, 0]) / s
+        elif R[1, 1] > R[2, 2]:
+            s = 2.0 * _np.sqrt(1.0 + R[1, 1] - R[0, 0] - R[2, 2])
+            w = (R[0, 2] - R[2, 0]) / s
+            x = (R[0, 1] + R[1, 0]) / s
+            y = 0.25 * s
+            z = (R[1, 2] + R[2, 1]) / s
+        else:
+            s = 2.0 * _np.sqrt(1.0 + R[2, 2] - R[0, 0] - R[1, 1])
+            w = (R[1, 0] - R[0, 1]) / s
+            x = (R[0, 2] + R[2, 0]) / s
+            y = (R[1, 2] + R[2, 1]) / s
+            z = 0.25 * s
+        return _np.array([w, x, y, z], dtype=_np.float64)
+
+    @property
+    def matrix4(self) -> Any:
+        """4×4 homogeneous model matrix in column-major order."""
+        import numpy as _np
+
+        M = _np.eye(4, dtype=_np.float64)
+        M[:3, :3] = self.rotation
+        M[:3, 3] = self.position
+        return M
 
 
 @dataclass
@@ -28,6 +77,7 @@ class BodySnapshot:
     shape_type: str  # 'box' | 'sphere' | 'capsule' | 'plane' | 'mesh'
     shape_params: dict[str, Any]  # e.g. {'half_extents': [.5,.5,.5]}, {'radius': .5}
     material_id: str = "default"
+    material: Material | None = None  # resolved material object (takes priority over material_id)
 
 
 @dataclass
@@ -59,8 +109,9 @@ class Material:
     color: Any = field(default_factory=lambda: (0.8, 0.8, 0.8))  # RGB [0,1]
     roughness: float = 0.5
     metallic: float = 0.0
-    texture_path: str | None = None      # path to albedo image file (PNG/JPEG)
-    normal_map_path: str | None = None   # path to tangent-space normal map
+    emissive: float = 0.0  # emissive intensity (0 = no glow)
+    texture_path: str | None = None  # path to albedo image file (PNG/JPEG)
+    normal_map_path: str | None = None  # path to tangent-space normal map
 
 
 # Built-in material palette: renderers fall back to these when material_id is unknown
@@ -84,13 +135,16 @@ class TerrainSnapshot:
         heights: 2D float32 array of shape (rows, cols).
         cell_size: World-space size of each grid cell (m).
         origin: World-space (x, y, z) of the grid (0, 0) corner.
-        material_id: Key into SceneSnapshot.materials.
+        material_id: Key into SceneSnapshot.materials (backward-compat).
+        material: Resolved material object — use this instead of material_id
+                  so renderers don't need to look up BUILTIN_MATERIALS.
     """
 
-    heights: Any       # np.ndarray (rows, cols) float32
+    heights: Any  # np.ndarray (rows, cols) float32
     cell_size: float
-    origin: Any        # np.ndarray (3,) float64
+    origin: Any  # np.ndarray (3,) float64
     material_id: str = "ground"
+    material: Material | None = None  # resolved material object
 
 
 @dataclass

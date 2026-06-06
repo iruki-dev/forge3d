@@ -69,6 +69,10 @@ uniform float u_roughness;       // 0 = mirror, 1 = fully diffuse
 // Camera
 uniform vec3  u_eye;
 
+// Fog  (density 0 = disabled, fog_color = sky colour to match)
+uniform float u_fog_density;
+uniform vec3  u_fog_color;
+
 // Textures
 uniform sampler2D u_shadow_map;
 uniform sampler2D u_albedo_map;
@@ -167,6 +171,13 @@ void main() {
     // Reinhard HDR tone mapping + gamma correction
     color = color / (color + vec3(1.0));
     color = pow(clamp(color, 0.0, 1.0), vec3(1.0 / 2.2));
+
+    // Distance fog  (u_fog_density == 0  →  no effect)
+    // Exponential-squared fog: smooth atmospheric depth
+    float fog_dist   = distance(v_world_pos, u_eye);
+    float fog_factor = exp(-u_fog_density * u_fog_density * fog_dist * fog_dist);
+    fog_factor = clamp(fog_factor, 0.0, 1.0);
+    color = mix(u_fog_color, color, fog_factor);
 
     frag_color = vec4(color, 1.0);
 }

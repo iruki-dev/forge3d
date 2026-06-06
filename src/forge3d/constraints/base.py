@@ -9,11 +9,11 @@ from typing import TYPE_CHECKING, Any
 import numpy as np
 
 if TYPE_CHECKING:
-    from forge3d.sim.world import _Body
+    pass
 
 # Baumgarte stabilization — position error fed back as velocity bias
-BAUMGARTE_BETA = 0.05   # conservative: avoids instability while still correcting drift
-BAUMGARTE_SLOP = 1e-3   # 1 mm dead-zone
+BAUMGARTE_BETA = 0.05  # conservative: avoids instability while still correcting drift
+BAUMGARTE_SLOP = 1e-3  # 1 mm dead-zone
 
 
 @dataclass
@@ -61,13 +61,12 @@ class Constraint(ABC):
         return R @ I_inv_local @ R.T
 
     @staticmethod
-    def _effective_mass_ball(
-        b_a: Any, r_a: np.ndarray, b_b: Any, r_b: np.ndarray
-    ) -> np.ndarray:
+    def _effective_mass_ball(b_a: Any, r_a: np.ndarray, b_b: Any, r_b: np.ndarray) -> np.ndarray:
         """Effective mass matrix K (3×3) for a point-to-point constraint.
 
         K = K_a + K_b  where  K_x = 1/m_x * I + [r_x×] * I_x_world_inv * [r_x×]ᵀ
         """
+
         def _k(b: Any, r: np.ndarray) -> np.ndarray:
             if b.static:
                 return np.zeros((3, 3))
@@ -116,17 +115,21 @@ class Constraint(ABC):
 def _quat_to_rot(q: np.ndarray) -> np.ndarray:
     """Quaternion [w,x,y,z] → 3×3 rotation matrix."""
     w, x, y, z = q
-    return np.array([
-        [1 - 2*(y*y + z*z),   2*(x*y - w*z),     2*(x*z + w*y)],
-        [2*(x*y + w*z),       1 - 2*(x*x + z*z), 2*(y*z - w*x)],
-        [2*(x*z - w*y),       2*(y*z + w*x),     1 - 2*(x*x + y*y)],
-    ])
+    return np.array(
+        [
+            [1 - 2 * (y * y + z * z), 2 * (x * y - w * z), 2 * (x * z + w * y)],
+            [2 * (x * y + w * z), 1 - 2 * (x * x + z * z), 2 * (y * z - w * x)],
+            [2 * (x * z - w * y), 2 * (y * z + w * x), 1 - 2 * (x * x + y * y)],
+        ]
+    )
 
 
 def _skew(v: np.ndarray) -> np.ndarray:
     """Skew-symmetric cross-product matrix."""
-    return np.array([
-        [ 0.0, -v[2],  v[1]],
-        [ v[2],  0.0, -v[0]],
-        [-v[1],  v[0],  0.0],
-    ])
+    return np.array(
+        [
+            [0.0, -v[2], v[1]],
+            [v[2], 0.0, -v[0]],
+            [-v[1], v[0], 0.0],
+        ]
+    )

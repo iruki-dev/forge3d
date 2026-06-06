@@ -1,6 +1,6 @@
 """forge3d public Facade — World, Body, Shape, Material.
 
-"Easy like pygame, beautiful like simulation."
+"Fast like native, beautiful like simulation."
 Coordinate system: z-up, SI units.
 
 Users only need::
@@ -45,6 +45,7 @@ class Material:
     color: Any = "default"  # str preset OR (R, G, B) tuple
     roughness: float = 0.5
     metallic: float = 0.0
+    emissive: float = 0.0  # emissive glow intensity (0 = none)
     texture_path: str | None = None  # path to albedo texture image
     normal_map_path: str | None = None
 
@@ -73,6 +74,7 @@ class Material:
                 color=base.color if base else (0.75, 0.75, 0.75),
                 roughness=self.roughness,
                 metallic=self.metallic,
+                emissive=self.emissive,
                 texture_path=self.texture_path,
                 normal_map_path=self.normal_map_path,
             )
@@ -80,6 +82,7 @@ class Material:
             color=tuple(self.color),
             roughness=self.roughness,
             metallic=self.metallic,
+            emissive=self.emissive,
             texture_path=self.texture_path,
             normal_map_path=self.normal_map_path,
         )
@@ -160,6 +163,8 @@ class Body:
         # Per-body velocity damping (applied by World.step, per second)
         self._linear_damping: float = 0.0
         self._angular_damping: float = 0.0
+        # Back-reference to World (set by World after creation) for per-body callbacks
+        self._world_ref: Any = None
 
     def _state(self) -> _Body:
         return self._pw._get_body(self._id)
@@ -188,8 +193,15 @@ class Body:
 
     @property
     def name(self) -> str:
-        """Human-readable name assigned at creation."""
+        """Human-readable name assigned at creation.  Can be changed at runtime."""
         return self._state().name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        from dataclasses import replace
+
+        b = self._state()
+        self._pw._replace_body(self._id, replace(b, name=str(value)))
 
     @property
     def is_static(self) -> bool:
@@ -262,6 +274,7 @@ class Body:
     @friction.setter
     def friction(self, value: float) -> None:
         from dataclasses import replace
+
         b = self._state()
         self._pw._replace_body(self._id, replace(b, friction=max(0.0, float(value))))
 
@@ -273,6 +286,7 @@ class Body:
     @restitution.setter
     def restitution(self, value: float) -> None:
         from dataclasses import replace
+
         b = self._state()
         self._pw._replace_body(self._id, replace(b, restitution=float(np.clip(value, 0.0, 1.0))))
 
@@ -302,6 +316,27 @@ class Body:
         self._angular_damping = max(0.0, float(value))
 
     @property
+    def shape_type(self) -> str:
+        """Shape kind: ``'box'``, ``'sphere'``, ``'capsule'``, ``'mesh'``, etc."""
+        return self._state().shape_type
+
+    @property
+    def shape_params(self) -> dict:
+        """Shape parameters dict (e.g. ``{'half_extents': array([0.5, 0.5, 0.5])}``).
+
+        Returns a copy — mutating the dict does not affect the simulation.
+        """
+        sp = self._state().shape_params
+        return {k: (v.copy() if hasattr(v, "copy") else v) for k, v in sp.items()}
+
+    @property
+    def rotation_matrix(self) -> np.ndarray:
+        """Body orientation as a 3×3 rotation matrix (world frame)."""
+        from forge3d.math.quaternion import quat_to_rot
+
+        return quat_to_rot(self._state().quat)
+
+    @property
     def is_sleeping(self) -> bool:
         """True if this body is below the sleep velocity threshold for ≥ 1 s."""
         return self._pw.is_sleeping(self._id)
@@ -314,6 +349,7 @@ class Body:
     @collision_layer.setter
     def collision_layer(self, value: int) -> None:
         from dataclasses import replace
+
         b = self._state()
         self._pw._replace_body(self._id, replace(b, collision_layer=int(value)))
 
@@ -325,8 +361,32 @@ class Body:
     @collision_mask.setter
     def collision_mask(self, value: int) -> None:
         from dataclasses import replace
+
         b = self._state()
         self._pw._replace_body(self._id, replace(b, collision_mask=int(value)))
+
+    # ── Per-body collision callbacks ───────────────────────────────────────────
+
+    def on_collision_begin(self, fn: Any) -> Any:
+        """Register a callback fired when this body first contacts another.
+
+        The callback receives ``(other: Body, event: CollisionEvent)``.
+
+        Can be used as a decorator::
+
+            @player.on_collision_begin
+            def hit(other, event):
+                print(f"player hit {other.name}")
+        """
+        if self._world_ref is not None:
+            self._world_ref._events.add_body_begin_listener(self._id, fn)
+        return fn
+
+    def on_collision_end(self, fn: Any) -> Any:
+        """Register a callback fired when this body separates from another."""
+        if self._world_ref is not None:
+            self._world_ref._events.add_body_end_listener(self._id, fn)
+        return fn
 
     def _flush_accumulators(self, dt: float) -> None:
         """Apply accumulated force/torque as impulses (called by World.step)."""
@@ -346,17 +406,14 @@ class Body:
                 d_omega = I_world_inv @ self._torque_accum * dt
                 from dataclasses import replace
 
-                self._pw._replace_body(
-                    self._id, replace(b, omega=b.omega + d_omega)
-                )
+                self._pw._replace_body(self._id, replace(b, omega=b.omega + d_omega))
             self._torque_accum = np.zeros(3)
 
     def __repr__(self) -> str:
         try:
             p = self.position
             return (
-                f"Body(id={self._id}, name={self.name!r}, "
-                f"pos=({p[0]:.2f}, {p[1]:.2f}, {p[2]:.2f}))"
+                f"Body(id={self._id}, name={self.name!r}, pos=({p[0]:.2f}, {p[1]:.2f}, {p[2]:.2f}))"
             )
         except Exception:
             return f"Body(id={self._id})"
@@ -366,7 +423,7 @@ class Body:
 
 
 class World:
-    """forge3d physics world — pygame-style public API.
+    """forge3d physics world — minimal public API.
 
     Coordinate system: z-up, SI units.  Start here::
 
@@ -384,6 +441,7 @@ class World:
 
     def __init__(self, gravity: Any = (0.0, 0.0, -9.81)) -> None:
         from forge3d.errors import require_sequence
+
         require_sequence(gravity, 3, "gravity", "World()")
         self._physics = PhysicsWorld(gravity=list(gravity))
         self._bodies: dict[int, Body] = {}
@@ -393,6 +451,7 @@ class World:
         self._welds: dict[int, tuple[int, np.ndarray]] = {}
         # Event system
         from forge3d.events import EventDispatcher
+
         self._events = EventDispatcher()
         # Collision ignore set: frozenset of (id_a, id_b) pairs
         self._ignored_pairs: set[frozenset[int]] = set()
@@ -416,7 +475,7 @@ class World:
             name="ground",
         )
         body = Body(self._physics, bid)
-        self._bodies[bid] = body
+        self._register_body(body)
         return body
 
     def add_box(
@@ -436,7 +495,14 @@ class World:
         ----------
         static : If True, creates an immovable static box (mass is ignored).
         """
-        from forge3d.errors import require_all_positive, require_nonneg, require_positive, require_range, require_sequence
+        from forge3d.errors import (
+            require_all_positive,
+            require_nonneg,
+            require_positive,
+            require_range,
+            require_sequence,
+        )
+
         require_sequence(size, 3, "size", "World.add_box()")
         require_all_positive(size, "size", "World.add_box()")
         require_range(float(restitution), 0.0, 1.0, "restitution", "World.add_box()")
@@ -448,18 +514,25 @@ class World:
             self._materials[mat_id] = mat
         if static:
             bid = self._physics.add_static_box(
-                size=size, position=position,
-                material=mat_id, name=name,
-                restitution=restitution, friction=friction,
+                size=size,
+                position=position,
+                material=mat_id,
+                name=name,
+                restitution=restitution,
+                friction=friction,
             )
         else:
             bid = self._physics.add_box(
-                size=size, position=position, mass=mass,
-                material=mat_id, name=name,
-                restitution=restitution, friction=friction,
+                size=size,
+                position=position,
+                mass=mass,
+                material=mat_id,
+                name=name,
+                restitution=restitution,
+                friction=friction,
             )
         body = Body(self._physics, bid)
-        self._bodies[bid] = body
+        self._register_body(body)
         return body
 
     def add_static_box(
@@ -480,12 +553,15 @@ class World:
         if mat:
             self._materials[mat_id] = mat
         bid = self._physics.add_static_box(
-            size=size, position=position,
-            material=mat_id, name=name,
-            restitution=restitution, friction=friction,
+            size=size,
+            position=position,
+            material=mat_id,
+            name=name,
+            restitution=restitution,
+            friction=friction,
         )
         body = Body(self._physics, bid)
-        self._bodies[bid] = body
+        self._register_body(body)
         return body
 
     def add_capsule(
@@ -525,7 +601,7 @@ class World:
             static=static,
         )
         body = Body(self._physics, bid)
-        self._bodies[bid] = body
+        self._register_body(body)
         return body
 
     def add_mesh(
@@ -563,7 +639,7 @@ class World:
             static=static,
         )
         body = Body(self._physics, bid)
-        self._bodies[bid] = body
+        self._register_body(body)
         return body
 
     def add_sphere(
@@ -582,6 +658,7 @@ class World:
         ``static=True`` creates a non-moving marker (e.g. target visualization).
         """
         from forge3d.errors import require_nonneg, require_positive, require_range
+
         if not static:
             require_positive(float(mass), "mass", "World.add_sphere()")
         require_positive(float(radius), "radius", "World.add_sphere()")
@@ -601,7 +678,7 @@ class World:
             static=static,
         )
         body = Body(self._physics, bid)
-        self._bodies[bid] = body
+        self._register_body(body)
         return body
 
     def add_terrain(
@@ -610,6 +687,8 @@ class World:
         cell_size: float = 1.0,
         origin: Any = (0.0, 0.0, 0.0),
         material: Material | str = "ground",
+        friction: float = 0.8,
+        layer: int = 0x0008,
     ) -> Any:
         """Add a heightfield terrain (static, collision-only).
 
@@ -618,17 +697,19 @@ class World:
             cell_size: World-space size of each grid cell (m).
             origin: World-space position of the (0, 0) grid corner.
             material: Surface material for rendering.
+            friction: Coulomb friction coefficient (default 0.8).
+            layer: Collision layer bit-flag (default CollisionLayer.TERRAIN = 0x0008).
 
         Returns:
             A :class:`~forge3d.collision.heightfield.Heightfield` object.
-            Pass it to ``world.add_terrain()`` to enable collision.
 
         Example::
 
             import numpy as np
             rng = np.random.default_rng(42)
             h = rng.uniform(0, 2, (32, 32)).astype(np.float32)
-            terrain = world.add_terrain(h, cell_size=0.5, origin=(-8, -8, 0))
+            terrain = world.add_terrain(h, cell_size=0.5, origin=(-8, -8, 0),
+                                        friction=0.9, layer=f3d.CollisionLayer.TERRAIN)
         """
         from forge3d.collision.heightfield import Heightfield
 
@@ -641,9 +722,66 @@ class World:
             cell_size=float(cell_size),
             origin=np.asarray(origin, dtype=float),
             material_id=mat_id,
+            friction=float(friction),
+            collision_layer=int(layer),
         )
         self._physics._heightfields.append(hf)
         return hf
+
+    def add_character(
+        self,
+        position: Any = (0.0, 0.0, 2.0),
+        height: float = 1.8,
+        radius: float = 0.3,
+        mass: float = 70.0,
+        name: str = "character",
+        ground_layer_mask: int = 0xFFFF,
+    ) -> Any:
+        """Add a capsule-based character controller.
+
+        Returns a :class:`~forge3d.character.CharacterController` with
+        ``move()``, ``jump()``, and ``glide()`` methods.
+
+        Parameters
+        ----------
+        position : Initial world position (3,).
+        height   : Total capsule height in metres (default 1.8 m).
+        radius   : Capsule radius in metres (default 0.3 m).
+        mass     : Body mass in kg (default 70.0).
+        name     : Body name for collision queries.
+        ground_layer_mask : Layers considered "ground" for the raycast check.
+
+        Example::
+
+            cc = world.add_character(position=(0, 0, 2), height=1.8)
+
+            while viewer.is_open:
+                cc.move(direction=(inp.dx, inp.dy, 0), speed=5.5, dt=viewer.dt)
+                if inp.just_pressed("space"):
+                    cc.jump(impulse=6.4)
+                world.step(viewer.dt)
+
+            print(cc.is_grounded)
+        """
+        from forge3d.character import CharacterController
+
+        half_length = max(0.01, float(height) / 2.0 - float(radius))
+        body = self.add_capsule(
+            radius=radius,
+            half_length=half_length,
+            position=position,
+            mass=mass,
+            name=name,
+            friction=0.1,
+            restitution=0.0,
+        )
+        return CharacterController(
+            world=self,
+            body=body,
+            height=height,
+            radius=radius,
+            ground_layer_mask=ground_layer_mask,
+        )
 
     def add(self, obj: Any) -> Any:
         """Add a Body or Robot to the world.  Returns the object passed in."""
@@ -696,8 +834,9 @@ class World:
                     return body
             except Exception:
                 pass
-        raise KeyError(f"No body named '{name}' in world. "
-                       f"Available: {[b.name for b in self.bodies]}")
+        raise KeyError(
+            f"No body named '{name}' in world. Available: {[b.name for b in self.bodies]}"
+        )
 
     # ── Scene mutation ────────────────────────────────────────────────────────
 
@@ -714,6 +853,7 @@ class World:
         self._physics.remove_body(bid)
         self._bodies.pop(bid, None)
         self._welds.pop(bid, None)
+        self._events.unregister_body(bid)
 
     def clear(self, keep_statics: bool = False) -> None:
         """Remove all bodies from the world.
@@ -793,6 +933,7 @@ class World:
         if local_rotation is None:
             # Relative rotation: R_anchor^T @ R_body = rotation of body in anchor frame
             from forge3d.math.quaternion import quat_conjugate
+
             # rel_q = q_anchor^-1 * q_body
             q_anc_inv = quat_conjugate(a_state.quat)
             rel_q = quat_multiply(q_anc_inv, b_state.quat)
@@ -889,14 +1030,22 @@ class World:
             constraint = BallJoint(id_a, id_b, anc_a, anc_b)
         elif jtype == "hinge":
             constraint = HingeJoint(
-                id_a, id_b, anc_a, anc_b, ax,
+                id_a,
+                id_b,
+                anc_a,
+                anc_b,
+                ax,
                 limits=limits,
                 motor_velocity=motor_velocity,
                 motor_max_torque=motor_max_torque,
             )
         elif jtype == "prismatic":
             constraint = PrismaticJoint(
-                id_a, id_b, anc_a, anc_b, ax,
+                id_a,
+                id_b,
+                anc_a,
+                anc_b,
+                ax,
                 limits=limits,
                 motor_velocity=motor_velocity,
                 motor_max_force=motor_max_torque,
@@ -905,8 +1054,13 @@ class World:
             constraint = DistanceJoint(id_a, id_b, anc_a, anc_b, target_distance)
         elif jtype == "spring":
             constraint = SpringJoint(
-                id_a, id_b, anc_a, anc_b,
-                stiffness=stiffness, damping=damping, rest_length=rest_length,
+                id_a,
+                id_b,
+                anc_a,
+                anc_b,
+                stiffness=stiffness,
+                damping=damping,
+                rest_length=rest_length,
             )
         else:
             raise ValueError(
@@ -934,16 +1088,28 @@ class World:
 
     # ── Simulation ────────────────────────────────────────────────────────────
 
-    def step(self, dt: float | None = None) -> None:
+    def step(self, dt: float | None = None, substeps: int = 1) -> None:
         """Advance simulation by dt seconds (default: 1/60 s).
 
-        1. Flush per-body force/torque accumulators (apply_force / apply_torque).
+        Parameters
+        ----------
+        dt       : Time delta in seconds (default 1/60 s).
+        substeps : Divide *dt* into this many equal sub-steps for stability.
+                   ``substeps=4`` is recommended for fast or lightweight objects.
+                   Collision callbacks fire once per full step (not per sub-step).
+
+        Steps taken each call:
+
+        1. Flush per-body force/torque accumulators.
         2. Apply per-body linear/angular damping.
-        3. Physics step (gravity → contacts → impulses → position update).
+        3. Physics integration (*substeps* times at *dt/substeps* each).
         4. Apply weld constraints.
-        5. Dispatch collision events (reuses cached contacts — no double detection).
+        5. Dispatch collision events.
         """
         _dt = dt if dt is not None else self.DEFAULT_DT
+        _sub = max(1, int(substeps))
+        _sub_dt = _dt / _sub
+
         # Flush accumulators before physics step
         for body in self._bodies.values():
             if body._force_accum is not None and (
@@ -953,19 +1119,55 @@ class World:
             # Apply per-body damping (exponential decay, dt-corrected)
             if body._linear_damping > 0 or body._angular_damping > 0:
                 self._apply_body_damping(body, _dt)
-        self._physics.step(_dt)
+
+        for _ in range(_sub):
+            self._physics.step(_sub_dt)
         self._apply_welds()
-        # Dispatch events using cached contacts from physics step (no re-detection)
+        # Dispatch events once per full step
         self._dispatch_events()
 
-    def _apply_body_damping(self, body: "Body", dt: float) -> None:
+    def update(self, frame_dt: float) -> None:
+        """Fixed-timestep accumulator update — call once per rendered frame.
+
+        Internally accumulates *frame_dt* and calls :meth:`step` with
+        ``fixed_dt`` repeatedly until the accumulated time is consumed.
+        Leftover time carries over to the next call.
+
+        Configure via :attr:`fixed_dt` and :attr:`max_substeps` (set on the
+        world instance)::
+
+            world.fixed_dt    = 1 / 120   # default 1/120 s
+            world.max_substeps = 8         # default 8 (caps spiral-of-death)
+
+        Example::
+
+            world = forge3d.World()
+            world.fixed_dt = 1 / 120
+
+            while viewer.is_open:
+                world.update(viewer.dt)   # frame_dt varies; physics is stable
+                viewer.draw()
+        """
+        fixed_dt = getattr(self, "fixed_dt", 1.0 / 120.0)
+        max_sub = getattr(self, "max_substeps", 8)
+
+        self._accum_time = getattr(self, "_accum_time", 0.0) + frame_dt
+        steps = 0
+        while self._accum_time >= fixed_dt and steps < max_sub:
+            self.step(fixed_dt)
+            self._accum_time -= fixed_dt
+            steps += 1
+
+    def _apply_body_damping(self, body: Body, dt: float) -> None:
         """Apply per-body linear/angular damping (exponential decay, dt-corrected)."""
         import math
+
         b = body._state()
         if b.static or b.mass <= 0:
             return
         from dataclasses import replace
-        new_vel   = b.vel
+
+        new_vel = b.vel
         new_omega = b.omega
         if body._linear_damping > 0:
             factor = math.exp(-body._linear_damping * dt)
@@ -982,18 +1184,24 @@ class World:
         Reuses contacts cached by _physics.step() to avoid double detection.
         Falls back to fresh detection if cache is empty (e.g., first frame).
         """
-        from forge3d.events import CollisionEvent
 
         # Reuse contacts cached during _physics.step() — no double detect_contacts
         contacts_raw = self._physics._last_contacts
         if not contacts_raw:
             # Only re-detect if no cache (step() hasn't run yet)
             from forge3d.collision.detection import detect_contacts
+
             contacts_raw = detect_contacts(self._physics._bodies)
 
         class _EvtContact:
-            __slots__ = ["body_id_a", "body_id_b", "contact_point", "normal",
-                         "impulse", "relative_speed"]
+            __slots__ = [
+                "body_id_a",
+                "body_id_b",
+                "contact_point",
+                "normal",
+                "impulse",
+                "relative_speed",
+            ]
 
             def __init__(self, c: Any, bodies: list[Any]) -> None:
                 ba = bodies[c.body_a_idx]
@@ -1011,7 +1219,8 @@ class World:
         # Filter ignored pairs
         if self._ignored_pairs:
             evt_contacts = [
-                c for c in evt_contacts
+                c
+                for c in evt_contacts
                 if frozenset({c.body_id_a, c.body_id_b}) not in self._ignored_pairs
             ]
 
@@ -1042,7 +1251,7 @@ class World:
         self._events.add_end_listener(fn)
         return fn
 
-    def add_collision_handler(self, body_a: "Body", body_b: "Body") -> Any:
+    def add_collision_handler(self, body_a: Body, body_b: Body) -> Any:
         """Return a :class:`~forge3d.events.CollisionHandler` for a specific body pair.
 
         Example::
@@ -1053,7 +1262,7 @@ class World:
         handler = self._events.add_pair_handler(body_a._id, body_b._id)
         return handler
 
-    def ignore_collision(self, body_a: "Body", body_b: "Body") -> None:
+    def ignore_collision(self, body_a: Body, body_b: Body) -> None:
         """Permanently ignore physics collisions between two specific bodies."""
         pair: frozenset[int] = frozenset({body_a._id, body_b._id})
         self._ignored_pairs.add(pair)
@@ -1103,13 +1312,8 @@ class World:
                 continue
             R_anchor = quat_to_rot(anchor.quat)
             new_pos = anchor.pos + R_anchor @ offset
-            if rel_q is not None:
-                new_quat = quat_multiply(anchor.quat, rel_q)
-            else:
-                new_quat = anchor.quat
-            self._physics.update_body_pose(
-                body_id, new_pos, new_quat, vel=_ZEROS3, omega=_ZEROS3
-            )
+            new_quat = quat_multiply(anchor.quat, rel_q) if rel_q is not None else anchor.quat
+            self._physics.update_body_pose(body_id, new_pos, new_quat, vel=_ZEROS3, omega=_ZEROS3)
 
     def _sync_robot(self, robot: Any) -> None:
         from forge3d.math.quaternion import quat_from_rot
@@ -1124,6 +1328,23 @@ class World:
         """Elapsed simulation time in seconds."""
         return self._physics.time
 
+    @property
+    def profiler(self) -> Any:
+        """Lazy-created :class:`~forge3d.profiler.PhysicsProfiler` for this world.
+
+        Usage::
+
+            with world.profiler:
+                world.step(dt)
+
+            print(world.profiler.last)
+        """
+        if not hasattr(self, "_profiler"):
+            from forge3d.profiler import PhysicsProfiler
+
+            self._profiler = PhysicsProfiler(self)
+        return self._profiler
+
     # ── SceneSnapshot ─────────────────────────────────────────────────────────
 
     def snapshot(self) -> Any:
@@ -1133,9 +1354,20 @@ class World:
 
         snap = self._physics.snapshot()
 
+        # Register custom materials into snap.materials for ID-based lookup
         for mat_id, mat in self._materials.items():
             if mat_id not in snap.materials:
                 snap.materials[mat_id] = mat._to_snapshot_material()
+
+        # Back-fill resolved material objects into snapshots so renderers
+        # don't need to consult BUILTIN_MATERIALS by ID.
+        for body_snap in snap.bodies:
+            if body_snap.material is None:
+                body_snap.material = snap.materials.get(body_snap.material_id)
+
+        for terrain_snap in snap.terrains:
+            if terrain_snap.material is None:
+                terrain_snap.material = snap.materials.get(terrain_snap.material_id)
 
         return snap
 
@@ -1152,26 +1384,182 @@ class World:
             world.save("checkpoint.json")
         """
         from forge3d.io.world_snapshot import save_world
+
         save_world(self, path)
 
     @classmethod
-    def load(cls, path: Any) -> "World":
+    def load(cls, path: Any) -> World:
         """Load a world from a JSON file saved by :meth:`save`.
+
+        Returns a brand-new :class:`World` with all bodies restored::
+
+            world = forge3d.World.load("checkpoint.json")
+
+        To restore an **existing** world instance in-place, use
+        :meth:`restore` instead::
+
+            world.restore("checkpoint.json")
 
         Args:
             path: Path to a JSON file.
+        """
+        from forge3d.io.world_snapshot import load_world
 
-        Returns:
-            A new :class:`World` with all bodies restored.
+        return load_world(path)  # type: ignore[return-value]
+
+    def restore(self, path: Any) -> None:
+        """Restore world state from *path* into this instance (clears existing bodies).
+
+        Unlike the classmethod :meth:`load`, this modifies the current world
+        in-place so existing Python references to ``self`` remain valid::
+
+            world = forge3d.World()
+            world.restore("checkpoint.json")
+            print(len(world.bodies))  # bodies from the file
+        """
+        from forge3d.io.world_snapshot import load_world
+
+        loaded = load_world(path)
+        self._physics = loaded._physics
+        self._bodies = loaded._bodies
+        self._materials = loaded._materials
+        self._camera = loaded._camera
+        self._robots = loaded._robots
+        self._welds = loaded._welds
+        self._events = loaded._events
+        self._ignored_pairs = loaded._ignored_pairs
+
+    # ── Raycast ───────────────────────────────────────────────────────────────
+
+    def raycast_all(
+        self,
+        origin: Any,
+        direction: Any,
+        max_dist: float = 100.0,
+        layer_mask: int = 0xFFFF,
+    ) -> list[Any]:
+        """Cast a ray and return **all** hits sorted by distance (closest first).
+
+        Parameters
+        ----------
+        origin, direction, max_dist : same as :meth:`raycast`.
+        layer_mask : only bodies whose ``collision_layer & layer_mask != 0``
+                     are tested.
+
+        Returns
+        -------
+        List of :class:`RayHit` namedtuples ``(body, point, normal, distance)``.
+        May be empty.
 
         Example::
 
-            world = forge3d.World.load("checkpoint.json")
+            hits = world.raycast_all((0, 0, 5), (0, 0, -1), max_dist=20)
+            for hit in hits:
+                print(hit.body.name, hit.distance)
         """
-        from forge3d.io.world_snapshot import load_world
-        return load_world(path)  # type: ignore[return-value]
+        from collections import namedtuple
 
-    # ── Raycast ───────────────────────────────────────────────────────────────
+        from forge3d.collision.raycast import ray_cast_all
+
+        RayHit = namedtuple("RayHit", ["body", "point", "normal", "distance"])
+
+        filtered_bodies = [
+            self._physics._get_body(bid)
+            for bid in self._bodies
+            if self._physics._get_body(bid).collision_layer & layer_mask
+        ]
+        results = ray_cast_all(
+            np.asarray(origin, dtype=float),
+            np.asarray(direction, dtype=float),
+            float(max_dist),
+            filtered_bodies,
+        )
+        hits = []
+        for body_id, point, normal, dist in results:
+            body = self._bodies.get(body_id)
+            if body is not None:
+                hits.append(RayHit(body=body, point=point, normal=normal, distance=dist))
+        return hits
+
+    def overlap_sphere(
+        self,
+        center: Any,
+        radius: float,
+        layer_mask: int = 0xFFFF,
+    ) -> list[Body]:
+        """Return all bodies whose origin is within *radius* of *center*.
+
+        Uses AABB/position check (fast) — not exact shape intersection.
+
+        Parameters
+        ----------
+        center     : (3,) world-space position.
+        radius     : Search radius in metres.
+        layer_mask : Filter by collision layer.
+
+        Example::
+
+            nearby = world.overlap_sphere(explosion_pos, radius=5.0)
+            for body in nearby:
+                body.apply_force(...)
+        """
+        c = np.asarray(center, dtype=float)
+        r2 = float(radius) ** 2
+        result = []
+        for body in self._bodies.values():
+            try:
+                state = body._state()
+                if not (state.collision_layer & layer_mask):
+                    continue
+                if float(np.dot(state.pos - c, state.pos - c)) <= r2:
+                    result.append(body)
+            except Exception:
+                pass
+        return result
+
+    def overlap_box(
+        self,
+        center: Any,
+        half_extents: Any,
+        orientation: Any = None,
+        layer_mask: int = 0xFFFF,
+    ) -> list[Body]:
+        """Return all bodies whose origin falls inside an AABB or OBB.
+
+        Parameters
+        ----------
+        center      : (3,) world-space centre.
+        half_extents: (3,) half-sizes of the query box.
+        orientation : (4,) quaternion [w,x,y,z] rotating the box (None = axis-aligned).
+        layer_mask  : Filter by collision layer.
+
+        Example::
+
+            bodies_in_room = world.overlap_box(room_center, half_extents=(5, 5, 3))
+        """
+        c = np.asarray(center, dtype=float)
+        he = np.asarray(half_extents, dtype=float)
+        if orientation is not None:
+            from forge3d.math.quaternion import quat_to_rot
+
+            R = quat_to_rot(np.asarray(orientation, dtype=float))
+        else:
+            R = None
+
+        result = []
+        for body in self._bodies.values():
+            try:
+                state = body._state()
+                if not (state.collision_layer & layer_mask):
+                    continue
+                diff = state.pos - c
+                if R is not None:
+                    diff = R.T @ diff
+                if np.all(np.abs(diff) <= he):
+                    result.append(body)
+            except Exception:
+                pass
+        return result
 
     def raycast(
         self,
@@ -1202,6 +1590,7 @@ class World:
                 print(hit.body.name, hit.distance)
         """
         from forge3d.collision.raycast import ray_cast
+
         result = ray_cast(
             np.asarray(origin, dtype=float),
             np.asarray(direction, dtype=float),
@@ -1215,8 +1604,16 @@ class World:
         if body is None:
             return None
         from collections import namedtuple
+
         RayHit = namedtuple("RayHit", ["body", "point", "normal", "distance"])
         return RayHit(body=body, point=point, normal=normal, distance=dist)
+
+    def _register_body(self, body: Body) -> Body:
+        """Store body in _bodies, set its world back-reference, and register events."""
+        self._bodies[body._id] = body
+        body._world_ref = self
+        self._events.register_body(body._id, body)
+        return body
 
     def __repr__(self) -> str:
         return (

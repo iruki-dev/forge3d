@@ -47,7 +47,7 @@ def _support_convex_hull(
 
     hull_verts is (K, 3) in LOCAL frame.  O(K) — fast for small hulls.
     """
-    d_local = R.T @ d          # direction in local frame
+    d_local = R.T @ d  # direction in local frame
     dots = hull_verts @ d_local  # (K,) — vectorised
     return pos + R @ hull_verts[int(np.argmax(dots))]
 
@@ -238,9 +238,7 @@ def gjk(body_a: Any, body_b: Any, max_iter: int = 64) -> tuple[bool, float]:
     return intersecting, dist
 
 
-def gjk_contact(
-    body_a: Any, body_b: Any, max_iter: int = 64
-) -> tuple[float, np.ndarray] | None:
+def gjk_contact(body_a: Any, body_b: Any, max_iter: int = 64) -> tuple[float, np.ndarray] | None:
     """GJK + EPA contact query.
 
     Returns (depth, normal) where normal points from body_b toward body_a,

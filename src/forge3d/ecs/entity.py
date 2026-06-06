@@ -1,8 +1,10 @@
 """EntityWorld — ECS 엔티티 생성/소멸/컴포넌트 관리."""
+
 from __future__ import annotations
 
 import itertools
-from typing import Iterator, TypeVar
+from collections.abc import Iterator
+from typing import TypeVar
 
 from forge3d.ecs.component import Component
 from forge3d.errors import Forge3dError
