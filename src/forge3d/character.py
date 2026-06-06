@@ -65,6 +65,10 @@ class CharacterController:
         self._ground_check_interval = 1.0 / max(1.0, float(ground_check_hz))
         self._ground_check_timer    = 0.0
 
+        # Jump cooldown prevents infinite jumping when the capsule is still
+        # close to the ground in the frame right after a jump.
+        self._jump_cooldown: float = 0.0
+
     # ── State queries ─────────────────────────────────────────────────────────
 
     @property
@@ -123,11 +127,12 @@ class CharacterController:
         ----------
         impulse : Upward speed added in m/s (think: initial jump velocity).
         """
-        if self._grounded:
+        if self._grounded and self._jump_cooldown <= 0.0:
             vel = self.body.velocity.copy()
             vel[2] = float(impulse)
             self.body.set_velocity(vel)
             self._grounded = False
+            self._jump_cooldown = 0.40  # 400 ms before the next jump is allowed
 
     def glide(self, target_fall_speed: float = -1.5, dt: float = 1 / 60) -> None:
         """Reduce falling speed to *target_fall_speed* for a glide effect.
@@ -147,7 +152,13 @@ class CharacterController:
     # ── Internal ──────────────────────────────────────────────────────────────
 
     def _update_ground(self, dt: float) -> None:
-        """Update is_grounded via downward raycast (throttled)."""
+        """Update is_grounded via downward raycast (throttled + jump-cooldown aware)."""
+        # Decrement jump cooldown unconditionally every call
+        if self._jump_cooldown > 0.0:
+            self._jump_cooldown = max(0.0, self._jump_cooldown - dt)
+            self._grounded = False   # never re-ground during cooldown
+            return
+
         self._ground_check_timer += dt
         if self._ground_check_timer < self._ground_check_interval:
             return

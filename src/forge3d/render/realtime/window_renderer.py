@@ -366,6 +366,8 @@ class WindowedRealtimeRenderer:
         """Lock (hide+raw) or release the OS cursor.
 
         When captured, ESC releases the cursor instead of closing the window.
+        Automatically discards the first mouse-move event after the warp so the
+        view doesn't lurch on capture/release.
         """
         if self._window is None:
             return
@@ -374,6 +376,8 @@ class WindowedRealtimeRenderer:
         else:
             glfw.set_input_mode(self._window, glfw.CURSOR, glfw.CURSOR_NORMAL)
         self._cursor_captured = captured
+        # Discard the delta spike caused by the cursor warp
+        self._inp_builder.reset_mouse_delta()
 
     def set_excluded_names(self, names: set[str]) -> None:
         """Bodies whose names are in *names* will not be rendered (FPS self-exclusion)."""

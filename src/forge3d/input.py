@@ -222,9 +222,11 @@ class _InputBuilder:
         "_keys_pressed",
         "_keys_released",
         "_mouse_pos",
-        "_prev_mouse_pos",
+        "_frame_mdx",   # accumulated delta-x across all events this frame
+        "_frame_mdy",   # accumulated delta-y across all events this frame
         "_mouse_buttons",
         "_scroll_accum",
+        "_skip_next_delta",  # discard first delta after cursor warp
     )
 
     def __init__(self) -> None:
@@ -232,9 +234,11 @@ class _InputBuilder:
         self._keys_pressed: set[str] = set()
         self._keys_released: set[str] = set()
         self._mouse_pos: tuple[float, float] = (0.0, 0.0)
-        self._prev_mouse_pos: tuple[float, float] = (0.0, 0.0)
+        self._frame_mdx: float = 0.0
+        self._frame_mdy: float = 0.0
         self._mouse_buttons: set[int] = set()
         self._scroll_accum: float = 0.0
+        self._skip_next_delta: bool = True   # skip first event (cursor may jump)
 
     # ── Event handlers (called by the windowing layer) ────────────────────────
 
@@ -249,8 +253,24 @@ class _InputBuilder:
         self._keys_released.add(key)
 
     def on_mouse_move(self, x: float, y: float) -> None:
-        self._prev_mouse_pos = self._mouse_pos
+        # Accumulate all sub-frame events instead of only keeping the last.
+        # Previously _prev_mouse_pos was overwritten each call, discarding all
+        # but the final event's delta — losing up to 90% of motion at high refresh.
+        if not self._skip_next_delta:
+            self._frame_mdx += x - self._mouse_pos[0]
+            self._frame_mdy += y - self._mouse_pos[1]
+        self._skip_next_delta = False
         self._mouse_pos = (x, y)
+
+    def reset_mouse_delta(self) -> None:
+        """Discard any accumulated delta and skip the next warp event.
+
+        Call this immediately after enabling/disabling cursor capture so the
+        large position jump from GLFW's cursor warp doesn't cause a view lurch.
+        """
+        self._frame_mdx = 0.0
+        self._frame_mdy = 0.0
+        self._skip_next_delta = True
 
     def on_mouse_down(self, button: int) -> None:
         self._mouse_buttons.add(button)
@@ -265,14 +285,12 @@ class _InputBuilder:
 
     def build(self) -> Input:
         """Return an immutable :class:`Input` for the current frame."""
-        dx = self._mouse_pos[0] - self._prev_mouse_pos[0]
-        dy = self._mouse_pos[1] - self._prev_mouse_pos[1]
         return Input(
             _keys_held=frozenset(self._keys_held),
             _keys_pressed=frozenset(self._keys_pressed),
             _keys_released=frozenset(self._keys_released),
             _mouse_pos=self._mouse_pos,
-            _mouse_delta=(dx, dy),
+            _mouse_delta=(self._frame_mdx, self._frame_mdy),
             _mouse_buttons=frozenset(self._mouse_buttons),
             _scroll_delta=self._scroll_accum,
         )
@@ -282,7 +300,8 @@ class _InputBuilder:
         self._keys_pressed.clear()
         self._keys_released.clear()
         self._scroll_accum = 0.0
-        self._prev_mouse_pos = self._mouse_pos
+        self._frame_mdx = 0.0
+        self._frame_mdy = 0.0
 
     def feed_pygame_event(self, event: Any) -> None:
         """Feed a pygame event into the builder (deprecated — use glfw callbacks).
