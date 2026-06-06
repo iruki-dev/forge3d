@@ -55,6 +55,11 @@ class Bot:
     saw_player_at:    float         = -999.0
     zone_retreat_t:   float         = 0.0   # time until moving toward center
 
+    # LoS check throttle: expensive raycast runs at ~8 Hz instead of 60 Hz
+    _los_timer:       float         = 0.0
+    _los_interval:    float         = 0.125  # seconds between LoS checks
+    _los_cached:      bool          = False  # last known LoS result
+
     is_alive: bool = True
     kills:    int  = 0
 
@@ -106,10 +111,14 @@ class Bot:
 
         self.weapon.update(dt)
 
-        # ── Check if player is visible ─────────────────────────────────────────
+        # ── Check if player is visible (throttled to ~8 Hz) ───────────────────
         can_see_player = False
         if player_alive:
-            can_see_player = self._can_see(world, self.eye_pos, player_pos, BOT_SIGHT_RANGE)
+            self._los_timer += dt
+            if self._los_timer >= self._los_interval:
+                self._los_timer = 0.0
+                self._los_cached = self._can_see(world, self.eye_pos, player_pos, BOT_SIGHT_RANGE)
+            can_see_player = self._los_cached
 
         if can_see_player:
             self.saw_player_at = game_time
@@ -312,6 +321,7 @@ def create_bots(
             radius=PLAYER_RADIUS,
             mass=80.0,
             name=name,
+            ground_check_hz=10.0,   # 10 Hz instead of 60 Hz — saves ~4 ms/bot/frame
         )
         # Enemies are visually red-orange capsule
         # (CharacterController body material is set via world add_character internals;

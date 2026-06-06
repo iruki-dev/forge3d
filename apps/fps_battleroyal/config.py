@@ -80,7 +80,7 @@ WEAPON_DATA = {
 
 # ── Battle Royale Zone ────────────────────────────────────────────────────────
 ZONE_CENTER      = (0.0, 0.0)
-ZONE_N_PILLARS   = 36
+ZONE_N_PILLARS   = 24
 
 # Phase: (start_time, initial_radius, target_radius, shrink_duration, dmg_per_sec)
 ZONE_PHASES = [

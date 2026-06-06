@@ -57,22 +57,23 @@ class BattleRoyale:
 
     WIDTH  = 1280
     HEIGHT = 720
-    FIXED_PHYSICS_DT = 1.0 / 120.0
+    FIXED_PHYSICS_DT = 1.0 / 60.0   # 60 Hz physics (was 120 Hz)
 
     def __init__(self) -> None:
         print("Initializing Battle Royale...")
 
         # ── Physics world ─────────────────────────────────────────────────────
         self.world = f3d.World(gravity=GRAVITY)
-        self.world.fixed_dt = self.FIXED_PHYSICS_DT
-        self.world.max_substeps = 4
+        self.world.fixed_dt    = self.FIXED_PHYSICS_DT
+        self.world.max_substeps = 2   # 2 sub-steps (was 4)
 
         # ── Build map ─────────────────────────────────────────────────────────
         print("Building map...")
         self.assets: WorldAssets = build_world(self.world)
 
-        # ── Player spawn ──────────────────────────────────────────────────────
-        player_start = np.array([0.0, -55.0, 1.0])
+        # ── Player spawn — inside factory for immediate cover ─────────────────
+        # (0, -5, 1.5) is inside the main factory hall, 5 m south of centre
+        player_start = np.array([0.0, -5.0, 1.5])
         self.player = create_player(self.world, player_start)
 
         # ── Bot spawns ─────────────────────────────────────────────────────────
@@ -81,13 +82,8 @@ class BattleRoyale:
             self.world, self.assets.bot_spawn_positions, BOT_COUNT
         )
 
-        # Apply enemy color to bot bodies
-        for bot in self.bots:
-            try:
-                body = self.world.get_body(bot.name)
-                # The CharacterController capsule — tint it red via the world
-            except Exception:
-                pass
+        # ── Bot stagger index (spread AI updates across frames) ───────────────
+        self._bot_update_idx = 0
 
         # ── Zone ──────────────────────────────────────────────────────────────
         self.zone = Zone()
@@ -102,6 +98,7 @@ class BattleRoyale:
         self.victory      = False
         self._cursor_captured = False
         self._prev_mouse_held = False
+        self._last_zone_radius = ZONE_PHASES[0][1]  # track radius for pillar update
 
         # ── Viewer ────────────────────────────────────────────────────────────
         self.viewer = f3d.Viewer(
@@ -196,29 +193,37 @@ class BattleRoyale:
                 if bot.is_alive and not self.zone.is_inside(bot.position):
                     bot.take_damage(dmg_ps * dt * 0.7)  # bots survive longer
 
-        # ── Bot AI ────────────────────────────────────────────────────────────
-        for bot in self.bots:
-            if not bot.is_alive:
-                continue
-            hit = bot.update(
-                dt,
-                self.game_time,
-                self.world,
-                self.player.position,
-                self.player.is_alive,
-                [b for b in self.bots if b is not bot],
-                self.zone.current_radius,
-                self._rng,
-            )
-            if hit and self.player.is_alive:
-                # Check if this bot's shot hit the player
-                origin = bot.eye_pos
-                player_pos = self.player.position + np.array([0, 0, 1.0])
-                diff = player_pos - origin
-                dist = float(np.linalg.norm(diff))
-                if dist < bot.weapon.data["range"]:
-                    # Direct hit (simplified — bot already decided to hit)
-                    self.player.take_damage(bot.weapon.data["damage"] * 0.8)
+        # ── Bot AI (staggered: update N bots per frame, cycling through all) ───
+        # With 19 bots and BOTS_PER_FRAME=7, each bot is updated ~every 3 frames.
+        # Movement stays smooth because cc.move() is still called every frame
+        # (the expensive LoS raycast is already throttled inside bot.update).
+        BOTS_PER_FRAME = 7
+        alive_bots = [b for b in self.bots if b.is_alive]
+        n = len(alive_bots)
+        if n > 0:
+            start = self._bot_update_idx % n
+            subset = alive_bots[start : start + BOTS_PER_FRAME]
+            if start + BOTS_PER_FRAME > n:
+                subset += alive_bots[: (start + BOTS_PER_FRAME) - n]
+            self._bot_update_idx = (self._bot_update_idx + BOTS_PER_FRAME) % max(1, n)
+
+            for bot in subset:
+                hit = bot.update(
+                    dt,
+                    self.game_time,
+                    self.world,
+                    self.player.position,
+                    self.player.is_alive,
+                    [],   # skip other-bot list (costly list comp every frame)
+                    self.zone.current_radius,
+                    self._rng,
+                )
+                if hit and self.player.is_alive:
+                    origin     = bot.eye_pos
+                    player_pos = self.player.position + np.array([0, 0, 1.0])
+                    dist = float(np.linalg.norm(player_pos - origin))
+                    if dist < bot.weapon.data["range"]:
+                        self.player.take_damage(bot.weapon.data["damage"] * 0.8)
 
         # ── Pickup detection ──────────────────────────────────────────────────
         self._check_pickups()
@@ -311,8 +316,11 @@ class BattleRoyale:
                     )
 
     def _update_zone_pillars(self) -> None:
-        """Move zone pillars to match the current zone radius."""
+        """Move zone pillars only when the radius has changed by ≥ 0.3 m."""
         r = self.zone.current_radius
+        if abs(r - self._last_zone_radius) < 0.3:
+            return
+        self._last_zone_radius = r
         for i, pillar in enumerate(self.assets.zone_pillars):
             angle = 2 * math.pi * i / ZONE_N_PILLARS
             x = ZONE_CENTER[0] + r * math.cos(angle)

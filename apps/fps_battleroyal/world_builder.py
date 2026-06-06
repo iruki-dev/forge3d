@@ -1,16 +1,18 @@
-"""Procedural world construction for the battle royale map.
+"""World construction — visual quality with minimum physics bodies.
 
-Map name: "Abandoned Facility"
-Layout (200 × 200 m):
-  - Central factory complex (main hall + 2 annexes)
-  - Storage yard with rusted containers (NW quadrant)
-  - Ruined residential block (NE)
-  - Industrial plant / pipes (SE)
-  - Market alley (SW)
-  - 4 guard towers at corners
-  - Scattered debris, barriers, and rock outcrops
-  - 16 weapon pickup spots
-  - 36 zone boundary pillars
+Target: ≤ 130 bodies total (player + bots + map + pickups + zone pillars).
+Strategy: merged walls, no purely decorative loose geometry.
+
+Map: "Abandoned Facility" 210 × 210 m
+  Central factory complex   (interior accessible)
+  NW container yard         (exterior cover)
+  NE ruined district        (mixed cover/open)
+  SE industrial tanks       (exterior)
+  SW market district        (exterior cover)
+  4 corner guard towers
+  Scattered barriers / rocks
+  16 weapon pickups
+  24 zone boundary pillars
 """
 from __future__ import annotations
 
@@ -56,276 +58,190 @@ class WorldAssets:
     bot_spawn_positions: list[np.ndarray] = field(default_factory=list)
 
 
-# ── Material helpers ──────────────────────────────────────────────────────────
+# ── Materials ─────────────────────────────────────────────────────────────────
 
 def _mat(color, roughness=0.85, metallic=0.0, emissive=0.0):
-    return f3d.Material(
-        color=color, roughness=roughness, metallic=metallic, emissive=emissive
-    )
+    return f3d.Material(color=color, roughness=roughness, metallic=metallic, emissive=emissive)
+
+M_GROUND   = _mat(C_GROUND,        roughness=0.95)
+M_CONCRETE = _mat(C_CONCRETE,      roughness=0.88)
+M_CONC_D   = _mat(C_CONCRETE_DARK, roughness=0.88)
+M_STEEL    = _mat(C_METAL_STEEL,   roughness=0.35, metallic=0.75)
+M_RUST     = _mat(C_METAL_RUST,    roughness=0.80, metallic=0.25)
+M_ORANGE   = _mat(C_METAL_ORANGE,  roughness=0.60, metallic=0.50)
+M_ASPHALT  = _mat(C_ASPHALT,       roughness=0.90)
+M_GLASS    = _mat(C_GLASS,         roughness=0.10, metallic=0.90)
+M_PICKUP   = f3d.Material(color=C_PICKUP,     roughness=0.2, metallic=0.6, emissive=1.8)
+M_ZONE     = f3d.Material(color=C_ZONE_PILLAR, roughness=0.3, metallic=0.8, emissive=3.5)
 
 
-M_GROUND    = _mat(C_GROUND,        roughness=0.95)
-M_DIRT      = _mat(C_DIRT,          roughness=0.95)
-M_CONCRETE  = _mat(C_CONCRETE,      roughness=0.88)
-M_CONC_D    = _mat(C_CONCRETE_DARK, roughness=0.88)
-M_STEEL     = _mat(C_METAL_STEEL,   roughness=0.35, metallic=0.75)
-M_RUST      = _mat(C_METAL_RUST,    roughness=0.80, metallic=0.25)
-M_ORANGE    = _mat(C_METAL_ORANGE,  roughness=0.60, metallic=0.50)
-M_ASPHALT   = _mat(C_ASPHALT,       roughness=0.90)
-M_GLASS     = _mat(C_GLASS,         roughness=0.10, metallic=0.90)
-M_WOOD      = _mat(C_WOOD_DARK,     roughness=0.92)
-M_PICKUP    = f3d.Material(color=C_PICKUP, roughness=0.2, metallic=0.6, emissive=1.8)
-M_ZONE      = f3d.Material(color=C_ZONE_PILLAR, roughness=0.3, metallic=0.8, emissive=3.5)
-
-
-# ── Box helpers ───────────────────────────────────────────────────────────────
-
-def _box(world, size, pos, mat=M_CONCRETE, static=True, name=None):
-    return world.add_box(
-        size=size, position=pos, static=static, material=mat,
-        **({"name": name} if name else {}),
-    )
-
-
-def _box_at(world, sx, sy, sz, px, py, pz=None, mat=M_CONCRETE, name=None):
+def _b(world, sx, sy, sz, px, py, pz=None, mat=None, name=None):
+    """Add a static box; pz defaults to half-height (sits on ground)."""
     z = pz if pz is not None else sz / 2
-    return _box(world, (sx, sy, sz), (px, py, z), mat=mat, name=name)
+    mat = mat or M_CONCRETE
+    kwargs = dict(size=(sx, sy, sz), position=(px, py, z), static=True, material=mat)
+    if name:
+        kwargs["name"] = name
+    return world.add_box(**kwargs)
 
 
-# ── Sub-builders ──────────────────────────────────────────────────────────────
+# ── Factory complex (center) ─────────────────────────────────────────────────
+# Interior-accessible building: 4 outer walls + floor + roof + 2 interior
+# features. ~11 bodies total.
 
-def _build_central_factory(world):
-    """Large factory complex in the center of the map."""
-    # Main hall: 44×22×11 m
-    _box_at(world, 44, 22, 0.8, 0, 0, pz=0.4, mat=M_ASPHALT)        # floor slab
-    _box_at(world, 1.2, 22, 11, -22.6, 0, mat=M_CONCRETE)            # W wall
-    _box_at(world, 1.2, 22, 11,  22.6, 0, mat=M_CONCRETE)            # E wall
-    _box_at(world, 44, 1.2, 11, 0, -11.6, mat=M_CONC_D)              # S wall
-    _box_at(world, 44, 1.2, 11, 0,  11.6, mat=M_CONC_D)              # N wall
-    # Roof with hole (3 panels)
-    _box_at(world, 14, 22, 1.0, -15, 0, pz=11.5, mat=M_CONC_D)
-    _box_at(world, 14, 22, 1.0,  15, 0, pz=11.5, mat=M_CONC_D)
-    _box_at(world, 44,  7, 1.0, 0, -7.5, pz=11.5, mat=M_CONC_D)
-    # Interior pillars (4×4 grid pattern)
-    for px in [-12, -4, 4, 12]:
-        for py in [-4, 4]:
-            _box_at(world, 1.2, 1.2, 10, px, py, mat=M_CONCRETE)
-    # Elevated platform / catwalk along N wall
-    _box_at(world, 40, 4, 0.4, 0, 9, pz=5.2, mat=M_STEEL)
-    # Ramp up to catwalk
-    _box_at(world, 1.5, 4.5, 0.3, -18, 7.5, pz=4.85, mat=M_STEEL)
-    # Windows (dark glass insets, flush with walls)
-    for py in [-6, 0, 6]:
-        _box_at(world, 0.3, 3.5, 4.0, -23.3, py, pz=6.5, mat=M_GLASS)
-        _box_at(world, 0.3, 3.5, 4.0,  23.3, py, pz=6.5, mat=M_GLASS)
+def _build_factory(world):
+    W, D, H = 44.0, 24.0, 11.0   # width, depth, height
+    cx, cy = 0.0, 0.0
 
-    # South annex: 20×12×7m
-    _box_at(world, 20, 0.8, 7, 0, -18.4, mat=M_CONC_D)
-    _box_at(world, 0.8, 12, 7, -10.4, -24, mat=M_CONCRETE)
-    _box_at(world, 0.8, 12, 7,  10.4, -24, mat=M_CONCRETE)
-    _box_at(world, 20, 0.8, 7, 0, -29.6, mat=M_CONC_D)
-    _box_at(world, 20, 12, 0.8, 0, -24, pz=7.4, mat=M_CONC_D)        # roof
+    # Floor slab
+    _b(world, W, D, 0.6, cx, cy, pz=0.3, mat=M_ASPHALT)
 
-    # North annex: 16×10×6m
-    _box_at(world, 16, 0.8, 6, 0, 16.4, mat=M_CONC_D)
-    _box_at(world, 0.8, 10, 6, -8.4, 21, mat=M_CONCRETE)
-    _box_at(world, 0.8, 10, 6,  8.4, 21, mat=M_CONCRETE)
-    _box_at(world, 16, 0.8, 6, 0, 25.6, mat=M_CONC_D)
-    _box_at(world, 16, 10, 0.8, 0, 21, pz=6.4, mat=M_CONC_D)
+    # 4 outer walls (thick concrete slabs)
+    wt = 1.0                                      # wall thickness
+    _b(world, wt, D, H, cx - W/2, cy, mat=M_CONC_D)    # W wall
+    _b(world, wt, D, H, cx + W/2, cy, mat=M_CONC_D)    # E wall
+    _b(world, W + 2*wt, wt, H, cx, cy - D/2, mat=M_CONCRETE)  # S wall
+    _b(world, W + 2*wt, wt, H, cx, cy + D/2, mat=M_CONCRETE)  # N wall
 
-    # Chimneys
-    _box_at(world, 3, 3, 18,  18, -22, mat=M_CONC_D)
-    _box_at(world, 2, 2, 14, -14, -22, mat=M_CONC_D)
-    _box_at(world, 1.4, 1.4, 3, 18, -22, pz=19.5, mat=M_STEEL)       # chimney cap
+    # Roof (3 slabs with a skylight gap in the centre for light)
+    _b(world, 14, D, 1.0, cx - 15,    cy, pz=H + 0.5, mat=M_CONC_D)
+    _b(world, 14, D, 1.0, cx + 15,    cy, pz=H + 0.5, mat=M_CONC_D)
+    _b(world, W + 2, 7,  1.0, cx, cy - D/2 + 3.5, pz=H + 0.5, mat=M_CONC_D)
 
-    # Pipe runs (horizontal)
-    _box_at(world, 25, 0.8, 0.8, 4, -15, pz=8.0, mat=M_STEEL)
-    _box_at(world, 0.8, 12, 0.8, -9, -20, pz=5.0, mat=M_STEEL)
+    # 2 interior divider walls (L-shaped cover inside the hall)
+    _b(world, 0.8, 10, 4.0, cx - 8, cy, mat=M_STEEL)
+    _b(world, 10, 0.8, 3.0, cx + 8, cy - 5, mat=M_STEEL)
+
+    # South annex: 20 × 12 × 7 m
+    ax, ay = cx, cy - D/2 - 6.5
+    _b(world, 20, wt, 7, ax, ay - 5.5, mat=M_CONC_D)
+    _b(world, wt, 11, 7, ax - 10.5, ay, mat=M_CONCRETE)
+    _b(world, wt, 11, 7, ax + 10.5, ay, mat=M_CONCRETE)
+    _b(world, 20, 11, 0.8, ax, ay, pz=7.4, mat=M_CONC_D)  # roof
+
+    # Chimneys (tall pillars — strong visual landmarks)
+    _b(world, 3.0, 3.0, 18, cx + 18, cy - D/2 - 2, mat=M_CONC_D)
+    _b(world, 2.0, 2.0, 14, cx - 14, cy - D/2 - 2, mat=M_CONC_D)
 
 
-def _build_container_yard(world):
-    """NW quadrant: stacked shipping containers for CQC cover."""
-    containers = [
-        # (x,  y,  z_base, rotation_z)
-        (-48, 50, 0, 0), (-42, 50, 0, 0), (-36, 50, 0, 0),
-        (-48, 57, 0, 0), (-42, 57, 0, 0),
-        # stacked layer
-        (-48, 50, 2.5, 0), (-42, 50, 2.5, 0),
-        # cross-oriented
-        (-50, 62, 0, 90), (-44, 62, 0, 90), (-38, 62, 0, 90),
-        (-30, 55, 0, 45),
-        # separate cluster further NW
-        (-70, 45, 0, 0), (-65, 45, 0, 0),
-        (-70, 45, 2.5, 0),
+# ── Container yard (NW) ───────────────────────────────────────────────────────
+# 9 containers in two clusters.
+
+def _build_containers(world):
+    positions = [
+        # cluster A
+        (-46, 52, 6.1, 2.6, 2.5, 0),
+        (-40, 52, 6.1, 2.6, 2.5, 0),
+        (-34, 52, 6.1, 2.6, 2.5, 0),
+        (-46, 52, 6.1, 2.6, 2.5, 2.5),   # stacked
+        (-40, 52, 6.1, 2.6, 2.5, 2.5),
+        # cluster B (different orientation)
+        (-52, 62, 2.6, 6.1, 2.5, 0),
+        (-46, 62, 2.6, 6.1, 2.5, 0),
+        # orange containers (safety)
+        (-58, 54, 6.1, 2.6, 2.5, 0),
+        (-64, 46, 6.1, 2.6, 2.5, 0),
     ]
-    for (cx, cy, cz, rot) in containers:
-        if rot == 90:
-            world.add_box(
-                size=(2.6, 6.1, 2.5),
-                position=(cx, cy, cz + 1.25),
-                static=True, material=M_RUST,
-            )
-        else:
-            world.add_box(
-                size=(6.1, 2.6, 2.5),
-                position=(cx, cy, cz + 1.25),
-                static=True, material=M_RUST,
-            )
+    for (px, py, sx, sy, sz, zoff) in positions:
+        mat = M_RUST if (px + py) % 7 < 4 else M_ORANGE
+        world.add_box(size=(sx, sy, sz), position=(px, py, sz/2 + zoff),
+                      static=True, material=mat)
 
-    # Orange safety containers (accent)
-    for pos in [(-55, 52, 0), (-62, 58, 0)]:
-        world.add_box(
-            size=(6.1, 2.6, 2.5),
-            position=(pos[0], pos[1], pos[2] + 1.25),
-            static=True, material=M_ORANGE,
-        )
 
+# ── Ruined district (NE) ──────────────────────────────────────────────────────
+# 8 bodies: 2 damaged buildings + debris.
 
 def _build_ruins(world):
-    """NE quadrant: bombed-out residential ruins."""
-    # Ruined block A: walls of different heights
-    _box_at(world, 16, 0.8, 8, 55, 50, mat=M_CONC_D)
-    _box_at(world, 16, 0.8, 5, 55, 66, mat=M_CONC_D)    # shorter front
-    _box_at(world, 0.8, 16, 8, 47, 58, mat=M_CONCRETE)
-    _box_at(world, 0.8, 16, 3, 63, 58, mat=M_CONC_D)    # broken wall
-    _box_at(world, 16, 16, 0.8, 55, 58, pz=5.5, mat=M_CONC_D)  # partial roof
+    # Building A — partial walls
+    _b(world, 16, 1.0, 8,  55,  50, mat=M_CONC_D)   # S face
+    _b(world,  1, 16, 6,  47,  57, mat=M_CONCRETE)  # W side
+    _b(world, 16,  1, 4,  55,  64, mat=M_CONC_D)    # N face (low)
+    _b(world, 16, 16, 0.8, 55, 57, pz=7.4, mat=M_CONC_D)  # partial roof
 
-    # Ruined block B (slightly rotated feel — use offset)
-    _box_at(world, 12, 0.8, 6, 75, 42, mat=M_CONC_D)
-    _box_at(world, 0.8, 10, 4, 69, 47, mat=M_CONCRETE)
-    _box_at(world, 0.8, 10, 6, 81, 47, mat=M_CONC_D)
+    # Building B
+    _b(world, 12,  1, 6,  75,  42, mat=M_CONC_D)
+    _b(world,  1, 10, 5,  81,  47, mat=M_CONCRETE)
 
-    # Debris mounds (rounded sphere-like piles)
-    for (px, py) in [(60, 45), (52, 70), (78, 55), (65, 60)]:
-        world.add_sphere(
-            radius=1.8, position=(px, py, 1.8), static=True, material=M_CONC_D
-        )
-        world.add_box(
-            size=(3, 2, 1.2), position=(px + 1, py - 1, 0.6),
-            static=True, material=M_CONCRETE,
-        )
+    # Debris mounds (spheres are efficient)
+    for (px, py, r) in [(60, 44, 2.0), (52, 68, 1.8), (78, 56, 2.2)]:
+        world.add_sphere(radius=r, position=(px, py, r), static=True, material=M_CONC_D)
 
-    # Broken walls (half-height)
-    for (px, py, sx, sy) in [
-        (48, 42, 4, 0.4), (58, 42, 3, 0.4), (72, 65, 0.4, 5),
-        (82, 60, 5, 0.4),
-    ]:
-        _box_at(world, sx, sy, 1.2, px, py, mat=M_CONC_D)
 
+# ── Industrial plant (SE) ─────────────────────────────────────────────────────
+# 7 bodies: 2 tanks + platforms + pump house.
 
 def _build_industrial(world):
-    """SE quadrant: industrial plant with tanks and pipes."""
-    # Main tank (sphere)
-    world.add_sphere(radius=6.0, position=(55, -45, 6.0), static=True, material=M_STEEL)
-    world.add_sphere(radius=4.0, position=(70, -55, 4.0), static=True, material=M_RUST)
-    # Tank platforms / bases
-    _box_at(world, 14, 14, 2, 55, -45, mat=M_STEEL)
-    _box_at(world, 10, 10, 2, 70, -55, mat=M_RUST)
-
-    # Pipe structures
-    _box_at(world, 0.8, 25, 0.8, 45, -40, pz=5.0, mat=M_STEEL)
-    _box_at(world, 20, 0.8, 0.8, 55, -28, pz=7.0, mat=M_STEEL)
-    _box_at(world, 0.8, 0.8, 12, 40, -28, mat=M_STEEL)   # vertical pipe
-    _box_at(world, 0.8, 0.8, 10, 65, -28, mat=M_STEEL)
-
+    world.add_sphere(radius=6.0, position=(55, -45, 6.0),  static=True, material=M_STEEL)
+    world.add_sphere(radius=4.0, position=(70, -55, 4.0),  static=True, material=M_RUST)
+    _b(world, 14, 14, 2, 55, -45, mat=M_STEEL)   # tank base A
+    _b(world, 10, 10, 2, 70, -55, mat=M_RUST)    # tank base B
     # Pump house
-    _box_at(world, 10, 8, 6, 42, -60, mat=M_CONC_D)
-    _box_at(world, 0.8, 8, 6, 37, -60, mat=M_CONCRETE)
+    _b(world, 10,  8, 6, 42, -60, mat=M_CONC_D)
+    _b(world,  1,  8, 6, 37, -60, mat=M_CONCRETE)
+    # Single prominent pipe (visual)
+    _b(world, 0.8, 25, 0.8, 45, -40, pz=5.0, mat=M_STEEL)
 
-    # Machinery / barriers
-    for x_off in [-3, 0, 3]:
-        _box_at(world, 2, 2, 3, 45 + x_off, -50, mat=M_ORANGE)
 
+# ── Market district (SW) ──────────────────────────────────────────────────────
+# 8 bodies: market hall + 4 stalls + barriers.
 
 def _build_market(world):
-    """SW quadrant: market district with alleys and low buildings."""
-    # Row of market stalls / small buildings
-    stalls = [(-60, -35), (-60, -45), (-60, -55), (-70, -30), (-70, -40), (-70, -50)]
-    for (px, py) in stalls:
-        _box_at(world, 8, 6, 4, px, py, mat=M_CONCRETE)
-        # Awning
-        _box_at(world, 9, 2, 0.3, px, py - 4, pz=4.15, mat=M_RUST)
+    # Market hall
+    _b(world, 20,  1, 7, -50, -65, mat=M_CONC_D)
+    _b(world,  1, 16, 7, -41, -72, mat=M_CONCRETE)
+    _b(world,  1, 16, 7, -61, -72, mat=M_CONCRETE)
+    _b(world, 20,  1, 7, -50, -79, mat=M_CONC_D)
+    _b(world, 20, 16, 0.8, -50, -72, pz=7.4, mat=M_CONC_D)
 
-    # Market hall (larger)
-    _box_at(world, 20, 0.8, 7, -50, -65, mat=M_CONC_D)
-    _box_at(world, 0.8, 16, 7, -41, -72, mat=M_CONCRETE)
-    _box_at(world, 0.8, 16, 7, -61, -72, mat=M_CONCRETE)
-    _box_at(world, 20, 0.8, 7, -50, -79, mat=M_CONC_D)
-    _box_at(world, 20, 16, 0.8, -50, -72, pz=7.4, mat=M_CONC_D)
+    # Market stalls (3 combined into 1 strip each side)
+    _b(world, 8, 18, 4, -60, -45, mat=M_CONCRETE)  # W stalls
+    _b(world, 8,  0.3, 0.3, -60, -36, pz=4.15, mat=M_RUST)  # awning
 
-    # Barricades and planters along market street
-    for y_off in [-30, -38, -46, -54, -62]:
-        _box_at(world, 0.4, 2.5, 1.5, -43, y_off, mat=M_WOOD)
-    for y_off in [-34, -42, -50, -58]:
-        _box_at(world, 0.4, 2.5, 1.5, -52, y_off, mat=M_WOOD)
+    # Alley barriers
+    for py in [-32, -40, -48, -56]:
+        _b(world, 0.4, 2.5, 1.5, -43, py, mat=M_CONC_D)
 
+
+# ── Guard towers (4 corners) ──────────────────────────────────────────────────
+# 3 bodies per tower = 12 total.
 
 def _build_towers(world):
-    """4 guard towers near the map corners."""
-    positions = [
-        (-80, -80), (80, -80), (-80, 80), (80, 80)
-    ]
-    for (px, py) in positions:
-        _box_at(world, 4, 4, 14, px, py, mat=M_CONCRETE)     # shaft
-        _box_at(world, 8, 8, 0.6, px, py, pz=14.6, mat=M_STEEL)  # floor
-        # Parapet walls
-        for (ox, oy, sx, sy) in [
-            (0, 4.4, 8, 0.4), (0, -4.4, 8, 0.4),
-            (4.4, 0, 0.4, 8), (-4.4, 0, 0.4, 8),
-        ]:
-            _box_at(world, sx, sy, 1.2, px + ox, py + oy, pz=15.5, mat=M_CONCRETE)
-        # Ladder suggestion (thin box)
-        _box_at(world, 0.1, 0.6, 14, px + 2.2, py, mat=M_STEEL)
+    for (px, py) in [(-80, -80), (80, -80), (-80, 80), (80, 80)]:
+        _b(world, 4, 4, 14,  px, py, mat=M_CONCRETE)       # shaft
+        _b(world, 8, 8, 0.8, px, py, pz=14.6, mat=M_STEEL) # floor
+        # One parapet ring (merged into single thick frame)
+        _b(world, 8, 8, 1.4, px, py, pz=15.9, mat=M_CONCRETE,
+           # hollow by using a solid box slightly inset visually; collision-wise fine
+           )
 
 
-def _build_open_areas(world):
-    """Scatter cover objects across open areas."""
+# ── Scattered cover ───────────────────────────────────────────────────────────
+# ~12 bodies: barriers + rocks (no wheel spheres).
+
+def _build_cover(world):
     rng = random.Random(42)
 
-    # Concrete barriers (highway-style) across the map
-    barrier_spots = [
+    # Highway-style concrete barriers (8 spots)
+    spots = [
         (30, -40), (-30, 40), (15, 55), (-15, -55),
         (45, 20), (-45, -20), (20, -70), (-20, 70),
-        (60, 5), (-60, -5), (5, 60), (-5, -60),
     ]
-    for (px, py) in barrier_spots:
-        _box_at(world, 3.5, 0.5, 1.4, px, py, mat=M_CONCRETE)
+    for (px, py) in spots:
+        _b(world, 3.5, 0.5, 1.5, px, py, mat=M_CONCRETE)
 
-    # Rock outcrops (sphere clusters)
-    rock_spots = [
-        (35, 35), (-35, -35), (75, 10), (-75, -10),
-        (10, -75), (-10, 75), (50, -70), (-50, 70),
-    ]
-    for (px, py) in rock_spots:
-        world.add_sphere(
-            radius=rng.uniform(1.5, 2.8),
-            position=(px, py, rng.uniform(1.5, 2.8)),
-            static=True, material=M_CONC_D,
-        )
+    # Vehicle wrecks — body only (no individual wheel spheres)
+    for (px, py) in [(38, -25), (-38, 25), (65, 35), (-65, -35)]:
+        _b(world, 4.5, 2.0, 1.4, px, py, pz=0.7, mat=M_RUST)
 
-    # Low walls scattered in mid-map for cross-fire cover
-    walls = [
-        (35, 0, 6, 0.4, 1.5), (-35, 0, 6, 0.4, 1.5),
-        (0, 35, 0.4, 6, 1.5), (0, -35, 0.4, 6, 1.5),
-        (25, 15, 5, 0.4, 1.2), (-25, -15, 5, 0.4, 1.2),
-        (-20, 35, 0.4, 5, 1.2), (20, -35, 0.4, 5, 1.2),
-    ]
-    for (px, py, sx, sy, sz) in walls:
-        _box_at(world, sx, sy, sz, px, py, mat=M_CONC_D)
+    # Rock clusters (2 spheres each → just 1 sphere per cluster for perf)
+    for (px, py) in [(35, 35), (-35, -35), (75, 10), (-75, -10)]:
+        r = rng.uniform(1.6, 2.5)
+        world.add_sphere(radius=r, position=(px, py, r), static=True, material=M_CONC_D)
 
-    # Vehicle wrecks: flat box body + 4 sphere wheels
-    wrecks = [(38, -25), (-38, 25), (65, 35), (-65, -35)]
-    for (px, py) in wrecks:
-        _box_at(world, 4.5, 2.0, 1.4, px, py, pz=0.7, mat=M_RUST)
-        for (ox, oy) in [(-1.5, 0.9), (1.5, 0.9), (-1.5, -0.9), (1.5, -0.9)]:
-            world.add_sphere(
-                radius=0.38, position=(px + ox, py + oy, 0.38),
-                static=True, material=M_STEEL,
-            )
 
+# ── Zone pillars ─────────────────────────────────────────────────────────────
 
 def _build_zone_pillars(world) -> list[f3d.Body]:
-    """36 emissive blue pillars that form the zone boundary ring."""
     pillars = []
     r = ZONE_PHASES[0][1]
     for i in range(ZONE_N_PILLARS):
@@ -343,76 +259,66 @@ def _build_zone_pillars(world) -> list[f3d.Body]:
     return pillars
 
 
-def _place_pickups(world, rng: random.Random) -> list[WeaponPickup]:
-    """Scatter weapon pickups at fixed strategic spots."""
-    pickup_spots = [
-        # (x, y, weapon_kind)
-        (-45, 52, "rifle"),    (-38, 60, "smg"),
-        (52, 48, "shotgun"),   (60, 58, "sniper"),
-        (-55, -40, "smg"),     (-42, -48, "rifle"),
-        (42, -45, "shotgun"),  (55, -60, "rifle"),
-        (-22, 22, "smg"),      (22, -22, "smg"),
-        (-15, -18, "rifle"),   (18, 14, "rifle"),
-        (0, -48, "sniper"),    (0, 48, "sniper"),
-        (72, -20, "shotgun"),  (-72, 20, "shotgun"),
+# ── Weapon pickups ────────────────────────────────────────────────────────────
+
+def _place_pickups(world) -> list[WeaponPickup]:
+    spots = [
+        (-45, 52, "rifle"),  (-38, 60, "smg"),
+        (52,  48, "shotgun"),(60,  58, "sniper"),
+        (-55,-40, "smg"),    (-42,-48, "rifle"),
+        (42, -45, "shotgun"),(55, -60, "rifle"),
+        (-22, 22, "smg"),    (22, -22, "smg"),
+        (-15,-18, "rifle"),  (18,  14, "rifle"),
+        (0,  -48, "sniper"), (0,   48, "sniper"),
+        (72, -20, "shotgun"),(-72, 20, "shotgun"),
     ]
     pickups = []
-    for (px, py, kind) in pickup_spots:
+    for i, (px, py, kind) in enumerate(spots):
         body = world.add_box(
             size=(0.7, 0.35, 0.18),
             position=(px, py, 0.09),
             static=True,
             material=M_PICKUP,
-            name=f"pickup_{kind}_{len(pickups)}",
+            name=f"pickup_{kind}_{i}",
         )
         pickups.append(WeaponPickup(body=body, weapon_kind=kind))
     return pickups
 
 
+# ── Bot spawn positions ───────────────────────────────────────────────────────
+
 def _bot_spawn_positions(n: int) -> list[np.ndarray]:
-    """Deterministic spread of spawn positions around the map perimeter."""
     rng = random.Random(99)
     positions = []
     while len(positions) < n:
-        # Random position inside map, away from center
         r = rng.uniform(35, MAP_HALF - 10)
         a = rng.uniform(0, 2 * math.pi)
-        x = r * math.cos(a)
-        y = r * math.sin(a)
-        positions.append(np.array([x, y, 1.0]))
+        positions.append(np.array([r * math.cos(a), r * math.sin(a), 1.0]))
     return positions
 
 
-# ── Main entry point ──────────────────────────────────────────────────────────
+# ── Main entry ────────────────────────────────────────────────────────────────
 
 def build_world(world: f3d.World) -> WorldAssets:
-    """Construct the full map and return references to dynamic assets."""
-    rng = random.Random(7)
-
-    # Ground plane (large flat slab)
+    """Build the complete map; return references to dynamic assets."""
+    # Ground slab
     world.add_box(
         size=(MAP_HALF * 2, MAP_HALF * 2, 0.5),
         position=(0, 0, -0.25),
-        static=True,
-        material=M_GROUND,
-        name="ground",
+        static=True, material=M_GROUND, name="ground",
     )
 
-    # Sections
-    _build_central_factory(world)
-    _build_container_yard(world)
+    _build_factory(world)
+    _build_containers(world)
     _build_ruins(world)
     _build_industrial(world)
     _build_market(world)
     _build_towers(world)
-    _build_open_areas(world)
+    _build_cover(world)
 
-    # Dynamic assets
     zone_pillars = _build_zone_pillars(world)
-    pickups = _place_pickups(world, rng)
-
-    # Bot spawn positions (keep them from overlapping structures)
-    bot_spawns = _bot_spawn_positions(25)
+    pickups      = _place_pickups(world)
+    bot_spawns   = _bot_spawn_positions(30)
 
     return WorldAssets(
         zone_pillars=zone_pillars,

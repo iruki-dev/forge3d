@@ -736,6 +736,7 @@ class World:
         mass: float = 70.0,
         name: str = "character",
         ground_layer_mask: int = 0xFFFF,
+        ground_check_hz: float = 60.0,
     ) -> Any:
         """Add a capsule-based character controller.
 
@@ -781,6 +782,7 @@ class World:
             height=height,
             radius=radius,
             ground_layer_mask=ground_layer_mask,
+            ground_check_hz=ground_check_hz,
         )
 
     def add(self, obj: Any) -> Any:
