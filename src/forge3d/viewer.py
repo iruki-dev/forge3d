@@ -61,6 +61,7 @@ class Viewer:
         max_frames: int | None = None,
         controls: Any = None,
         shadow_resolution: int = 0,
+        sky_color: tuple | None = None,
     ) -> None:
         if mode != "realtime":
             raise ValueError(f"Viewer mode={mode!r} is not implemented. Use mode='realtime'.")
@@ -74,6 +75,7 @@ class Viewer:
         self._renderer: Any = None
         self._closed = False
         self._shadow_resolution = shadow_resolution
+        self._sky_color = sky_color
 
         # Windowed mode flag — set once renderer is created
         self._windowed = title is not None
@@ -261,6 +263,41 @@ class Viewer:
         self._world.step(dt)
         return self.draw()
 
+    # ── FPS helpers ───────────────────────────────────────────────────────────
+
+    def set_cursor_captured(self, captured: bool) -> None:
+        """Lock (hide + raw motion) or release the OS cursor.
+
+        Essential for FPS mouse-look. When cursor is captured, ESC releases it
+        instead of closing the window. Only available in windowed mode.
+        """
+        if self._windowed:
+            self._ensure_renderer()
+            self._renderer.set_cursor_captured(captured)
+
+    def set_excluded_names(self, names: set[str]) -> None:
+        """Exclude specific body names from rendering (e.g. local player in FPS)."""
+        if self._windowed:
+            self._ensure_renderer()
+            self._renderer.set_excluded_names(names)
+
+    def draw_rect(
+        self,
+        x: int,
+        y: int,
+        w: int,
+        h: int,
+        color: tuple = (1.0, 1.0, 1.0),
+        alpha: float = 0.8,
+    ) -> None:
+        """Draw a filled flat-colored rectangle on the HUD.
+
+        Must be called *after* :meth:`draw`.  Coordinates are in pixels from
+        the top-left corner of the window.
+        """
+        if self._renderer is not None:
+            self._renderer.draw_rect(x, y, w, h, color, alpha)
+
     # ── Cleanup ───────────────────────────────────────────────────────────────
 
     def close(self) -> None:
@@ -295,6 +332,7 @@ class Viewer:
                 self._title,
                 fps=self._fps,
                 shadow_resolution=self._shadow_resolution,
+                **({} if self._sky_color is None else {"sky_color": self._sky_color}),
             )
         else:
             from forge3d.render.realtime.renderer import RealtimeRenderer

@@ -76,8 +76,26 @@ _SHADOW_SIZE = 1024  # shadow map resolution (raised from 512 for quality)
 _SHADOW_HALF = 150.0  # half-extent of shadow orthographic frustum (m)
 _SHADOW_DEPTH = 500.0  # far plane of shadow frustum
 
-# Sky colour — daytime blue
-_SKY = (0.42, 0.62, 0.88)
+# Sky colour — daytime blue (can be overridden via constructor)
+_SKY_DEFAULT = (0.42, 0.62, 0.88)
+
+# HUD flat-color shaders (no UV — for filled rects, bars, overlays)
+_HUD_FLAT_V = """
+#version 330 core
+uniform vec2 u_screen;
+in vec2 in_pos;
+void main() {
+    vec2 ndc = (in_pos / u_screen) * 2.0 - 1.0;
+    ndc.y = -ndc.y;
+    gl_Position = vec4(ndc, 0.0, 1.0);
+}
+"""
+_HUD_FLAT_F = """
+#version 330 core
+uniform vec4 u_rect_color;
+out vec4 fc;
+void main() { fc = u_rect_color; }
+"""
 
 # ── GLFW → forge3d key name mapping ──────────────────────────────────────────
 # Letters / digits: glfw.get_key_name() returns a lowercase string directly.
@@ -256,13 +274,20 @@ class WindowedRealtimeRenderer:
     """
 
     def __init__(
-        self, width: int, height: int, title: str, fps: int = 60, shadow_resolution: int = 0
+        self,
+        width: int,
+        height: int,
+        title: str,
+        fps: int = 60,
+        shadow_resolution: int = 0,
+        sky_color: tuple = _SKY_DEFAULT,
     ) -> None:
         self._width = width
         self._height = height
         self._title = title
         self._fps = fps
         self._shadow_resolution = shadow_resolution if shadow_resolution > 0 else _SHADOW_SIZE
+        self._sky_color = sky_color
 
         self._ctx: Any = None
         self._window: Any = None  # glfw window handle
@@ -270,6 +295,7 @@ class WindowedRealtimeRenderer:
         self._main_prog: Any = None
         self._flat_prog: Any = None
         self._hud_prog: Any = None
+        self._hud_flat_prog: Any = None
         self._shadow_fbo: Any = None
         self._shadow_tex: Any = None
         self._white_tex: Any = None
@@ -277,6 +303,8 @@ class WindowedRealtimeRenderer:
         self._terrain_vaos: dict[Any, tuple] = {}
         self._grid_vao: Any = None
         self._grid_n: int = 0
+        self._rect_vbo: Any = None
+        self._rect_vao: Any = None
 
         self._cam: CameraSnapshot | None = None
 
@@ -289,6 +317,12 @@ class WindowedRealtimeRenderer:
         self._dt = 1.0 / fps
         self._prev_time = 0.0
         self._pending_flip = False
+
+        # Cursor capture (FPS mode)
+        self._cursor_captured = False
+
+        # Body names to exclude from rendering (e.g. local player body in FPS)
+        self._excluded_names: set[str] = set()
 
         # HUD text cache: key → {"tex", "vbo", "vao", "alive"}
         self._hud_cache: dict[tuple, dict[str, Any]] = {}
@@ -326,6 +360,25 @@ class WindowedRealtimeRenderer:
         self._prev_time = glfw.get_time()
         self._init_gl()
 
+    # ── Cursor capture (FPS) ───────────────────────────────────────────────────
+
+    def set_cursor_captured(self, captured: bool) -> None:
+        """Lock (hide+raw) or release the OS cursor.
+
+        When captured, ESC releases the cursor instead of closing the window.
+        """
+        if self._window is None:
+            return
+        if captured:
+            glfw.set_input_mode(self._window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+        else:
+            glfw.set_input_mode(self._window, glfw.CURSOR, glfw.CURSOR_NORMAL)
+        self._cursor_captured = captured
+
+    def set_excluded_names(self, names: set[str]) -> None:
+        """Bodies whose names are in *names* will not be rendered (FPS self-exclusion)."""
+        self._excluded_names = names
+
     def _init_gl(self) -> None:
         ctx = self._ctx
         self._shadow_prog = ctx.program(vertex_shader=SHADOW_VERT, fragment_shader=SHADOW_FRAG)
@@ -337,6 +390,13 @@ class WindowedRealtimeRenderer:
         self._shadow_tex = ctx.depth_texture((sz, sz))
         self._shadow_fbo = ctx.framebuffer(depth_attachment=self._shadow_tex)
         self._white_tex = ctx.texture((1, 1), 3, _WHITE_PIXEL)
+
+        self._hud_flat_prog = ctx.program(vertex_shader=_HUD_FLAT_V, fragment_shader=_HUD_FLAT_F)
+        # Dynamic rect VBO: 6 vertices × 2 floats = 48 bytes
+        self._rect_vbo = ctx.buffer(reserve=48)
+        self._rect_vao = ctx.vertex_array(
+            self._hud_flat_prog, [(self._rect_vbo, "2f", "in_pos")]
+        )
 
         for key, mesh_fn in [("box", unit_box), ("sphere", unit_sphere)]:
             verts, idx = mesh_fn()
@@ -462,9 +522,12 @@ class WindowedRealtimeRenderer:
         # Poll OS events — callbacks fire synchronously here
         glfw.poll_events()
 
-        # Check ESC and window-close
+        # Check ESC: release cursor when captured, close window otherwise
         if glfw.get_key(self._window, glfw.KEY_ESCAPE) == glfw.PRESS:
-            self._is_open = False
+            if self._cursor_captured:
+                self.set_cursor_captured(False)
+            else:
+                self._is_open = False
         if glfw.window_should_close(self._window):
             self._is_open = False
 
@@ -521,6 +584,8 @@ class WindowedRealtimeRenderer:
         ctx.depth_func = "<"
 
         for body in snapshot.bodies:
+            if body.name in self._excluded_names:
+                continue
             sk = self._vao_key(body) + "_shadow"
             if sk not in self._vaos:
                 continue
@@ -535,7 +600,8 @@ class WindowedRealtimeRenderer:
         # Main PBR pass
         ctx.screen.use()
         ctx.viewport = (0, 0, W, H)
-        ctx.screen.clear(red=_SKY[0], green=_SKY[1], blue=_SKY[2], depth=1.0)
+        sky = self._sky_color
+        ctx.screen.clear(red=sky[0], green=sky[1], blue=sky[2], depth=1.0)
         ctx.enable(ctx.DEPTH_TEST)
         ctx.depth_func = "<"
 
@@ -553,13 +619,15 @@ class WindowedRealtimeRenderer:
             prog["u_ambient_color"].write(ambient.tobytes())
             prog["u_eye"].write(cam.position.astype(np.float32).tobytes())
             prog["u_fog_density"].value = 0.0040
-            prog["u_fog_color"].write(np.array(_SKY, np.float32).tobytes())
+            prog["u_fog_color"].write(np.array(self._sky_color, np.float32).tobytes())
         except KeyError:
             pass
 
         mat_lookup = {**BUILTIN_MATERIALS, **snapshot.materials}
 
         for body in snapshot.bodies:
+            if body.name in self._excluded_names:
+                continue
             vk = self._vao_key(body)
             if vk not in self._vaos:
                 continue
@@ -707,6 +775,47 @@ class WindowedRealtimeRenderer:
         for v in self._hud_cache.values():
             v["alive"] = False
 
+    # ── Flat-color rect overlay ────────────────────────────────────────────────
+
+    def draw_rect(
+        self,
+        x: int,
+        y: int,
+        w: int,
+        h: int,
+        color: tuple = (1.0, 1.0, 1.0),
+        alpha: float = 0.8,
+    ) -> None:
+        """Draw a filled, flat-colored rectangle on the HUD.
+
+        Coordinates are in pixels from the top-left corner.
+        Useful for health bars, zone overlays, and minimap backgrounds.
+        """
+        if self._ctx is None or self._rect_vbo is None:
+            return
+        x0, y0, x1, y1 = float(x), float(y), float(x + w), float(y + h)
+        verts = np.array(
+            [x0, y0, x1, y0, x0, y1, x1, y0, x1, y1, x0, y1], dtype=np.float32
+        )
+        self._rect_vbo.write(verts.tobytes())
+
+        ctx = self._ctx
+        ctx.disable(ctx.DEPTH_TEST)
+        ctx.enable(ctx.BLEND)
+        ctx.blend_func = ctx.SRC_ALPHA, ctx.ONE_MINUS_SRC_ALPHA
+        try:
+            self._hud_flat_prog["u_screen"].write(
+                np.array([self._width, self._height], np.float32).tobytes()
+            )
+            self._hud_flat_prog["u_rect_color"].write(
+                np.array([*color, alpha], np.float32).tobytes()
+            )
+        except KeyError:
+            pass
+        self._rect_vao.render()
+        ctx.disable(ctx.BLEND)
+        ctx.enable(ctx.DEPTH_TEST)
+
     # ── Properties ─────────────────────────────────────────────────────────────
 
     @property
@@ -735,6 +844,10 @@ class WindowedRealtimeRenderer:
                     v[0].release()
             if self._grid_vao:
                 self._grid_vao.release()
+            if self._rect_vao:
+                self._rect_vao.release()
+            if self._rect_vbo:
+                self._rect_vbo.release()
             if self._white_tex:
                 self._white_tex.release()
             self._ctx.release()
