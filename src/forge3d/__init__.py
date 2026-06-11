@@ -1,6 +1,6 @@
 """forge3d — pure-Python 3D game engine.
 
-"Fast like native, beautiful like simulation."
+"Pure-Python 3D physics game engine — own dynamics, own rules, no compromises."
 Coordinate system: z-up, SI units (metres, kg, seconds).
 
 Minimal example (14 lines)::
@@ -121,7 +121,7 @@ from forge3d.scene import Prefab, SceneManager, SceneNode
 from forge3d.ui import Canvas, DebugPanel, HierarchyPanel, InspectorPanel, UISystem
 from forge3d.viewer import Viewer
 
-__version__ = "2.1.0"
+__version__ = "2.1.1"
 
 # ── API 안정성 선언 ───────────────────────────────────────────────────────────
 # Stable (v3까지 Breaking change 없음):

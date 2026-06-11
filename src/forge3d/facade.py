@@ -1,6 +1,6 @@
 """forge3d public Facade — World, Body, Shape, Material.
 
-"Fast like native, beautiful like simulation."
+"Pure-Python 3D physics game engine — own dynamics, own rules, no compromises."
 Coordinate system: z-up, SI units.
 
 Users only need::

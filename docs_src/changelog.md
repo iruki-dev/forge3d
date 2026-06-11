@@ -10,6 +10,14 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.1.1] — 2026-06-11
+
+### Changed
+
+- Package description and all in-code taglines updated to "own dynamics, own rules, no compromises."
+
+---
+
 ## [2.1.0] — 2026-06-06 — API completeness and polish
 
 Bug fixes, missing features, and consistency improvements discovered during development.
