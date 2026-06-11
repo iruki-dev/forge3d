@@ -33,10 +33,13 @@
       try {
         var rel = JSON.parse(cfgEl.textContent).base;
         if (typeof rel === 'string') {
-          // Append '/' so new URL resolves correctly, then return the absolute URL.
-          // ".."  from https://example.com/forge3d/install/ → https://example.com/forge3d/
-          // "../.." from .../forge3d/ko/install/ → https://example.com/forge3d/
-          return new URL(rel.replace(/\/?$/, '/'), window.location.href).href;
+          // MkDocs pages are served as directories.  When the browser URL lacks a
+          // trailing slash (e.g. /forge3d instead of /forge3d/), the URL is treated
+          // as a *file* and new URL('../', ...) resolves one level too high.
+          // Always add a trailing slash before resolving so /forge3d is a directory.
+          var loc = window.location.href.split('?')[0].split('#')[0];
+          if (!loc.endsWith('/')) loc += '/';
+          return new URL(rel.replace(/\/?$/, '/'), loc).href;
         }
       } catch (e) {}
     }
@@ -46,10 +49,13 @@
 
   function getRel() {
     var base = getBase();
+    // Normalise: treat current page as a directory (add trailing slash if absent)
     var url  = window.location.href.split('?')[0].split('#')[0];
+    if (!url.endsWith('/')) url += '/';
     if (url.startsWith(base)) return url.slice(base.length);
     var bp = new URL(base).pathname;
     var p  = window.location.pathname;
+    if (!p.endsWith('/')) p += '/';
     return p.startsWith(bp) ? p.slice(bp.length) : p.replace(/^\//, '');
   }
 
