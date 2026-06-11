@@ -33,6 +33,8 @@ import inspect
 from collections.abc import Callable
 from typing import Any
 
+_UNSET: Any = object()
+
 
 class App:
     """High-level forge3d application with a managed physics + render loop.
@@ -61,7 +63,7 @@ class App:
 
     def __init__(
         self,
-        title: str = "forge3d",
+        title: str | Any = _UNSET,
         width: int = 1280,
         height: int = 720,
         fps: float = 60.0,
@@ -70,7 +72,10 @@ class App:
         from forge3d.facade import World
 
         self._world: World = World(gravity=gravity)
-        self._title = title
+        # A title that was explicitly provided → open a real OS window.
+        # If omitted, stay headless (avoids accidental window creation in tests).
+        self._windowed = title is not _UNSET
+        self._title = "forge3d" if title is _UNSET else title
         self._width = width
         self._height = height
         self._fps = float(fps)
@@ -157,6 +162,7 @@ class App:
 
         viewer = Viewer(
             self._world,
+            title=self._title if self._windowed else None,
             width=self._width,
             height=self._height,
             max_frames=max_frames,

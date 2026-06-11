@@ -96,6 +96,10 @@ class Viewer:
         if self._closed:
             return False
         if self._windowed:
+            # Respect max_frames even in windowed mode (useful for automated testing)
+            if self._max_frames is not None and self._frame_count >= self._max_frames:
+                self.close()
+                return False
             # Check renderer's is_open once it has been created
             if self._renderer is not None and not self._renderer.is_open:
                 self._closed = True
