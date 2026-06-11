@@ -167,10 +167,15 @@ class App:
             height=self._height,
             max_frames=max_frames,
         )
-        inp_builder = _InputBuilder()
+
+        # Headless-only fallback builder (windowed mode uses the renderer's
+        # GLFW-wired InputBuilder via viewer.input instead)
+        _headless_builder = _InputBuilder()
 
         while viewer.is_open:
-            inp = inp_builder.build()
+            # In windowed mode viewer.input is updated by the GLFW callbacks
+            # inside viewer.draw(); in headless mode use a plain builder.
+            inp = viewer.input if self._windowed else _headless_builder.build()
 
             if self._on_update is not None:
                 _call_flexible(self._on_update, self._world, self._dt, inp)
@@ -182,7 +187,8 @@ class App:
             if self._on_render is not None:
                 _call_flexible(self._on_render, self._world, viewer)
 
-            inp_builder.end_frame()
+            if not self._windowed:
+                _headless_builder.end_frame()
 
         viewer.close()
 
