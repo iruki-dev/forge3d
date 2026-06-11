@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#contributing-to-forge3d" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -1462,6 +1467,26 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Contributing
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
       
       <a href="./" class="md-nav__link md-nav__link--active">
         
@@ -1479,6 +1504,152 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Quick start
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#checks-must-all-pass" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Checks (must all pass)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rules
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rules">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#physics-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Physics code
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#renderer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Renderer
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#public-api" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Public API
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forbidden" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Forbidden
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#code-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Code style
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#commit-style" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Commit style
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#questions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Questions?
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
       
     </li>
   
@@ -1531,9 +1702,69 @@
   
 
 
-  <h1>Contributing</h1>
-
-<p>{% include "../CONTRIBUTING.md" %}</p>
+<h1 id="contributing-to-forge3d">Contributing to forge3d<a class="headerlink" href="#contributing-to-forge3d" title="Permanent link">&para;</a></h1>
+<p>Thank you for your interest in contributing!</p>
+<h2 id="quick-start">Quick start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/iruki-dev/forge3d
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>forge3d
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>pip<span class="w"> </span>install<span class="w"> </span>-e<span class="w"> </span><span class="s2">&quot;.[dev]&quot;</span>
+</span></code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>PyPI 배포명은 <code>pyforge3d</code>이지만 코드에서는 <code>import forge3d</code>를 사용합니다.</p>
+</div>
+<h2 id="workflow">Workflow<a class="headerlink" href="#workflow" title="Permanent link">&para;</a></h2>
+<ol>
+<li>Fork the repo and create a feature branch: <code>git checkout -b feat/my-feature</code></li>
+<li>Write your changes and corresponding tests</li>
+<li>Make sure the checks below pass</li>
+<li>Open a PR — one PR per logical change</li>
+</ol>
+<h2 id="checks-must-all-pass">Checks (must all pass)<a class="headerlink" href="#checks-must-all-pass" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>ruff<span class="w"> </span>check<span class="w"> </span>.<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>ruff<span class="w"> </span>format<span class="w"> </span>--check<span class="w"> </span>.<span class="w">   </span><span class="c1"># lint + format</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>mypy<span class="w"> </span>src/<span class="w">                               </span><span class="c1"># type checking</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>pytest<span class="w"> </span>tests/<span class="w"> </span>-q<span class="w">                        </span><span class="c1"># test suite</span>
+</span></code></pre></div>
+<h2 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h2>
+<h3 id="physics-code">Physics code<a class="headerlink" href="#physics-code" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Every new formula needs a unit test that checks against an analytical solution,
+  a conservation law (energy / momentum), or a PyBullet/MuJoCo baseline (<code>validation/</code> directory).</li>
+<li>No in-place mutation of arrays. Use <code>dataclasses.replace(body, vel=new_vel)</code>.</li>
+<li>Must run correctly under both <code>ENGINE_BACKEND=numpy</code> and <code>ENGINE_BACKEND=jax</code>.</li>
+</ul>
+<h3 id="renderer">Renderer<a class="headerlink" href="#renderer" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Physics core (<code>math/</code>, <code>dynamics/</code>, <code>collision/</code>, <code>contact/</code>, <code>model/</code>, <code>sim/</code>)
+  must <strong>never</strong> import renderer code.</li>
+<li>The only allowed bridge is <code>SceneSnapshot</code> (pure data).</li>
+</ul>
+<h3 id="public-api">Public API<a class="headerlink" href="#public-api" title="Permanent link">&para;</a></h3>
+<ul>
+<li>New public concepts require an entry in <code>__all__</code> in <code>src/forge3d/__init__.py</code>.</li>
+<li>New public concepts need a usage example in <code>examples/</code> (≤ 15 lines).</li>
+</ul>
+<h3 id="forbidden">Forbidden<a class="headerlink" href="#forbidden" title="Permanent link">&para;</a></h3>
+<ul>
+<li>External physics engines in <code>src/forge3d/</code> (MuJoCo, PyBullet, Bullet, etc.).
+  They are allowed only in <code>validation/</code> for baseline comparison.</li>
+<li>GPU/CUDA dependencies for physics or learning code.</li>
+</ul>
+<h2 id="code-style">Code style<a class="headerlink" href="#code-style" title="Permanent link">&para;</a></h2>
+<ul>
+<li><a href="https://docs.astral.sh/ruff/">ruff</a> for lint and formatting (line length 100).</li>
+<li>Type annotations on all public functions.</li>
+<li>Comments only when the <em>why</em> is non-obvious.</li>
+<li>No docstrings for trivial getters / setters.</li>
+</ul>
+<h2 id="commit-style">Commit style<a class="headerlink" href="#commit-style" title="Permanent link">&para;</a></h2>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>feat(collision): add sweep-and-prune broad-phase
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>fix(contact): clamp Baumgarte correction to avoid tunnelling
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>docs(readme): add App-style game loop example
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>test(physics): add conservation test for capsule-capsule
+</span></code></pre></div>
+<h2 id="questions">Questions?<a class="headerlink" href="#questions" title="Permanent link">&para;</a></h2>
+<p>Open an issue or start a Discussion on GitHub.</p>
 
 
 
