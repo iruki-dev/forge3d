@@ -43,8 +43,9 @@ class Viewer:
     title      : If given, open a real OS window (windowed mode).
                  If ``None`` (default), render offscreen (headless mode).
     fps        : Target frames per second in windowed mode (default 60).
-    max_frames : Headless-mode auto-close after this many frames.
-                 Ignored in windowed mode.  ``None`` = 300 (headless default).
+    max_frames : Stop after this many frames in *both* windowed and headless
+                 modes.  ``None`` (default) = run until window close (windowed)
+                 or 300 frames (headless).
     """
 
     DEFAULT_HEADLESS_FRAMES = 300
@@ -90,8 +91,12 @@ class Viewer:
     def is_open(self) -> bool:
         """``True`` until the viewer is closed.
 
-        Windowed mode: ``False`` when the user closes the window or presses ESC.
-        Headless mode: ``False`` after *max_frames* frames.
+        Returns ``False`` when:
+
+        * the user closes the window or presses ESC (windowed), or
+        * ``max_frames`` frames have been rendered (both modes), or
+        * the headless frame limit (300) is reached without an explicit
+          ``max_frames`` value.
         """
         if self._closed:
             return False

@@ -570,6 +570,13 @@ class WindowedRealtimeRenderer:
     # ── Camera ─────────────────────────────────────────────────────────────────
 
     def set_camera(self, cam: CameraSnapshot) -> None:
+        """Override the camera for subsequent renders.
+
+        When not set (default), the camera embedded in the
+        :class:`~forge3d.render.snapshot.SceneSnapshot` is used, which
+        reflects whatever was last passed to ``world.set_camera()``.
+        Call this only when you need a camera independent of the world state.
+        """
         self._cam = cam
 
     # ── Main render ────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 """forge3d App — high-level game-loop abstraction.
 
-Provides a decorator-driven API similar to popular game frameworks::
+Provides a decorator-driven API::
 
     import forge3d as f3d
 
@@ -33,18 +33,16 @@ import inspect
 from collections.abc import Callable
 from typing import Any
 
-_UNSET: Any = object()
-
 
 class App:
     """High-level forge3d application with a managed physics + render loop.
 
     Parameters
     ----------
-    title     : Window title (shown in windowed mode).
+    title     : Window title.
     width     : Render width in pixels.
     height    : Render height in pixels.
-    fps       : Target frames per second; also the physics step rate.
+    fps       : Physics step rate and target render rate.
     gravity   : World gravity vector (x, y, z) in m/s².
 
     Examples
@@ -63,7 +61,7 @@ class App:
 
     def __init__(
         self,
-        title: str | Any = _UNSET,
+        title: str = "forge3d",
         width: int = 1280,
         height: int = 720,
         fps: float = 60.0,
@@ -72,10 +70,7 @@ class App:
         from forge3d.facade import World
 
         self._world: World = World(gravity=gravity)
-        # A title that was explicitly provided → open a real OS window.
-        # If omitted, stay headless (avoids accidental window creation in tests).
-        self._windowed = title is not _UNSET
-        self._title = "forge3d" if title is _UNSET else title
+        self._title = title
         self._width = width
         self._height = height
         self._fps = float(fps)
@@ -137,58 +132,50 @@ class App:
     # ── Run ───────────────────────────────────────────────────────────────────
 
     def run(self, max_frames: int | None = None) -> None:
-        """Start the game loop.
+        """Open a window and start the game loop.
 
-        Initialises the viewer, fires :meth:`on_start`, then loops:
-        1. Build :class:`~forge3d.input.Input` snapshot
-        2. Call :meth:`on_update` with ``(world, dt, inp)``
+        Fires ``on_start`` once, then each frame:
+
+        1. Read input from the OS window (keyboard / mouse).
+        2. Call ``on_update(world, dt, inp)``.
         3. ``world.step(dt)``
         4. ``viewer.draw()``
-        5. Fire :meth:`on_render` if registered
-        6. Advance frame; stop when ``max_frames`` reached or window closed
+        5. Call ``on_render(world, viewer)``.
+
+        The loop ends when the window is closed, ESC is pressed, or
+        ``max_frames`` frames have been rendered.
 
         Parameters
         ----------
-        max_frames : Maximum frames to render before stopping automatically.
-                     ``None`` (default) runs until the window is closed or
-                     the default headless limit is reached.
+        max_frames : Stop after this many frames.  ``None`` (default) runs
+                     until the user closes the window.
         """
-        from forge3d.input import _InputBuilder
         from forge3d.viewer import Viewer
 
-        # Fire on_start
         if self._on_start is not None:
             _call_flexible(self._on_start, self._world)
 
         viewer = Viewer(
             self._world,
-            title=self._title if self._windowed else None,
+            title=self._title,
             width=self._width,
             height=self._height,
             max_frames=max_frames,
         )
 
-        # Headless-only fallback builder (windowed mode uses the renderer's
-        # GLFW-wired InputBuilder via viewer.input instead)
-        _headless_builder = _InputBuilder()
-
         while viewer.is_open:
-            # In windowed mode viewer.input is updated by the GLFW callbacks
-            # inside viewer.draw(); in headless mode use a plain builder.
-            inp = viewer.input if self._windowed else _headless_builder.build()
+            # viewer.input is kept up-to-date by the GLFW callbacks wired
+            # inside the renderer — no separate InputBuilder needed here.
+            inp = viewer.input
 
             if self._on_update is not None:
                 _call_flexible(self._on_update, self._world, self._dt, inp)
 
             self._world.step(self._dt)
-
             viewer.draw()
 
             if self._on_render is not None:
                 _call_flexible(self._on_render, self._world, viewer)
-
-            if not self._windowed:
-                _headless_builder.end_frame()
 
         viewer.close()
 
@@ -219,7 +206,6 @@ def _call_flexible(func: Callable, *positional: Any) -> Any:
                 )
             ]
         )
-        # If a parameter has VAR_POSITIONAL (*args), pass everything
         has_var_positional = any(
             p.kind == inspect.Parameter.VAR_POSITIONAL for p in sig.parameters.values()
         )
