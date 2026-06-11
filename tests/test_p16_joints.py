@@ -8,7 +8,7 @@ import numpy as np
 import pytest
 
 import forge3d as f3d
-from forge3d.constraints import BallJoint, DistanceJoint, FixedJoint, HingeJoint, SpringJoint
+from forge3d.constraints import DistanceJoint, HingeJoint, SpringJoint
 from forge3d.constraints.joints import PrismaticJoint
 
 
@@ -190,7 +190,7 @@ def test_distance_constraint():
     world._physics._replace_body(ball_b._id,
                                   replace(ball_b._state(), vel=np.array([0.5, 0, 0])))
 
-    initial_dist = np.linalg.norm(ball_b.position - ball_a.position)
+    _ = np.linalg.norm(ball_b.position - ball_a.position)
 
     for _ in range(120):
         world.step(dt=1 / 60)

@@ -73,12 +73,9 @@ while not glfw.window_should_close(window):
     builder.end_frame()
 ```
 
-!!! note "pygame bridge (deprecated)"
-    `InputBuilder.feed_pygame_event(event)` is kept for backward compatibility
-    with code that still uses pygame as a standalone window.
-    It is a no-op when pygame is not installed.
+!!! note "glfw-native input"
     New code should use `f3d.Viewer` directly — glfw callbacks are wired up
-    automatically.
+    automatically and `InputBuilder` is managed internally.
 
 ### Key constants reference
 

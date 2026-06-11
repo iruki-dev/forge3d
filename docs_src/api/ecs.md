@@ -21,17 +21,18 @@ with reusable, composable behaviours.
 ::: forge3d.ecs.EntityWorld
     options:
       members:
-        - create
-        - destroy
-        - add
-        - get
-        - has
+        - create_entity
+        - destroy_entity
+        - is_alive
+        - add_component
         - remove_component
+        - get_component
+        - has_component
         - query
+        - all_entities
+        - components_of
         - step
         - add_system
-        - save
-        - load
 
 ---
 
@@ -82,18 +83,19 @@ import forge3d as f3d
 
 ew = f3d.EntityWorld()
 
-# A dynamic box at height 5
-box = ew.create()
-ew.add(box, f3d.Transform(position=[0, 0, 5]))
-ew.add(box, f3d.Rigidbody(mass=1.0))
-ew.add(box, f3d.MeshRenderer(shape="box", size=(1, 1, 1)))
-ew.add(box, f3d.Collider(shape="box", size=(1, 1, 1)))
+# A dynamic box at height 5 — pass components directly to create_entity()
+box = ew.create_entity(
+    f3d.Transform(position=[0, 0, 5]),
+    f3d.Rigidbody(mass=1.0),
+    f3d.MeshRenderer(shape="box", size=(1, 1, 1)),
+    f3d.Collider(shape="box", size=(1, 1, 1)),
+)
 
-# A static ground plane
-ground = ew.create()
-ew.add(ground, f3d.Transform(position=[0, 0, 0]))
-ew.add(ground, f3d.Rigidbody(mass=0))  # mass=0 → static
-ew.add(ground, f3d.Collider(shape="box", size=(100, 100, 0.1)))
+# A static ground plane — or add components after creation
+ground = ew.create_entity()
+ew.add_component(ground, f3d.Transform(position=[0, 0, 0]))
+ew.add_component(ground, f3d.Rigidbody(mass=0))  # mass=0 → static
+ew.add_component(ground, f3d.Collider(shape="box", size=(100, 100, 0.1)))
 ```
 
 ### Stepping the world
@@ -102,7 +104,7 @@ ew.add(ground, f3d.Collider(shape="box", size=(100, 100, 0.1)))
 for _ in range(600):           # 10 seconds at 60 Hz
     ew.step(dt=1/60)
 
-tf = ew.get(box, f3d.Transform)
+tf = ew.get_component(box, f3d.Transform)
 print(f"Box z = {tf.position[2]:.3f}")
 ```
 
@@ -113,12 +115,10 @@ class Spinner(f3d.Script):
     speed: float = 2.0
 
     def update(self, entity, ew, dt):
-        tf = ew.get(entity, f3d.Transform)
+        tf = ew.get_component(entity, f3d.Transform)
         tf.rotation[2] += self.speed * dt   # yaw in place
 
-spinner_e = ew.create()
-ew.add(spinner_e, f3d.Transform())
-ew.add(spinner_e, Spinner(speed=3.0))
+spinner_e = ew.create_entity(f3d.Transform(), Spinner(speed=3.0))
 ```
 
 Scripts are called by `ScriptSystem` every `ew.step()`.
@@ -139,7 +139,7 @@ body = world.add_box(size=(1, 1, 1), position=(0, 0, 5), mass=1.0)
 
 # Wrap an existing Body as an ECS entity
 entity = f3d.body_to_entity(ew, body)
-tf = ew.get(entity, f3d.Transform)
+tf = ew.get_component(entity, f3d.Transform)
 print(tf.position)   # synced from Body.position
 ```
 

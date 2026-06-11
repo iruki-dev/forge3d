@@ -86,17 +86,18 @@ import forge3d as f3d
 
 ew = f3d.EntityWorld()
 
-# Create a dynamic box entity
-e = ew.create()
-ew.add(e, f3d.Transform(position=[0, 0, 5]))
-ew.add(e, f3d.Rigidbody(mass=1.0))
-ew.add(e, f3d.MeshRenderer(shape="box", size=(1, 1, 1)))
+# Create a dynamic box entity with all components at once
+e = ew.create_entity(
+    f3d.Transform(position=[0, 0, 5]),
+    f3d.Rigidbody(mass=1.0),
+    f3d.MeshRenderer(shape="box", size=(1, 1, 1)),
+)
 
 # Step physics
 for _ in range(60):
     ew.step(dt=1/60)
 
-tf = ew.get(e, f3d.Transform)
+tf = ew.get_component(e, f3d.Transform)
 print(f"Entity z = {tf.position[2]:.3f}")
 ```
 

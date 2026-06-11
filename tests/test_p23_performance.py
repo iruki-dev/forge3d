@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-import numpy as np
 
 import forge3d as f3d
 
@@ -55,7 +54,7 @@ def test_sleeping_disabled():
     world = f3d.World(gravity=(0, 0, -9.81))
     world._physics._sleeping_enabled = False
     world.add_ground()
-    box = world.add_box(size=(1, 1, 1), position=(0, 0, 3), mass=1.0)
+    _ = world.add_box(size=(1, 1, 1), position=(0, 0, 3), mass=1.0)
     for _ in range(60):
         world.step(dt=1 / 60)
     # No crash is the test

@@ -186,12 +186,11 @@ class TestExample01:
                     assert alias.name == "forge3d" or not alias.name.startswith("forge3d"), (
                         f"example imports internal module: {alias.name}"
                     )
-            elif isinstance(node, ast.ImportFrom):
-                if node.module and node.module.startswith("forge3d."):
-                    raise AssertionError(
-                        f"example imports internal module: {node.module}\n"
-                        "Only 'import forge3d' is allowed."
-                    )
+            elif isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("forge3d."):
+                raise AssertionError(
+                    f"example imports internal module: {node.module}\n"
+                    "Only 'import forge3d' is allowed."
+                )
 
     def test_body_lines_under_15(self) -> None:
         """Non-blank, non-comment, non-docstring body lines must be ≤ 15."""

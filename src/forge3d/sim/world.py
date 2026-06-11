@@ -246,6 +246,8 @@ class PhysicsWorld:
         restitution: float = 0.3,
         friction: float = 0.5,
         static: bool = False,
+        collision_layer: int = 0x0001,
+        collision_mask: int = 0xFFFF,
     ) -> int:
         """Add a convex-hull rigid body from a MeshData object. Returns body_id.
 
@@ -285,6 +287,8 @@ class PhysicsWorld:
             material_id=material,
             inertia_local=I_mesh,
             inertia_inv_local=np.diag(1.0 / np.diag(I_mesh)) if I_mesh is not None else None,
+            collision_layer=int(collision_layer),
+            collision_mask=int(collision_mask),
         )
         self._append_body(body)
         self._next_id += 1

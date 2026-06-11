@@ -1,5 +1,5 @@
 site_name: forge3d
-site_description: Pure-Python 3D physics game engine — fast like native, beautiful like simulation.
+site_description: Pure-Python 3D physics game engine — own dynamics, own rules, no compromises.
 site_url: https://forge3d.readthedocs.io
 repo_url: https://github.com/iruki-dev/forge3d
 repo_name: iruki-dev/forge3d
@@ -100,6 +100,7 @@ nav:
     - "Audio": api/audio.md
     - "Particle System": api/particle.md
     - "Scene Management": api/scene.md
+    - "Editor": api/editor.md
     - "Profiler": api/profiler.md
     - "Robot": api/robot.md
     - "Backend (NumPy / JAX)": api/backends.md

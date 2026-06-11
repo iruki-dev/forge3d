@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from forge3d.input import EMPTY_INPUT, Input, Key, _InputBuilder
+from forge3d.input import EMPTY_INPUT, Key, _InputBuilder
 
 
 class TestKey:

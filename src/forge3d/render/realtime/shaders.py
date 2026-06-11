@@ -21,7 +21,7 @@ void main() {
 
 SHADOW_FRAG = """
 #version 330 core
-void main() { }   // depth written automatically
+void main() { }   // depth written automatically to depth attachment
 """
 
 # ── Main PBR pass (Cook-Torrance BRDF + PCF shadows + optional texture) ──────
@@ -65,6 +65,7 @@ uniform vec3 u_ambient_color;    // ambient RGB
 uniform vec3  u_mat_color;       // base albedo (linear RGB [0,1])
 uniform float u_metallic;        // 0 = dielectric, 1 = metal
 uniform float u_roughness;       // 0 = mirror, 1 = fully diffuse
+uniform float u_emissive;        // emissive multiplier (0 = none, 3+ = bright glow)
 
 // Camera
 uniform vec3  u_eye;
@@ -74,7 +75,7 @@ uniform float u_fog_density;
 uniform vec3  u_fog_color;
 
 // Textures
-uniform sampler2D u_shadow_map;
+uniform sampler2DShadow u_shadow_map;  // hardware PCF comparison
 uniform sampler2D u_albedo_map;
 uniform int       u_has_texture; // 1 = sample albedo_map, 0 = use u_mat_color
 
@@ -85,19 +86,24 @@ in vec4 v_shadow_coord;
 
 out vec4 frag_color;
 
-// ── PCF shadow factor ─────────────────────────────────────────────────────────
-float shadow_factor() {
+// ── PCF shadow factor (hardware sampler2DShadow) ──────────────────────────────
+// N and L are pre-normalised in main() — pass them in to avoid redundant work.
+float shadow_factor(vec3 N, vec3 L) {
     vec3 proj = v_shadow_coord.xyz / v_shadow_coord.w;
     proj = proj * 0.5 + 0.5;
     if (proj.x < 0.0 || proj.x > 1.0 || proj.y < 0.0 || proj.y > 1.0 || proj.z > 1.0)
         return 1.0;
+    // Normal-based bias prevents acne on faces parallel to light
+    float cos_theta = clamp(dot(N, L), 0.0, 1.0);
+    float bias = max(0.008 * (1.0 - cos_theta), 0.002);
+    float ref = proj.z - bias;
+    // 3×3 PCF using hardware comparison — sampler2DShadow returns 0 or 1
     float shadow = 0.0;
-    float texel  = 1.0 / 2048.0;
+    float texel  = 1.0 / float(textureSize(u_shadow_map, 0).x);
     for (int dx = -1; dx <= 1; dx++) {
         for (int dy = -1; dy <= 1; dy++) {
-            float closest = texture(u_shadow_map,
-                                    proj.xy + vec2(float(dx), float(dy)) * texel).r;
-            shadow += (proj.z - 0.003 > closest) ? 0.0 : 1.0;
+            vec2 off = proj.xy + vec2(float(dx), float(dy)) * texel;
+            shadow += texture(u_shadow_map, vec3(off, ref));
         }
     }
     return shadow / 9.0;
@@ -160,13 +166,14 @@ void main() {
     vec3 kD = (1.0 - kS) * (1.0 - metallic);
     vec3 specular = D * G * F / max(4.0 * NdotV * NdotL, 0.001);
 
-    float sf  = shadow_factor();
+    float sf  = shadow_factor(N, L);
     vec3  Lo  = (kD * albedo / PI + specular) * u_light_color * NdotL * sf;
 
     // Ambient: simple Lambertian (no IBL in this pass)
     vec3 ambient = u_ambient_color * albedo * (0.2 + 0.8 * (1.0 - metallic));
 
-    vec3 color = ambient + Lo;
+    // Emissive: added before tonemapping so bright values stay bright
+    vec3 color = ambient + Lo + albedo * u_emissive;
 
     // Reinhard HDR tone mapping + gamma correction
     color = color / (color + vec3(1.0));

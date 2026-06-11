@@ -68,7 +68,7 @@ class Viewer:
         self._world = world
         self._width = width
         self._height = height
-        self._title = title
+        self._title: str = title or "forge3d"
         self._fps = fps
         self._max_frames = max_frames
         self._frame_count = 0

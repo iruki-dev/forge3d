@@ -6,10 +6,9 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 import forge3d as f3d
-from forge3d.io.world_snapshot import StateRecorder, load_world, save_world
+from forge3d.io.world_snapshot import StateRecorder
 
 
 def _make_world() -> f3d.World:

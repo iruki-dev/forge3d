@@ -125,6 +125,26 @@ terrain = world.add_terrain(
 # terrain is visible in Viewer and collidable (sphere + box vs heightfield).
 ```
 
+### Mesh bodies and collision filtering
+
+```python
+from forge3d.io import load_obj
+
+mesh = load_obj("assets/tree.obj")
+
+# Decorative prop — visible but skips all collision checks (mask=0)
+tree = world.add_mesh(mesh, position=(5, 3, 0), static=True,
+                      collision_mask=0)
+
+# Solid obstacle on the DEFAULT layer
+rock = world.add_mesh(mesh, position=(0, 0, 0), mass=5.0)
+
+# Sensor-only trigger (detected by PLAYER but doesn't block movement)
+pickup = world.add_mesh(mesh, position=(2, 0, 0), static=True,
+                        collision_layer=f3d.CollisionLayer.TRIGGER,
+                        collision_mask=f3d.CollisionLayer.PLAYER)
+```
+
 ### Joints
 
 ```python

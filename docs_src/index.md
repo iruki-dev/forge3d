@@ -1,6 +1,6 @@
 # forge3d
 
-**Pure-Python 3D physics game engine — fast like native, beautiful like simulation.**
+**Pure-Python 3D physics game engine — own dynamics, own rules, no compromises.**
 
 [![PyPI version](https://img.shields.io/pypi/v/pyforge3d.svg)](https://pypi.org/project/pyforge3d/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)
@@ -187,13 +187,14 @@ pip install "pyforge3d[all]"         # Everything
 
     ew = f3d.EntityWorld()
 
-    e = ew.create()
-    ew.add(e, f3d.Transform(position=[0, 0, 3]))
-    ew.add(e, f3d.Rigidbody(mass=1.0))
-    ew.add(e, f3d.MeshRenderer(shape="box", size=(1, 1, 1)))
+    e = ew.create_entity(
+        f3d.Transform(position=[0, 0, 3]),
+        f3d.Rigidbody(mass=1.0),
+        f3d.MeshRenderer(shape="box", size=(1, 1, 1)),
+    )
 
     ew.step(dt=1/60)
-    tf = ew.get(e, f3d.Transform)
+    tf = ew.get_component(e, f3d.Transform)
     print(f"Entity z = {tf.position[2]:.3f}")
     ```
 

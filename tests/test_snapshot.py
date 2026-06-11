@@ -125,9 +125,8 @@ class TestNoRendererImport:
         for node in ast.walk(tree):
             if isinstance(node, ast.Import):
                 imported_names.update(alias.name.split(".")[0] for alias in node.names)
-            elif isinstance(node, ast.ImportFrom):
-                if node.module:
-                    imported_names.add(node.module.split(".")[0])
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                imported_names.add(node.module.split(".")[0])
         for lib in ["moderngl", "glfw", "pyglet", "OpenGL"]:
             assert lib not in imported_names, (
                 f"forge3d.sim.world AST-imports '{lib}' — physics must not depend on renderer"

@@ -150,8 +150,8 @@ while running:
 ```
 
 !!! note "v2.1 변경"
-    v2.1부터 `WindowRenderer`의 윈도우 백엔드가 **pygame → glfw**로 교체됐습니다.
-    `feed_pygame_event()` 메서드는 pygame이 설치된 환경에서의 하위 호환을 위해 유지되지만, deprecated입니다.
+    v2.1부터 `WindowRenderer`의 윈도우 백엔드가 **glfw**로 교체됐습니다.
+    새 코드에서는 `f3d.Viewer`를 직접 사용하세요 — glfw 콜백이 자동으로 연결됩니다.
 
 ---
 

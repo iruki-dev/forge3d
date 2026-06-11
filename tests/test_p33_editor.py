@@ -12,7 +12,6 @@ import tempfile
 from pathlib import Path
 
 import numpy as np
-import pytest
 
 import forge3d as f3d
 from forge3d.editor.gizmo import (
@@ -49,7 +48,7 @@ def test_entity_pick():
     ew = f3d.EntityWorld()
     # 카메라 z=20에서 z=-1 방향으로 쏘면 z=15(가까운)이 z=5(먼)보다 먼저 교차
     e_near = ew.create_entity(f3d.Transform(position=np.array([0., 0., 15.])))
-    e_far  = ew.create_entity(f3d.Transform(position=np.array([0., 0., 5.])))
+    ew.create_entity(f3d.Transform(position=np.array([0., 0., 5.])))
 
     gizmo = TranslateGizmo()
     ray_origin = np.array([0., 0., 20.])
@@ -225,7 +224,7 @@ def test_editor_pick_entity():
     ew = f3d.EntityWorld()
     editor = f3d.EditorApp(world, ew)
 
-    e = ew.create_entity(f3d.Transform(position=np.array([0., 0., 0.])))
+    ew.create_entity(f3d.Transform(position=np.array([0., 0., 0.])))
     view = np.eye(4)
     view[2, 3] = 10.0  # 카메라 z=10에서 바라봄
 

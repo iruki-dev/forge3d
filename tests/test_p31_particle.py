@@ -11,10 +11,9 @@ from __future__ import annotations
 import time
 
 import numpy as np
-import pytest
 
 import forge3d as f3d
-from forge3d.particle.system import _N_COLS, _ALIVE, _PY, _VY, ParticleState
+from forge3d.particle.system import _ALIVE, _PY, _VY, ParticleState
 
 
 # ── 파티클 이미터 기본 ────────────────────────────────────────────────────────

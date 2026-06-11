@@ -122,7 +122,6 @@ class TestMeshPhysics:
 
     def test_mesh_vs_plane_collision(self) -> None:
         from forge3d.io import load_obj
-        from forge3d.collision.detection import detect_contacts
         from forge3d.sim.world import PhysicsWorld
 
         w = PhysicsWorld()

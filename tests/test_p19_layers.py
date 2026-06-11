@@ -67,8 +67,6 @@ def test_matching_mask_collides():
 
     # After collision, velocity should have changed direction
     v_a_after = ball_a.velocity[0]
-    # Momentum should be roughly conserved
-    total_px = ball_a.velocity[0] + ball_b.velocity[0]
     # They should have interacted (velocities changed significantly)
     assert abs(v_a_after - v_a_before) > 0.1, "Expected velocity change from collision"
 

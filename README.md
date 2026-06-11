@@ -1,6 +1,6 @@
 # forge3d
 
-> **Pure-Python 3D game engine — easy like pygame, beautiful like simulation.**
+> **Pure-Python 3D physics game engine — own dynamics, own rules, no compromises.**
 
 [![PyPI version](https://img.shields.io/pypi/v/pyforge3d.svg)](https://pypi.org/project/pyforge3d/)
 [![Python 3.12+](https://img.shields.io/badge/python-3.12%2B-blue.svg)](https://www.python.org/)

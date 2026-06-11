@@ -166,7 +166,7 @@ v2는 세 가지 축으로 v1을 고도화한다:
 **입력**
 
 - `forge3d.InputBuilder` — 공개 클래스 (기존: `_InputBuilder` 비공개)
-- `InputBuilder.feed_pygame_event(event)` — pygame 이벤트를 `f3d.Input`/`Key` 시스템에 주입
+- `InputBuilder` — 공개 클래스로 승격, glfw 콜백과 자동 연결
 
 **Viewer**
 

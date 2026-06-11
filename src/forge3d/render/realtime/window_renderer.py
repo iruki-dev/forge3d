@@ -73,9 +73,9 @@ void main() {
 _WHITE_PIXEL = np.array([255, 255, 255], dtype=np.uint8).tobytes()
 
 # Shadow settings
-_SHADOW_SIZE = 1024  # shadow map resolution (raised from 512 for quality)
-_SHADOW_HALF = 150.0  # half-extent of shadow orthographic frustum (m)
-_SHADOW_DEPTH = 500.0  # far plane of shadow frustum
+_SHADOW_SIZE = 2048   # shadow map resolution
+_SHADOW_HALF = 60.0   # smaller frustum = more depth precision (was 150)
+_SHADOW_DEPTH = 400.0 # far plane of shadow frustum
 
 # Sky colour — daytime blue (can be overridden via constructor)
 _SKY_DEFAULT = (0.42, 0.62, 0.88)
@@ -211,8 +211,8 @@ def _render_text_rgba(
     dummy = Image.new("RGBA", (1, 1))
     dummy_draw = ImageDraw.Draw(dummy)
     bbox = dummy_draw.textbbox((0, 0), text, font=font)
-    tw = bbox[2] - bbox[0] + pad * 2
-    th = bbox[3] - bbox[1] + pad * 2
+    tw = int(bbox[2] - bbox[0] + pad * 2)
+    th = int(bbox[3] - bbox[1] + pad * 2)
 
     img = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
     draw = ImageDraw.Draw(img)
@@ -326,6 +326,9 @@ class WindowedRealtimeRenderer:
         # Body names to exclude from rendering (e.g. local player body in FPS)
         self._excluded_names: set[str] = set()
 
+        # Debug grid overlay (can be toggled off for cleaner game view)
+        self._show_grid: bool = True
+
         # HUD text cache: key → {"tex", "vbo", "vao", "alive"}
         self._hud_cache: dict[tuple, dict[str, Any]] = {}
 
@@ -365,25 +368,58 @@ class WindowedRealtimeRenderer:
     # ── Cursor capture (FPS) ───────────────────────────────────────────────────
 
     def set_cursor_captured(self, captured: bool) -> None:
-        """Lock (hide+raw) or release the OS cursor.
+        """Hide cursor and begin relative-delta mouse tracking.
+
+        Uses CURSOR_HIDDEN (not CURSOR_DISABLED) so the OS never performs
+        a centre-warp on the cursor.  CURSOR_DISABLED triggers automatic
+        per-frame centre-warping at the X11/Wayland level; in container or
+        X-forwarding environments where the warp can't physically move the
+        host cursor the callback fires with the warp position every frame,
+        producing joystick-style "delta = distance from centre" behaviour.
+        CURSOR_HIDDEN has no warping: on_cursor_pos fires only on real
+        physical mouse movement, giving pure relative deltas.
 
         When captured, ESC releases the cursor instead of closing the window.
-        Automatically discards the first mouse-move event after the warp so the
-        view doesn't lurch on capture/release.
         """
         if self._window is None:
             return
         if captured:
-            glfw.set_input_mode(self._window, glfw.CURSOR, glfw.CURSOR_DISABLED)
+            glfw.set_input_mode(self._window, glfw.CURSOR, glfw.CURSOR_HIDDEN)
         else:
             glfw.set_input_mode(self._window, glfw.CURSOR, glfw.CURSOR_NORMAL)
         self._cursor_captured = captured
-        # Discard the delta spike caused by the cursor warp
+        # Skip the first motion event after mode change to absorb any
+        # position discontinuity the mode switch may cause.
         self._inp_builder.reset_mouse_delta()
 
     def set_excluded_names(self, names: set[str]) -> None:
         """Bodies whose names are in *names* will not be rendered (FPS self-exclusion)."""
         self._excluded_names = names
+
+    # ── Shader uniform helpers ─────────────────────────────────────────────────
+
+    def _set_pbr_uniforms(
+        self,
+        prog: Any,
+        MVP: np.ndarray,
+        M: np.ndarray,
+        NM: np.ndarray,
+        lM: np.ndarray,
+        mat: Any,
+    ) -> None:
+        color = np.array(mat.color if mat else (0.75, 0.75, 0.75), np.float32)
+        try:
+            prog["u_MVP"].write(_col_major(MVP))
+            prog["u_M"].write(_col_major(M))
+            prog["u_NM"].write(NM.T.tobytes())
+            prog["u_light_MVP"].write(_col_major(lM))
+            prog["u_mat_color"].write(color.tobytes())
+            prog["u_roughness"].value = float(mat.roughness) if mat else 0.5
+            prog["u_metallic"].value = float(mat.metallic) if mat else 0.0
+            prog["u_emissive"].value = float(mat.emissive) if mat else 0.0
+            prog["u_has_texture"].value = 0
+        except KeyError:
+            pass
 
     def _init_gl(self) -> None:
         ctx = self._ctx
@@ -393,7 +429,11 @@ class WindowedRealtimeRenderer:
         self._hud_prog = ctx.program(vertex_shader=_HUD_V, fragment_shader=_HUD_F)
 
         sz = self._shadow_resolution
+        # Depth texture with hardware comparison — use sampler2DShadow in shader.
+        # compare_func='<=' means: shadow = (ref <= stored_depth) → 1.0 (lit)
         self._shadow_tex = ctx.depth_texture((sz, sz))
+        self._shadow_tex.compare_func = "<="
+        self._shadow_tex.filter = (ctx.LINEAR, ctx.LINEAR)
         self._shadow_fbo = ctx.framebuffer(depth_attachment=self._shadow_tex)
         self._white_tex = ctx.texture((1, 1), 3, _WHITE_PIXEL)
 
@@ -596,9 +636,11 @@ class WindowedRealtimeRenderer:
 
         ld = np.array([-0.45, -0.60, -0.80])
         ld /= np.linalg.norm(ld)
-        sc = cam.target.copy()
+        # Shadow centre = player position (not target) so the area
+        # around the player always has full shadow resolution.
+        sc = cam.position.copy()
         sc[2] = 0.0
-        lp = sc - ld * 250.0
+        lp = sc - ld * 200.0
         up_l = np.array([0.0, 0.0, 1.0])
         if abs(np.dot(ld, up_l)) > 0.95:
             up_l = np.array([0.0, 1.0, 0.0])
@@ -608,7 +650,7 @@ class WindowedRealtimeRenderer:
 
         # Shadow pass
         self._shadow_fbo.use()
-        ctx.viewport = (0, 0, _SHADOW_SIZE, _SHADOW_SIZE)
+        ctx.viewport = (0, 0, self._shadow_resolution, self._shadow_resolution)
         self._shadow_fbo.clear(depth=1.0)
         ctx.enable(ctx.DEPTH_TEST)
         ctx.depth_func = "<"
@@ -655,7 +697,7 @@ class WindowedRealtimeRenderer:
 
         prog = self._main_prog
         light_to = (-ld).astype(np.float32)
-        ambient = np.array([0.12, 0.14, 0.18], np.float32)
+        ambient = np.array([0.22, 0.24, 0.32], np.float32)  # raised for dark-material visibility
         try:
             prog["u_shadow_map"] = 0
             prog["u_albedo_map"] = 1
@@ -687,18 +729,7 @@ class WindowedRealtimeRenderer:
                 NM  = body.transform.rotation.astype(np.float32)
                 lM  = (light_VP @ M).astype(np.float32)
                 mat = mat_lookup.get(body.material_id) or mat_lookup.get("default")
-                color = np.array(mat.color if mat else (0.75, 0.75, 0.75), np.float32)
-                try:
-                    prog["u_MVP"].write(_col_major(MVP))
-                    prog["u_M"].write(_col_major(M))
-                    prog["u_NM"].write(NM.T.tobytes())
-                    prog["u_light_MVP"].write(_col_major(lM))
-                    prog["u_mat_color"].write(color.tobytes())
-                    prog["u_roughness"].value = float(mat.roughness) if mat else 0.5
-                    prog["u_metallic"].value  = float(mat.metallic)  if mat else 0.0
-                    prog["u_has_texture"].value = 0
-                except KeyError:
-                    pass
+                self._set_pbr_uniforms(prog, MVP, M, NM, lM, mat)
                 vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
                 continue
 
@@ -712,51 +743,33 @@ class WindowedRealtimeRenderer:
             NM = body.transform.rotation.astype(np.float32) / (scale + 1e-12)
             lM = (light_VP @ M).astype(np.float32)
             mat = mat_lookup.get(body.material_id) or mat_lookup.get("default")
-            color = np.array(mat.color if mat else (0.75, 0.75, 0.75), np.float32)
-            try:
-                prog["u_MVP"].write(_col_major(MVP))
-                prog["u_M"].write(_col_major(M))
-                prog["u_NM"].write(NM.T.tobytes())
-                prog["u_light_MVP"].write(_col_major(lM))
-                prog["u_mat_color"].write(color.tobytes())
-                prog["u_roughness"].value = float(mat.roughness) if mat else 0.5
-                prog["u_metallic"].value = float(mat.metallic) if mat else 0.0
-                prog["u_has_texture"].value = 0
-            except KeyError:
-                pass
+            self._set_pbr_uniforms(prog, MVP, M, NM, lM, mat)
             vao, n_idx = self._vaos[vk]
             vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
 
-        # Terrain (main pass only)
+        # Terrain (main pass only) — identity model matrix (terrain is pre-transformed)
         for terrain in getattr(snapshot, "terrains", []):
             tvao, tn = self._terrain_main_vao(terrain)
             mat = mat_lookup.get(terrain.material_id) or mat_lookup.get("ground")
-            color = np.array(mat.color if mat else (0.3, 0.45, 0.2), np.float32)
-            try:
-                prog["u_MVP"].write(_col_major((P @ V @ I4).astype(np.float32)))
-                prog["u_M"].write(_col_major(I4))
-                prog["u_NM"].write(np.eye(3, dtype=np.float32).tobytes())
-                prog["u_light_MVP"].write(_col_major((light_VP @ I4).astype(np.float32)))
-                prog["u_mat_color"].write(color.tobytes())
-                prog["u_roughness"].value = float(mat.roughness) if mat else 0.9
-                prog["u_metallic"].value = 0.0
-                prog["u_has_texture"].value = 0
-            except KeyError:
-                pass
+            MVP_t = (P @ V @ I4).astype(np.float32)
+            NM_t = np.eye(3, dtype=np.float32)
+            lM_t = (light_VP @ I4).astype(np.float32)
+            self._set_pbr_uniforms(prog, MVP_t, I4, NM_t, lM_t, mat)
             tvao.render(mode=ctx.TRIANGLES, vertices=tn)
 
-        # Grid
-        VP = (P @ V).astype(np.float32)
-        ctx.disable(ctx.DEPTH_TEST)
-        try:
-            self._flat_prog["u_VP"].write(_col_major(VP))
-            self._flat_prog["u_color"].write(
-                np.array([0.15, 0.20, 0.15, 0.25], np.float32).tobytes()
-            )
-        except KeyError:
-            pass
-        self._grid_vao.render(mode=ctx.LINES, vertices=self._grid_n)
-        ctx.enable(ctx.DEPTH_TEST)
+        # Grid (optional debug overlay — disabled when show_grid=False)
+        if self._show_grid:
+            VP = (P @ V).astype(np.float32)
+            ctx.disable(ctx.DEPTH_TEST)
+            try:
+                self._flat_prog["u_VP"].write(_col_major(VP))
+                self._flat_prog["u_color"].write(
+                    np.array([0.15, 0.20, 0.15, 0.25], np.float32).tobytes()
+                )
+            except KeyError:
+                pass
+            self._grid_vao.render(mode=ctx.LINES, vertices=self._grid_n)
+            ctx.enable(ctx.DEPTH_TEST)
 
     # ── HUD text (cached) ──────────────────────────────────────────────────────
 

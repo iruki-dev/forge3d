@@ -61,7 +61,18 @@ def _body_support(body: Any, d: np.ndarray) -> np.ndarray:
     if body.shape_type == "box":
         R = quat_to_rot(body.quat)
         return _support_box(body.pos, R, body.shape_params["half_extents"], d)
-    if body.shape_type in ("mesh", "capsule"):
+    if body.shape_type == "capsule":
+        # Capsule: cylinder swept by sphere.  Axis = local Z, half-length hl.
+        # Support = sphere_centre_along_d + radius*d_hat
+        # where sphere_centre = pos ± hl * body_z_axis
+        R  = quat_to_rot(body.quat)
+        r  = float(body.shape_params["radius"])
+        hl = float(body.shape_params["half_length"])
+        d_local = R.T @ d
+        # tip in direction of d — R[:,2] is a zero-copy column view, no allocation
+        tip = body.pos + float(np.sign(d_local[2] + 1e-300)) * hl * R[:, 2]
+        return _support_sphere(tip, r, d)
+    if body.shape_type == "mesh":
         R = quat_to_rot(body.quat)
         hull_verts = body.shape_params["hull_vertices"]
         return _support_convex_hull(body.pos, R, hull_verts, d)

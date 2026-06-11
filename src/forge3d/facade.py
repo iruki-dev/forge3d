@@ -448,7 +448,7 @@ class World:
         self._materials: dict[str, Material] = {}
         self._camera: tuple | None = None
         self._robots: list[Any] = []
-        self._welds: dict[int, tuple[int, np.ndarray]] = {}
+        self._welds: dict[int, tuple[int, np.ndarray, np.ndarray]] = {}
         # Event system
         from forge3d.events import EventDispatcher
 
@@ -615,8 +615,15 @@ class World:
         restitution: float = 0.3,
         friction: float = 0.5,
         static: bool = False,
+        collision_layer: int = 0x0001,
+        collision_mask: int = 0xFFFF,
     ) -> Body:
         """Add a convex-hull rigid body from a MeshData object.
+
+        Use ``collision_mask=0`` for visual-only decorative bodies that should
+        not participate in physics collision checks (trees, rocks, props).
+        This is important for performance: mesh GJK is expensive and decorative
+        bodies with large AABBs would otherwise be checked every frame.
 
         Typical use::
 
@@ -637,6 +644,8 @@ class World:
             restitution=restitution,
             friction=friction,
             static=static,
+            collision_layer=collision_layer,
+            collision_mask=collision_mask,
         )
         body = Body(self._physics, bid)
         self._register_body(body)
@@ -1301,20 +1310,14 @@ class World:
         from forge3d.math.quaternion import quat_multiply, quat_to_rot
 
         _ZEROS3 = np.zeros(3)
-        for body_id, weld_data in self._welds.items():
-            # Support both old 2-tuple format (pos only) and new 3-tuple (pos + rot)
-            if len(weld_data) == 2:
-                anchor_id, offset = weld_data
-                rel_q = None
-            else:
-                anchor_id, offset, rel_q = weld_data
+        for body_id, (anchor_id, offset, rel_q) in self._welds.items():
             try:
                 anchor = self._physics._get_body(anchor_id)
             except RuntimeError:
                 continue
             R_anchor = quat_to_rot(anchor.quat)
             new_pos = anchor.pos + R_anchor @ offset
-            new_quat = quat_multiply(anchor.quat, rel_q) if rel_q is not None else anchor.quat
+            new_quat = quat_multiply(anchor.quat, rel_q)
             self._physics.update_body_pose(body_id, new_pos, new_quat, vel=_ZEROS3, omega=_ZEROS3)
 
     def _sync_robot(self, robot: Any) -> None:

@@ -30,15 +30,22 @@ blend trees, and FABRIK inverse kinematics.
 ### Define a skeleton
 
 ```python
+import numpy as np
 from forge3d import Bone, Skeleton
 
+# Each Bone needs a name, a local bind-pose matrix (4×4), and an optional parent index.
+def _translate(x, y, z):
+    m = np.eye(4)
+    m[:3, 3] = [x, y, z]
+    return m
+
 bones = [
-    Bone(name="root",       parent_idx=None),
-    Bone(name="hip",        parent_idx=0),
-    Bone(name="spine",      parent_idx=1),
-    Bone(name="l_shoulder", parent_idx=2),
-    Bone(name="l_elbow",    parent_idx=3),
-    Bone(name="l_wrist",    parent_idx=4),
+    Bone(name="root",       local_matrix=np.eye(4),          parent_idx=None),
+    Bone(name="hip",        local_matrix=_translate(0,0,0.9), parent_idx=0),
+    Bone(name="spine",      local_matrix=_translate(0,0,0.3), parent_idx=1),
+    Bone(name="l_shoulder", local_matrix=_translate(-0.3,0,0.2), parent_idx=2),
+    Bone(name="l_elbow",    local_matrix=_translate(-0.28,0,0), parent_idx=3),
+    Bone(name="l_wrist",    local_matrix=_translate(-0.25,0,0), parent_idx=4),
 ]
 skeleton = Skeleton(bones=bones)
 ```
@@ -112,8 +119,7 @@ anim_system = f3d.AnimationSystem()
 ew.add_system(anim_system)
 
 # Attach player to an entity
-entity = ew.create()
-ew.add(entity, player)
+entity = ew.create_entity(player)
 
 ew.step(dt=1/60)    # AnimationSystem.update() called automatically
 ```

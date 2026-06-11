@@ -20,7 +20,7 @@ except ImportError:
 SKIP_NO_WGPU = pytest.mark.skipif(not HAS_WGPU, reason="wgpu 미설치")
 
 
-def _make_snap(n_bodies: int = 2) -> "SceneSnapshot":
+def _make_snap(n_bodies: int = 2) -> SceneSnapshot:
     from forge3d.render.snapshot import (
         BodySnapshot, CameraSnapshot, LightSnapshot, SceneSnapshot, Transform,
     )
@@ -98,8 +98,7 @@ def test_parity_gl_wgpu():
     Mesa 환경에서 동일 프로세스 GL+wgpu 충돌을 피하기 위해
     각 렌더러를 별도 서브프로세스에서 실행한다.
     """
-    import subprocess, sys, json, tempfile
-    from pathlib import Path
+    import subprocess, sys, json
 
     W, H = 160, 120
 
@@ -131,14 +130,14 @@ r.close()
 lum = frame[:,:,:3].mean()
 std = frame[:,:,:3].std()
 print(json.dumps({'mean': float(lum), 'std': float(std)}))
-""" % (W, H)
+""" % (W, H)  # noqa: UP031  — template has inner {}-dicts; f-string would need mass-escaping
 
     gl_script = wgpu_script.replace(
         "from forge3d.render.wgpu_backend.renderer import WgpuRenderer",
         "from forge3d.render.deferred.renderer import DeferredRenderer as WgpuRenderer",
     ).replace(
-        "r = WgpuRenderer(width=%d, height=%d)" % (W, H),
-        "r = WgpuRenderer(width=%d, height=%d, shadow_cascades=2)" % (W, H),
+        f"r = WgpuRenderer(width={W}, height={H})",
+        f"r = WgpuRenderer(width={W}, height={H}, shadow_cascades=2)",
     )
 
     r_wgpu = subprocess.run([sys.executable, "-c", wgpu_script],
@@ -174,7 +173,6 @@ def _ssim(a: np.ndarray, b: np.ndarray) -> float:
 
 def test_fallback_when_no_wgpu():
     """G3: wgpu 없는 환경에서 GL 폴백 렌더러로 자동 전환한다."""
-    import os
     import subprocess
     import sys
 

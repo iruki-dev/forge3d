@@ -29,7 +29,7 @@ GOLDEN_DIR = Path(__file__).parent / "golden"
 GOLDEN_PATH = GOLDEN_DIR / "p26_reference.npy"
 
 
-def _make_test_snapshot(n_bodies: int = 3) -> "SceneSnapshot":
+def _make_test_snapshot(n_bodies: int = 3) -> SceneSnapshot:
     from forge3d.render.snapshot import (
         BodySnapshot, CameraSnapshot, LightSnapshot, SceneSnapshot, Transform,
     )
@@ -61,7 +61,7 @@ def _make_test_snapshot(n_bodies: int = 3) -> "SceneSnapshot":
     )
 
 
-def _make_renderer(w: int = 320, h: int = 240, cascades: int = 4) -> "DeferredRenderer":
+def _make_renderer(w: int = 320, h: int = 240, cascades: int = 4) -> DeferredRenderer:
     from forge3d.render.deferred.renderer import DeferredRenderer
     return DeferredRenderer(width=w, height=h, shadow_cascades=cascades)
 

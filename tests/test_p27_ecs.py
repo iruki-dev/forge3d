@@ -98,7 +98,7 @@ def test_transform_hierarchy():
 
     parent = ew.create_entity(f3d.Transform(position=np.array([10.0, 0.0, 0.0])))
     child_tf = f3d.Transform(position=np.array([1.0, 0.0, 0.0]), parent=parent)
-    child = ew.create_entity(child_tf)
+    ew.create_entity(child_tf)
 
     world_pos = child_tf.world_position(ew)
     assert np.allclose(world_pos, [11.0, 0.0, 0.0]), f"world_pos={world_pos}"
