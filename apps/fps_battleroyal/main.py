@@ -24,20 +24,28 @@ import numpy as np
 if __name__ == "__main__":
     sys.path.insert(0, str(pathlib.Path(__file__).parents[2]))
 
-import forge3d as f3d
-from forge3d.io import load_obj
-
 from apps.fps_battleroyal.config import (
-    BOT_COUNT, BOT_HIT_RADIUS, C_ENEMY, C_SKY,
-    GRACE_PERIOD_SEC, GRAVITY, PLAYER_HEIGHT, PLAYER_RADIUS,
-    WEAPON_DATA, ZONE_CENTER, ZONE_N_PILLARS, ZONE_PHASES,
+    BOT_COUNT,
+    BOT_HIT_RADIUS,
+    C_ENEMY,
+    C_SKY,
+    GRACE_PERIOD_SEC,
+    GRAVITY,
+    PLAYER_HEIGHT,
+    PLAYER_RADIUS,
+    WEAPON_DATA,
+    ZONE_CENTER,
+    ZONE_N_PILLARS,
+    ZONE_PHASES,
 )
 from apps.fps_battleroyal.enemy import Bot, create_bots
 from apps.fps_battleroyal.hud import HUD
-from apps.fps_battleroyal.player import Player, create_player
-from apps.fps_battleroyal.weapon import WeaponInstance
+from apps.fps_battleroyal.player import create_player
 from apps.fps_battleroyal.world_builder import WorldAssets, build_world
 from apps.fps_battleroyal.zone import Zone
+
+import forge3d as f3d
+from forge3d.io import load_obj
 
 _ASSET_DIR   = pathlib.Path(__file__).parents[2] / "assets" / "characters"
 _SOLDIER_OBJ = _ASSET_DIR / "soldier.obj"
@@ -293,9 +301,8 @@ class BattleRoyale:
                     alive_bots, self.zone.current_radius, self._rng,
                 )
                 # Bot shot player?
-                if shot and bot.target_is_player and self.player.is_alive:
-                    if self.game_time > GRACE_PERIOD_SEC:
-                        self.player.take_damage(bot.weapon.data["damage"] * 0.75)
+                if shot and bot.target_is_player and self.player.is_alive and self.game_time > GRACE_PERIOD_SEC:
+                    self.player.take_damage(bot.weapon.data["damage"] * 0.75)
 
                 # Bot kill bookkeeping
                 if not bot.is_alive:

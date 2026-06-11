@@ -33,11 +33,9 @@ class AnimationSystem(System):
 
             # AnimationPlayer가 있으면 체인 위치 읽기
             try:
-                player = ew.get_component(e, AnimationPlayer)  # type: ignore[assignment]
+                anim_player: AnimationPlayer = ew.get_component(e, AnimationPlayer)
             except KeyError:
                 continue
-
-            anim_player: AnimationPlayer = player
             joint_positions = anim_player.skeleton.joint_positions()
             if len(joint_positions) < 2:
                 continue

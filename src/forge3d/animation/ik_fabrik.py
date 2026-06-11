@@ -1,6 +1,7 @@
 """FABRIK IK 솔버 — Forward And Backward Reaching Inverse Kinematics.
 
-참고: Aristidou & Lasenby (2011), "FABRIK: A fast, iterative solver for the Inverse Kinematics problem"
+참고: Aristidou & Lasenby (2011),
+"FABRIK: A fast, iterative solver for the Inverse Kinematics problem"
 """
 
 from __future__ import annotations

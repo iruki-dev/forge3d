@@ -190,7 +190,7 @@ def scene1_pinball_arena(renderer: HQRenderer, n_frames: int = 192) -> list[np.n
         name="paddle",
     )
     paddle.collision_layer = CollisionLayer.DEFAULT
-    hinge = world.add_joint(
+    _ = world.add_joint(
         "hinge", paddle, pivot,
         anchor_a=(0, 0, 0),
         anchor_b=(0, 0, 0),
@@ -300,7 +300,7 @@ def scene2_demolition_tower(
             tower_blocks.append(b)
 
     # 타워 꼭대기에 금 트로피 박스
-    trophy = world.add_box(
+    _ = world.add_box(
         size=(0.4, 0.4, 0.4),
         position=(0, 0, TOWER_LEVELS * (BOX_H + GAP) + 0.2),
         mass=0.5,
@@ -363,7 +363,7 @@ def scene2_demolition_tower(
     wrecking_ball.collision_layer = CollisionLayer.DEFAULT
 
     # distance joint: 쇄도 공 ↔ 천장 앵커 (4.5m 체인)
-    chain_joint = world.add_joint(
+    _ = world.add_joint(
         "distance",
         wrecking_ball, ceiling_anchor,
         anchor_a=(0, 0, 0),

@@ -586,10 +586,7 @@ def _capsule_vs_sphere(cap: Any, ia: int, sph: Any, ib: int) -> list[ContactPoin
     if depth <= 0.0:
         return []
     # Normal from body_b (sphere) to body_a (capsule) = opposite of to_sphere
-    if dist > 1e-10:
-        normal = -to_sphere / dist  # from sphere toward capsule
-    else:
-        normal = np.array([0.0, 0.0, 1.0])
+    normal = -to_sphere / dist if dist > 1e-10 else np.array([0.0, 0.0, 1.0])
     # Contact position on capsule surface in direction of sphere
     contact_pos = closest + float(cap.shape_params["radius"]) * (-normal)
     return [ContactPoint(ia, ib, contact_pos.copy(), normal.copy(), float(depth))]

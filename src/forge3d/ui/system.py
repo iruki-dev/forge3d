@@ -20,7 +20,7 @@ class UISystem(System):
     def __init__(self) -> None:
         self._panels: list[Any] = []
         self._canvas: Any | None = None
-        self._debug_state: dict[str, object] = {"fps": 0.0, "body_count": 0, "step_ms": 0.0}
+        self._debug_state: dict[str, float | int] = {"fps": 0.0, "body_count": 0, "step_ms": 0.0}
 
     def add_panel(self, panel: Any) -> None:
         self._panels.append(panel)

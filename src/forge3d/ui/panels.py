@@ -113,10 +113,8 @@ class InspectorPanel:
         from forge3d.ecs.transform import Transform
 
         for _typ, comp in comps.items():
-            if isinstance(comp, Transform):
-                # last_edited_field로 테스트 가능한 편집 경로
-                if self.state.last_edited_field == "position":
-                    comp.position = np.asarray(self.state.last_edited_value, dtype=np.float64)
+            if isinstance(comp, Transform) and self.state.last_edited_field == "position":
+                comp.position = np.asarray(self.state.last_edited_value, dtype=np.float64)
 
     def _render_component_imgui(
         self, ig: Any, typ: type, comp: Any, ew: EntityWorld, e: Entity

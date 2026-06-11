@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 from forge3d.ecs.component import Component
 
@@ -27,7 +28,7 @@ class ParticleEmitter(Component):
     active: bool = True
 
     @classmethod
-    def preset(cls, name: str, **kwargs: object) -> ParticleEmitter:
+    def preset(cls, name: str, **kwargs: Any) -> ParticleEmitter:
         """VFX 프리셋 팩토리."""
         presets = {
             "sparks": {
@@ -71,6 +72,6 @@ class ParticleEmitter(Component):
                 "color_end": (0.5, 0.7, 1.0, 0.0),
             },
         }
-        base = presets.get(name, {})
+        base: dict[str, Any] = dict(presets.get(name, {}))
         base.update(kwargs)
         return cls(**base)

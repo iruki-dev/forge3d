@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import itertools
 from collections.abc import Iterator
-from typing import TypeVar
+from typing import Any, TypeVar
 
 from forge3d.ecs.component import Component
 from forge3d.errors import Forge3dError
@@ -91,7 +91,7 @@ class EntityWorld:
         for e in list(smallest.keys()):
             if e not in self._alive:
                 continue
-            row: list[object] = [e]
+            row: list[Any] = [e]
             ok = True
             for t in types:
                 store = self._components.get(t, {})

@@ -21,15 +21,22 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 
 import numpy as np
+from apps.fps_battleroyal.config import (
+    BOT_COUNT,
+    BOT_MAX_HP,
+    BOT_MOVE_SPEED,
+    BOT_PATROL_RADIUS,
+    BOT_SHOOT_INTERVAL,
+    BOT_SHOOT_RANGE,
+    BOT_SIGHT_RANGE,
+    GRACE_PERIOD_SEC,
+    MAP_HALF,
+    PLAYER_HEIGHT,
+    ZONE_CENTER,
+)
+from apps.fps_battleroyal.weapon import WeaponInstance
 
 import forge3d as f3d
-from apps.fps_battleroyal.config import (
-    BOT_COUNT, BOT_MAX_HP, BOT_MOVE_SPEED,
-    BOT_PATROL_RADIUS, BOT_SHOOT_INTERVAL, BOT_SHOOT_RANGE,
-    BOT_SIGHT_RANGE, GRACE_PERIOD_SEC, MAP_HALF,
-    PLAYER_HEIGHT, PLAYER_RADIUS, ZONE_CENTER,
-)
-from apps.fps_battleroyal.weapon import WEAPON_DATA, WeaponInstance
 
 
 class BotState(Enum):
@@ -247,9 +254,8 @@ class Bot:
             if self.hp < BOT_MAX_HP * 0.22:
                 self.state = BotState.RETREAT
 
-        elif self.state == BotState.RETREAT:
-            if self.hp > BOT_MAX_HP * 0.55 or not has_target:
-                self.state = BotState.PATROL
+        elif self.state == BotState.RETREAT and (self.hp > BOT_MAX_HP * 0.55 or not has_target):
+            self.state = BotState.PATROL
 
     # ── Movement ──────────────────────────────────────────────────────────────
 
@@ -276,12 +282,10 @@ class Bot:
             d = float(np.linalg.norm(to_t[:2]))
             if self.state == BotState.COMBAT:
                 ideal = BOT_SHOOT_RANGE * 0.52
-                if d > ideal + 4:
-                    if d > 1e-9:
-                        move[:2] = to_t[:2] / d
-                elif d < ideal - 4:
-                    if d > 1e-9:
-                        move[:2] = -to_t[:2] / d
+                if d > ideal + 4 and d > 1e-9:
+                    move[:2] = to_t[:2] / d
+                elif d < ideal - 4 and d > 1e-9:
+                    move[:2] = -to_t[:2] / d
                 # Strafe
                 self.strafe_flip_t -= dt
                 if self.strafe_flip_t <= 0:

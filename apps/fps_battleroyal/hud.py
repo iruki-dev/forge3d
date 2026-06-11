@@ -4,19 +4,17 @@ from __future__ import annotations
 import math
 from collections import deque
 
-import numpy as np
-
-import forge3d as f3d
 from apps.fps_battleroyal.config import (
     HUD_BLUE,
     HUD_GRAY,
     HUD_GREEN,
-    HUD_ORANGE,
     HUD_RED,
     HUD_WHITE,
     HUD_YELLOW,
     ZONE_CENTER,
 )
+
+import forge3d as f3d
 
 
 class KillFeed:

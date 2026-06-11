@@ -11,8 +11,8 @@ from forge3d.errors import Forge3dError
 
 if TYPE_CHECKING:
     from forge3d.ecs.entity import Entity, EntityWorld
-
-Entity = int
+else:
+    Entity = int
 
 
 class SceneNode:

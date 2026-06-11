@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 *.so
 *.pyd
+*.obj
 .eggs/
 *.egg-info/
 dist/

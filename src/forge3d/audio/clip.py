@@ -69,7 +69,7 @@ def _load_wav_stdlib(path: Path) -> tuple[np.ndarray, int]:
         sr = wf.getframerate()
         raw = wf.readframes(n_frames)
 
-    dtype_map = {1: np.int8, 2: np.int16, 4: np.int32}
+    dtype_map: dict[int, type[np.signedinteger]] = {1: np.int8, 2: np.int16, 4: np.int32}
     dtype = dtype_map.get(sampwidth, np.int16)
     data = np.frombuffer(raw, dtype=dtype).astype(np.float32)
     # 정규화

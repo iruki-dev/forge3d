@@ -20,28 +20,25 @@ import math
 import random
 from dataclasses import dataclass, field
 
-import forge3d as f3d
 import numpy as np
-
 from apps.fps_battleroyal.config import (
     C_ASPHALT,
     C_CONCRETE,
     C_CONCRETE_DARK,
-    C_DIRT,
     C_GLASS,
     C_GROUND,
     C_METAL_ORANGE,
     C_METAL_RUST,
     C_METAL_STEEL,
     C_PICKUP,
-    C_WOOD_DARK,
     C_ZONE_PILLAR,
     MAP_HALF,
     ZONE_CENTER,
     ZONE_N_PILLARS,
     ZONE_PHASES,
-    WEAPON_DATA,
 )
+
+import forge3d as f3d
 
 
 @dataclass

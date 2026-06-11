@@ -31,7 +31,6 @@ Controls
 from __future__ import annotations
 
 import math
-import os
 import sys
 import time
 from pathlib import Path
@@ -45,7 +44,6 @@ import forge3d as f3d
 from forge3d.collision.layers import CollisionLayer
 from forge3d.io.world_snapshot import StateRecorder
 from forge3d.math.quaternion import quat_to_rot
-from forge3d.render.snapshot import CameraSnapshot
 from apps.game.renderer import WindowRenderer
 
 # ── 윈도우 ────────────────────────────────────────────────────────────────────
@@ -182,7 +180,7 @@ def build_car(world: f3d.World) -> tuple[f3d.Body, list[f3d.Body], f3d.Body]:
     Returns: (car_body, wheels, cargo)
     """
     # 시작 위치: 남쪽 직선 중앙, 동쪽 방향 (+X)
-    start = (0.0, -(id_ := INNER_HD + (OUTER_HD - INNER_HD) / 2), 0.5)
+    start = (0.0, -(INNER_HD + (OUTER_HD - INNER_HD) / 2), 0.5)
 
     car = world.add_box(
         size=CAR_SIZE,
@@ -353,7 +351,7 @@ def build_obstacles(
 def build_pickups_and_checkpoints(
     world: f3d.World,
     car: f3d.Body,
-    game: "GameState",
+    game: GameState,
 ) -> list[f3d.Body]:
     """
     파란 픽업 구체 4개 (속도 부스트)
@@ -644,7 +642,7 @@ def main() -> None:
     bumpers, pylons = build_obstacles(world, car)
 
     game = GameState()
-    pickups = build_pickups_and_checkpoints(world, car, game)
+    build_pickups_and_checkpoints(world, car, game)
 
     # ── 충돌 이벤트: 충돌 데미지 + 화물 분리 ─────────────────────────────────
     cargo_attached = [True]
@@ -771,8 +769,8 @@ def main() -> None:
         # ── 게임 상태 갱신 ────────────────────────────────────────────────────
         game.update(dt_real)
 
-        # 수면 중인 파일론 수 (디버그)
-        sleeping_pylons = sum(1 for p in pylons if p.is_sleeping)
+        # 수면 중인 파일론 수 (디버그 — HUD에 추가 시 활성화)
+        # sum(1 for p in pylons if p.is_sleeping)
 
         # ── 카메라 갱신 ───────────────────────────────────────────────────────
         if cam_mode_follow:

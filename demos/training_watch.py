@@ -97,7 +97,6 @@ class LiveViewer:
             SHADOW_FRAG,
             SHADOW_VERT,
         )
-        import moderngl
 
         ctx = self._ctx
 
