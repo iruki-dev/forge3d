@@ -26,6 +26,20 @@
 
   /* ── URL helpers ──────────────────────────────────────────── */
   function getBase() {
+    // MkDocs Material stores a relative base path in the __config JSON element
+    // (e.g. ".", "..", "../.." depending on page depth) — NOT in a <base> tag.
+    var cfgEl = document.getElementById('__config');
+    if (cfgEl) {
+      try {
+        var rel = JSON.parse(cfgEl.textContent).base;
+        if (typeof rel === 'string') {
+          // Append '/' so new URL resolves correctly, then return the absolute URL.
+          // ".."  from https://example.com/forge3d/install/ → https://example.com/forge3d/
+          // "../.." from .../forge3d/ko/install/ → https://example.com/forge3d/
+          return new URL(rel.replace(/\/?$/, '/'), window.location.href).href;
+        }
+      } catch (e) {}
+    }
     var el = document.querySelector('base');
     return el ? el.href : window.location.origin + '/';
   }

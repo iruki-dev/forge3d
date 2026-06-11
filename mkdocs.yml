@@ -1,6 +1,6 @@
 site_name: forge3d
 site_description: Pure-Python 3D physics game engine — own dynamics, own rules, no compromises.
-site_url: https://forge3d.readthedocs.io
+site_url: https://iruki.dev/forge3d
 repo_url: https://github.com/iruki-dev/forge3d
 repo_name: iruki-dev/forge3d
 docs_dir: docs_src
@@ -149,10 +149,10 @@ nav:
 extra:
   alternate:
     - name: English
-      link: /
+      link: /forge3d/
       lang: en
     - name: 한국어
-      link: /ko/
+      link: /forge3d/ko/
       lang: ko
   social:
     - icon: fontawesome/brands/github
