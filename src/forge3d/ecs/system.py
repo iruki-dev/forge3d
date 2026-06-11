@@ -146,11 +146,23 @@ class RenderSystem(System):
 
 
 def _mesh_id_to_shape(mesh_id: str) -> tuple[str, dict]:
+    """Parse a mesh_id string into (shape_type, shape_params).
+
+    Supported formats:
+    - ``"sphere"`` or ``"sphere_<r>"``   → sphere with given radius (default 0.5)
+    - ``"capsule"`` or ``"capsule_*"``   → capsule (radius 0.3, half_length 0.5)
+    - ``"box_WxHxD"`` or ``"box_S"``    → box with half-extents W/2 × H/2 × D/2
+    """
     if mesh_id.startswith("sphere"):
-        return "sphere", {"radius": 0.5}
+        parts = mesh_id.split("_", 1)
+        try:
+            radius = float(parts[1]) if len(parts) > 1 else 0.5
+        except ValueError:
+            radius = 0.5
+        return "sphere", {"radius": radius}
     if mesh_id.startswith("capsule"):
         return "capsule", {"radius": 0.3, "half_length": 0.5}
-    # 기본: box
+    # box (default)
     size_part = mesh_id.replace("box_", "").split("x")
     try:
         he = [float(s) / 2.0 for s in size_part]

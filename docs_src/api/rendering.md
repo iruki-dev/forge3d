@@ -56,7 +56,7 @@ viewer = f3d.Viewer(
 | Offscreen FBO (headless, CI-safe) | Real OS window via glfw |
 | `draw()` returns `(H,W,3)` frame | `draw()` returns `None`, flips to screen |
 | `dt` = fixed 1/60 s | `dt` = real measured wall time |
-| `is_open` = frame-count limit | `is_open` = window still open |
+| `is_open` = False after `max_frames` (default 300) | `is_open` = False when window closed **or** `max_frames` reached |
 | `input` = always empty | `input` = live keyboard + mouse |
 
 ### Game loop with windowed Viewer
