@@ -1810,8 +1810,8 @@
 </span></code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">v2.1 변경</p>
-<p>v2.1부터 <code>WindowRenderer</code>의 윈도우 백엔드가 <strong>pygame → glfw</strong>로 교체됐습니다.
-<code>feed_pygame_event()</code> 메서드는 pygame이 설치된 환경에서의 하위 호환을 위해 유지되지만, deprecated입니다.</p>
+<p>v2.1부터 <code>WindowRenderer</code>의 윈도우 백엔드가 <strong>glfw</strong>로 교체됐습니다.
+새 코드에서는 <code>f3d.Viewer</code>를 직접 사용하세요 — glfw 콜백이 자동으로 연결됩니다.</p>
 </div>
 <hr />
 <h2 id="viewer-hud-text">💬 Viewer HUD Text<a class="headerlink" href="#viewer-hud-text" title="Permanent link">&para;</a></h2>

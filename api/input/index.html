@@ -2161,12 +2161,9 @@ can drive.  For example, wiring up a raw glfw window manually:</p>
 </span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>    <span class="n">builder</span><span class="o">.</span><span class="n">end_frame</span><span class="p">()</span>
 </span></code></pre></div>
 <div class="admonition note">
-<p class="admonition-title">pygame bridge (deprecated)</p>
-<p><code>InputBuilder.feed_pygame_event(event)</code> is kept for backward compatibility
-with code that still uses pygame as a standalone window.
-It is a no-op when pygame is not installed.
-New code should use <code>f3d.Viewer</code> directly — glfw callbacks are wired up
-automatically.</p>
+<p class="admonition-title">glfw-native input</p>
+<p>New code should use <code>f3d.Viewer</code> directly — glfw callbacks are wired up
+automatically and <code>InputBuilder</code> is managed internally.</p>
 </div>
 <h3 id="key-constants-reference">Key constants reference<a class="headerlink" href="#key-constants-reference" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Letters</span>
