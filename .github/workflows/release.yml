@@ -64,6 +64,7 @@ jobs:
         with:
           repository-url: https://test.pypi.org/legacy/
           skip-existing: true
+          attestations: false
 
   publish-pypi:
     name: Publish to PyPI
@@ -83,6 +84,8 @@ jobs:
           name: sdist
           path: dist/
       - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: false
 
   github-release:
     name: Create GitHub Release
