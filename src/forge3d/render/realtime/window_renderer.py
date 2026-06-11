@@ -614,7 +614,7 @@ class WindowedRealtimeRenderer:
         if not self._is_open:
             return
 
-        cam = self._cam
+        cam = self._cam if self._cam is not None else getattr(snapshot, "camera", None)
         if cam is None:
             return
 
