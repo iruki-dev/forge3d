@@ -147,8 +147,18 @@ nav:
     - 변경 내역: ko/changelog.md
 
 extra:
+  alternate:
+    - name: English
+      link: /
+      lang: en
+    - name: 한국어
+      link: /ko/
+      lang: ko
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/iruki-dev/forge3d
     - icon: fontawesome/brands/python
       link: https://pypi.org/project/pyforge3d/
+
+extra_javascript:
+  - js/lang-switch.js
