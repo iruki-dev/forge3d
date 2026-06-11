@@ -19,17 +19,22 @@ import pytest
 
 # ── 사전 조건 확인 ──
 
+
 def _has_rust() -> bool:
     from forge3d.backend import USE_RUST_CORE
+
     return USE_RUST_CORE
+
 
 SKIP_RUST = pytest.mark.skipif(not _has_rust(), reason="forge3d._core 빌드 없음")
 
 
 # ── G7: 스모크 테스트 ──
 
+
 def test_import_forge3d():
     import forge3d
+
     assert forge3d.__version__ is not None
 
 
@@ -40,9 +45,11 @@ def test_import_rust_core():
 
 # ── SE3 / 쿼터니언 ──
 
+
 @SKIP_RUST
 def test_se3_mul_identity():
     from forge3d._core import se3_mul
+
     a = np.eye(4, dtype=np.float64)
     b = np.eye(4, dtype=np.float64)
     b[0, 3] = 1.0
@@ -54,6 +61,7 @@ def test_se3_mul_identity():
 @SKIP_RUST
 def test_quat_normalize():
     from forge3d._core import quat_normalize
+
     q = np.array([3.0, 4.0, 0.0, 0.0])
     qn = quat_normalize(q)
     assert abs(np.linalg.norm(qn) - 1.0) < 1e-12
@@ -63,6 +71,7 @@ def test_quat_normalize():
 def test_quat_rotate_vec():
     """z축 180° 회전: (1,0,0) → (-1,0,0)."""
     from forge3d._core import quat_rotate_vec
+
     # q = [w=0, x=0, y=0, z=1] → 180° z 회전
     q = np.array([0.0, 0.0, 0.0, 1.0])
     v = np.array([1.0, 0.0, 0.0])
@@ -74,6 +83,7 @@ def test_quat_rotate_vec():
 @SKIP_RUST
 def test_se3_inverse():
     from forge3d._core import se3_inverse, se3_mul
+
     m = np.eye(4, dtype=np.float64)
     m[:3, 3] = [1.0, 2.0, 3.0]
     inv = se3_inverse(m)
@@ -83,14 +93,19 @@ def test_se3_inverse():
 
 # ── BVH ──
 
+
 @SKIP_RUST
 def test_bvh_overlapping_pair():
     from forge3d._core import bvh_build, bvh_query_pairs
-    aabbs = np.array([
-        [0., 0., 0., 1., 1., 1.],
-        [0.5, 0.5, 0.5, 1.5, 1.5, 1.5],
-        [5., 5., 5., 6., 6., 6.],
-    ], dtype=np.float64)
+
+    aabbs = np.array(
+        [
+            [0.0, 0.0, 0.0, 1.0, 1.0, 1.0],
+            [0.5, 0.5, 0.5, 1.5, 1.5, 1.5],
+            [5.0, 5.0, 5.0, 6.0, 6.0, 6.0],
+        ],
+        dtype=np.float64,
+    )
     pairs = bvh_query_pairs(bvh_build(aabbs))
     assert len(pairs) >= 1
     pair_set = {(min(p[0], p[1]), max(p[0], p[1])) for p in pairs}
@@ -100,11 +115,15 @@ def test_bvh_overlapping_pair():
 @SKIP_RUST
 def test_bvh_no_overlap():
     from forge3d._core import bvh_build, bvh_query_pairs
-    aabbs = np.array([
-        [0., 0., 0., 0.4, 0.4, 0.4],
-        [1., 1., 1., 1.4, 1.4, 1.4],
-        [2., 2., 2., 2.4, 2.4, 2.4],
-    ], dtype=np.float64)
+
+    aabbs = np.array(
+        [
+            [0.0, 0.0, 0.0, 0.4, 0.4, 0.4],
+            [1.0, 1.0, 1.0, 1.4, 1.4, 1.4],
+            [2.0, 2.0, 2.0, 2.4, 2.4, 2.4],
+        ],
+        dtype=np.float64,
+    )
     pairs = bvh_query_pairs(bvh_build(aabbs))
     assert len(pairs) == 0
 
@@ -131,9 +150,14 @@ def test_bvh_speedup():
     for _ in range(RUNS):
         for i in range(n):
             for j in range(i + 1, n):
-                if (aabbs[i, 0] <= aabbs[j, 3] and aabbs[j, 0] <= aabbs[i, 3] and
-                        aabbs[i, 1] <= aabbs[j, 4] and aabbs[j, 1] <= aabbs[i, 4] and
-                        aabbs[i, 2] <= aabbs[j, 5] and aabbs[j, 2] <= aabbs[i, 5]):
+                if (
+                    aabbs[i, 0] <= aabbs[j, 3]
+                    and aabbs[j, 0] <= aabbs[i, 3]
+                    and aabbs[i, 1] <= aabbs[j, 4]
+                    and aabbs[j, 1] <= aabbs[i, 4]
+                    and aabbs[i, 2] <= aabbs[j, 5]
+                    and aabbs[j, 2] <= aabbs[i, 5]
+                ):
                     pass
     py_ms = (time.perf_counter() - t0) / RUNS * 1000
 
@@ -144,9 +168,11 @@ def test_bvh_speedup():
 
 # ── GJK/EPA ──
 
+
 @SKIP_RUST
 def test_gjk_non_colliding():
     from forge3d._core import gjk_query
+
     va = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float64)
     vb = va + np.array([5.0, 0, 0])
     colliding, normal, depth = gjk_query(va, vb)
@@ -156,6 +182,7 @@ def test_gjk_non_colliding():
 @SKIP_RUST
 def test_gjk_colliding():
     from forge3d._core import gjk_query
+
     va = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float64)
     vb = va + np.array([0.3, 0, 0])
     colliding, normal, depth = gjk_query(va, vb)
@@ -174,8 +201,10 @@ def test_gjk_parity():
         pos_a = rng.uniform(-0.5, 0.5, 3)
         pos_b = rng.uniform(-0.5, 0.5, 3)
         half = 0.4
-        corners = np.array([[sx, sy, sz] for sx in (-half, half) for sy in (-half, half) for sz in (-half, half)],
-                           dtype=np.float64)
+        corners = np.array(
+            [[sx, sy, sz] for sx in (-half, half) for sy in (-half, half) for sz in (-half, half)],
+            dtype=np.float64,
+        )
         va = corners + pos_a
         vb = corners + pos_b
 
@@ -194,21 +223,23 @@ def test_gjk_parity():
 
 # ── PGS 접촉 솔버 ──
 
+
 @SKIP_RUST
 def test_pgs_separates_bodies():
     """G3: 충돌 법선 방향으로 속도가 바뀌는지 확인."""
     from forge3d._core import pgs_solve
 
     # 바디 0: z=-1 속도로 낙하, 바디 1: 정적
-    contacts = np.array([[0., 0., 0.01,  0., 0., 1.,  0.01, 0.3,  0., 0.]], dtype=np.float64)
+    contacts = np.array([[0.0, 0.0, 0.01, 0.0, 0.0, 1.0, 0.01, 0.3, 0.0, 0.0]], dtype=np.float64)
     body_idx = np.array([[0, 1]], dtype=np.int32)
-    vels = np.array([[0., 0., -1.,  0., 0., 0.],
-                     [0., 0.,  0.,  0., 0., 0.]], dtype=np.float64)
+    vels = np.array(
+        [[0.0, 0.0, -1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], dtype=np.float64
+    )
     masses = np.array([1.0, 1e30])
 
-    result = pgs_solve(contacts, body_idx, vels, masses, 1/60, 10)
+    result = pgs_solve(contacts, body_idx, vels, masses, 1 / 60, 10)
     # z 속도가 덜 음수여야 함 (분리됨)
-    assert result[0, 2] > -1.0, f"PGS가 분리를 못 함: vz={result[0,2]}"
+    assert result[0, 2] > -1.0, f"PGS가 분리를 못 함: vz={result[0, 2]}"
 
 
 @SKIP_RUST
@@ -216,30 +247,38 @@ def test_pgs_zero_penetration():
     """관입 깊이 0이면 속도 변화 없음."""
     from forge3d._core import pgs_solve
 
-    contacts = np.array([[0., 0., 0.,  0., 0., 1.,  0., 0.3,  0., 0.]], dtype=np.float64)
+    contacts = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.3, 0.0, 0.0]], dtype=np.float64)
     body_idx = np.array([[0, 1]], dtype=np.int32)
-    vels = np.array([[0., 0., 1.,  0., 0., 0.],
-                     [0., 0., 0.,  0., 0., 0.]], dtype=np.float64)
+    vels = np.array(
+        [[0.0, 0.0, 1.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]], dtype=np.float64
+    )
     masses = np.array([1.0, 1e30])
 
-    result = pgs_solve(contacts, body_idx, vels, masses, 1/60, 6)
+    result = pgs_solve(contacts, body_idx, vels, masses, 1 / 60, 6)
     # 이미 분리 방향이면 법선 임펄스 없음
     assert result[0, 2] >= 1.0 - 1e-6
 
 
 # ── G6: 폴백 경로 ──
 
+
 def test_fallback_env():
     """USE_RUST_CORE=0 시 Rust 코어 None."""
     import subprocess
     import sys
+
     result = subprocess.run(
-        [sys.executable, "-c",
-         "import os; os.environ['USE_RUST_CORE']='0'; "
-         "from importlib import import_module; "
-         "import_module('forge3d.backend'); "
-         "from forge3d.backend import USE_RUST_CORE; "
-         "assert not USE_RUST_CORE, f'USE_RUST_CORE should be False'"],
-        capture_output=True, text=True, env={**os.environ, "USE_RUST_CORE": "0"}
+        [
+            sys.executable,
+            "-c",
+            "import os; os.environ['USE_RUST_CORE']='0'; "
+            "from importlib import import_module; "
+            "import_module('forge3d.backend'); "
+            "from forge3d.backend import USE_RUST_CORE; "
+            "assert not USE_RUST_CORE, f'USE_RUST_CORE should be False'",
+        ],
+        capture_output=True,
+        text=True,
+        env={**os.environ, "USE_RUST_CORE": "0"},
     )
     assert result.returncode == 0, result.stderr

@@ -1,11 +1,11 @@
 """Weapon types, instances, and raycast shooting logic."""
+
 from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
 
 import numpy as np
-
 from apps.fps_battleroyal.config import WEAPON_DATA
 
 
@@ -13,10 +13,10 @@ from apps.fps_battleroyal.config import WEAPON_DATA
 class WeaponInstance:
     """Runtime state for a single weapon held by a player or bot."""
 
-    kind:     str           # key into WEAPON_DATA
-    ammo:     int  = 0      # current magazine
-    reserve:  int  = 0      # reserve ammo
-    cooldown: float = 0.0   # seconds until next shot allowed
+    kind: str  # key into WEAPON_DATA
+    ammo: int = 0  # current magazine
+    reserve: int = 0  # reserve ammo
+    cooldown: float = 0.0  # seconds until next shot allowed
     reloading: bool = False
     reload_elapsed: float = 0.0
 
@@ -56,15 +56,15 @@ class WeaponInstance:
             self.reload_elapsed += dt
             if self.reload_elapsed >= self.data["reload_s"]:
                 needed = self.data["mag_size"] - self.ammo
-                taken  = min(needed, self.reserve)
-                self.ammo    += taken
+                taken = min(needed, self.reserve)
+                self.ammo += taken
                 self.reserve -= taken
-                self.reloading      = False
+                self.reloading = False
                 self.reload_elapsed = 0.0
 
     def start_reload(self) -> None:
         if not self.reloading and self.ammo < self.data["mag_size"] and self.reserve > 0:
-            self.reloading      = True
+            self.reloading = True
             self.reload_elapsed = 0.0
 
     def consume(self) -> None:
@@ -75,12 +75,13 @@ class WeaponInstance:
 
 # ── Shooting ──────────────────────────────────────────────────────────────────
 
+
 @dataclass
 class ShotResult:
-    hit:        bool
-    body_name:  str  = ""
-    distance:   float = 0.0
-    point:      np.ndarray = field(default_factory=lambda: np.zeros(3))
+    hit: bool
+    body_name: str = ""
+    distance: float = 0.0
+    point: np.ndarray = field(default_factory=lambda: np.zeros(3))
 
 
 def shoot_ray(
@@ -114,7 +115,7 @@ def shoot_ray(
     else:
         fired_dir = direction.copy()
 
-    norm = math.sqrt(fired_dir[0]**2 + fired_dir[1]**2 + fired_dir[2]**2)
+    norm = math.sqrt(fired_dir[0] ** 2 + fired_dir[1] ** 2 + fired_dir[2] ** 2)
     if norm < 1e-12:
         return ShotResult(hit=False)
     fired_dir /= norm

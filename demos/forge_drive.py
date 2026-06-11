@@ -28,7 +28,9 @@ Controls
 
 from __future__ import annotations
 
-import math, sys, time
+import math
+import sys
+import time
 from pathlib import Path
 
 import numpy as np
@@ -36,11 +38,12 @@ import pygame
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from apps.game.renderer import WindowRenderer
+
 import forge3d as f3d
 from forge3d.collision.layers import CollisionLayer
 from forge3d.io.world_snapshot import StateRecorder
 from forge3d.math.quaternion import quat_to_rot
-from apps.game.renderer import WindowRenderer
 
 # ── 윈도우 / 물리 상수 ────────────────────────────────────────────────────────
 WIN_W, WIN_H = 1280, 720
@@ -608,7 +611,7 @@ def main() -> None:
         rec.save(rp)
         print(f"\n  리플레이: {rp}  ({len(rec._frames)} 프레임)")
     world.save(savepath)
-    print(f"\n  ─── Forge Drive 결과 ───")
+    print("\n  ─── Forge Drive 결과 ───")
     print(f"  별 수집: {sum(game.collected)}/{len(STAR_POS)}")
     print(f"  점수:    {game.score}")
     print(f"  주행:    {game.distance/1000:.2f} km")

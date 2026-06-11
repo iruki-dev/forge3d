@@ -224,7 +224,7 @@ class TestWorldNewAPI:
 
     def test_clear_removes_dynamic(self):
         world = f3d.World()
-        world.add_ground()   # static
+        world.add_ground()  # static
         world.add_box(position=(0, 0, 3))
         world.add_sphere(position=(1, 0, 3))
         world.clear(keep_statics=True)

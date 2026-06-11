@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 import forge3d as f3d
 
 
@@ -10,8 +9,7 @@ def test_sleeping_body_becomes_asleep():
     """A resting body should eventually be marked as sleeping."""
     world = f3d.World(gravity=(0, 0, -9.81))
     world.add_ground()
-    box = world.add_box(size=(1, 1, 1), position=(0, 0, 2), mass=1.0,
-                         friction=0.8, restitution=0.0)
+    box = world.add_box(size=(1, 1, 1), position=(0, 0, 2), mass=1.0, friction=0.8, restitution=0.0)
 
     # Let box fall and come to rest
     for _ in range(300):
@@ -35,8 +33,9 @@ def test_sleeping_counter_resets_on_wake():
     """Applying an impulse should reset the sleep counter."""
     world = f3d.World(gravity=(0, 0, -9.81))
     world.add_ground()
-    box = world.add_box(size=(1, 1, 1), position=(0, 0, 0.5), mass=1.0,
-                         friction=1.0, restitution=0.0)
+    box = world.add_box(
+        size=(1, 1, 1), position=(0, 0, 0.5), mass=1.0, friction=1.0, restitution=0.0
+    )
 
     # Let box settle
     for _ in range(300):
@@ -65,8 +64,7 @@ def test_full_suite_still_passes():
     """Sanity check: basic physics still works after P23 changes."""
     world = f3d.World(gravity=(0, 0, -9.81))
     world.add_ground()
-    ball = world.add_sphere(radius=0.5, position=(0, 0, 5), mass=1.0,
-                             restitution=0.8, friction=0.0)
+    ball = world.add_sphere(radius=0.5, position=(0, 0, 5), mass=1.0, restitution=0.8, friction=0.0)
     for _ in range(120):
         world.step(dt=1 / 60)
     # Ball should have bounced (not fallen through floor)

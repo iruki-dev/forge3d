@@ -65,8 +65,8 @@ def _body_support(body: Any, d: np.ndarray) -> np.ndarray:
         # Capsule: cylinder swept by sphere.  Axis = local Z, half-length hl.
         # Support = sphere_centre_along_d + radius*d_hat
         # where sphere_centre = pos ± hl * body_z_axis
-        R  = quat_to_rot(body.quat)
-        r  = float(body.shape_params["radius"])
+        R = quat_to_rot(body.quat)
+        r = float(body.shape_params["radius"])
         hl = float(body.shape_params["half_length"])
         d_local = R.T @ d
         # tip in direction of d — R[:,2] is a zero-copy column view, no allocation

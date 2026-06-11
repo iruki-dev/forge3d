@@ -10,6 +10,7 @@
   G7: v1 API 호환
   G8: 전체 회귀 없음
 """
+
 from __future__ import annotations
 
 import json
@@ -19,12 +20,13 @@ from pathlib import Path
 import numpy as np
 import pytest
 
-
 # ── G1: EntityWorld 생명주기 ──────────────────────────────────────────────────
+
 
 def test_entity_create_and_destroy():
     """G1a: 엔티티 생성/소멸."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
     e = ew.create_entity()
     assert ew.is_alive(e)
@@ -35,6 +37,7 @@ def test_entity_create_and_destroy():
 def test_entity_not_found_error():
     """G1b: 소멸된 엔티티 접근 시 EntityNotFoundError."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
     e = ew.create_entity()
     ew.destroy_entity(e)
@@ -45,6 +48,7 @@ def test_entity_not_found_error():
 def test_component_crud():
     """G1c: 컴포넌트 추가/조회/삭제."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
     e = ew.create_entity()
     tf = f3d.Transform(position=np.array([1.0, 2.0, 3.0]))
@@ -59,6 +63,7 @@ def test_component_crud():
 def test_query_returns_matching_entities():
     """G1d: query()가 두 타입 모두 가진 엔티티만 반환한다."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
     e1 = ew.create_entity(f3d.Transform(), f3d.Rigidbody(mass=1.0))
     e2 = ew.create_entity(f3d.Transform())  # Rigidbody 없음
@@ -73,6 +78,7 @@ def test_query_returns_matching_entities():
 def test_query_empty_on_destroyed():
     """소멸된 엔티티는 query에서 제외된다."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
     e = ew.create_entity(f3d.Transform())
     ew.destroy_entity(e)
@@ -82,9 +88,11 @@ def test_query_empty_on_destroyed():
 
 # ── G2: Transform 계층 ───────────────────────────────────────────────────────
 
+
 def test_transform_local_matrix():
     """G2a: 로컬 행렬이 위치를 올바르게 반영한다."""
     import forge3d as f3d
+
     tf = f3d.Transform(position=np.array([3.0, 0.0, 0.0]))
     M = tf.local_matrix()
     assert M.shape == (4, 4)
@@ -94,6 +102,7 @@ def test_transform_local_matrix():
 def test_transform_hierarchy():
     """G2b: 부모 이동 시 자식 월드 위치가 갱신된다."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
 
     parent = ew.create_entity(f3d.Transform(position=np.array([10.0, 0.0, 0.0])))
@@ -107,6 +116,7 @@ def test_transform_hierarchy():
 def test_transform_deep_hierarchy():
     """G2c: 3단계 계층 월드 행렬 정확성."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
 
     root = ew.create_entity(f3d.Transform(position=np.array([1.0, 0.0, 0.0])))
@@ -123,6 +133,7 @@ def test_transform_cycle_detection():
     """G2d: 순환 부모 감지 시 Forge3dError 발생."""
     import forge3d as f3d
     from forge3d.errors import Forge3dError
+
     ew = f3d.EntityWorld()
 
     a_tf = f3d.Transform()
@@ -137,15 +148,17 @@ def test_transform_cycle_detection():
 
 def test_jax_batch_world_matrix():
     """G2e: jax_batch_world_matrix가 (N,4,4) 반환."""
-    from forge3d.ecs import jax_batch_world_matrix
     import forge3d as f3d
-    tfs = [f3d.Transform(position=np.array([float(i), 0., 0.])) for i in range(5)]
+    from forge3d.ecs import jax_batch_world_matrix
+
+    tfs = [f3d.Transform(position=np.array([float(i), 0.0, 0.0])) for i in range(5)]
     mats = jax_batch_world_matrix(tfs)
     assert mats.shape == (5, 4, 4)
     assert np.allclose(mats[3, :3, 3], [3.0, 0.0, 0.0])
 
 
 # ── G3: PhysicsSystem 낙하 ───────────────────────────────────────────────────
+
 
 def test_physics_system_gravity():
     """G3: PhysicsSystem 하에서 Rigidbody 엔티티가 낙하한다 (v1 World 연결)."""
@@ -161,6 +174,7 @@ def test_physics_system_gravity():
     # v1 Body 생성 후 ECS로 래핑
     v1_body = v1_world.add_box(size=(1, 1, 1), position=(0, 0, 5), mass=1.0)
     from forge3d.ecs import body_to_entity
+
     entity = body_to_entity(v1_world, v1_body, ew)
 
     initial_z = ew.get_component(entity, f3d.Transform).position[2]
@@ -174,6 +188,7 @@ def test_physics_system_gravity():
 
 
 # ── G4: v1 Body 브릿지 ───────────────────────────────────────────────────────
+
 
 def test_v1_bridge_position_sync():
     """G4: body_to_entity 후 Transform 위치가 v1 Body와 일치한다."""
@@ -205,10 +220,11 @@ def test_v1_bridge_rigidbody():
 
 # ── G5: 직렬화 ───────────────────────────────────────────────────────────────
 
+
 def test_scene_save_load():
     """G5: save → load 후 엔티티 수와 Transform 위치가 일치한다."""
     import forge3d as f3d
-    from forge3d.ecs import save_scene, load_scene
+    from forge3d.ecs import load_scene, save_scene
 
     ew = f3d.EntityWorld()
     ew.create_entity(
@@ -242,10 +258,12 @@ def test_scene_save_load():
 
 # ── G6: 예제 파일 ─────────────────────────────────────────────────────────────
 
+
 def test_example_05_ecs_scene():
     """G6: examples/05_ecs_scene.py가 에러 없이 실행된다."""
     import subprocess
     import sys
+
     result = subprocess.run(
         [sys.executable, "examples/05_ecs_scene.py"],
         cwd="/workspaces/2026_python_toy_project_1",
@@ -259,9 +277,11 @@ def test_example_05_ecs_scene():
 
 # ── G7: v1 API 호환 ──────────────────────────────────────────────────────────
 
+
 def test_v1_api_unaffected():
     """G7: v1 World/Body/Viewer API가 깨지지 않는다."""
     import forge3d as f3d
+
     world = f3d.World(gravity=(0, 0, -9.81))
     world.add_ground()
     box = world.add_box(size=(1, 1, 1), position=(0, 0, 5), mass=1.0)
@@ -273,6 +293,7 @@ def test_v1_api_unaffected():
 def test_render_system_snapshot():
     """G5b: RenderSystem.last_snapshot에 Body가 포함된다."""
     import forge3d as f3d
+
     ew = f3d.EntityWorld()
     ew.create_entity(
         f3d.Transform(position=np.array([1.0, 0.0, 0.0])),

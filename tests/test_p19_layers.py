@@ -7,7 +7,6 @@ import numpy as np
 import forge3d as f3d
 from forge3d import CollisionLayer
 
-
 # ── G1: Different layers — no collision ───────────────────────────────────────
 
 
@@ -18,15 +17,16 @@ def test_different_layers_no_collision():
     # A is on PLAYER layer, masks DEFAULT | ENEMY
     sphere_a = world.add_sphere(radius=0.4, position=(0, 0, 0), mass=1.0)
     sphere_a.collision_layer = CollisionLayer.PLAYER
-    sphere_a.collision_mask  = CollisionLayer.DEFAULT | CollisionLayer.ENEMY
+    sphere_a.collision_mask = CollisionLayer.DEFAULT | CollisionLayer.ENEMY
 
     # B is on BULLET layer — sphere_a's mask doesn't include BULLET
     sphere_b = world.add_sphere(radius=0.4, position=(0.5, 0, 0), mass=1.0)
     sphere_b.collision_layer = CollisionLayer.BULLET
-    sphere_b.collision_mask  = CollisionLayer.DEFAULT | CollisionLayer.ENEMY
+    sphere_b.collision_mask = CollisionLayer.DEFAULT | CollisionLayer.ENEMY
 
     # Give them approaching velocities
     from dataclasses import replace
+
     world._physics._replace_body(sphere_a._id, replace(sphere_a._state(), vel=np.array([1, 0, 0])))
     world._physics._replace_body(sphere_b._id, replace(sphere_b._state(), vel=np.array([-1, 0, 0])))
 
@@ -52,11 +52,12 @@ def test_matching_mask_collides():
 
     # Both on DEFAULT layer, both masking DEFAULT
     ball_a.collision_layer = CollisionLayer.DEFAULT
-    ball_a.collision_mask  = CollisionLayer.DEFAULT
+    ball_a.collision_mask = CollisionLayer.DEFAULT
     ball_b.collision_layer = CollisionLayer.DEFAULT
-    ball_b.collision_mask  = CollisionLayer.DEFAULT
+    ball_b.collision_mask = CollisionLayer.DEFAULT
 
     from dataclasses import replace
+
     world._physics._replace_body(ball_a._id, replace(ball_a._state(), vel=np.array([2, 0, 0])))
     world._physics._replace_body(ball_b._id, replace(ball_b._state(), vel=np.array([-2, 0, 0])))
 
@@ -84,6 +85,7 @@ def test_ignore_collision_pair():
     world.ignore_collision(ball_a, ball_b)
 
     from dataclasses import replace
+
     world._physics._replace_body(ball_a._id, replace(ball_a._state(), vel=np.array([1, 0, 0])))
 
     for _ in range(60):
@@ -102,7 +104,7 @@ def test_layer_mask_api():
     box = world.add_box(size=(1, 1, 1), position=(0, 0, 5))
 
     box.collision_layer = CollisionLayer.PLAYER
-    box.collision_mask  = CollisionLayer.DEFAULT | CollisionLayer.ENEMY
+    box.collision_mask = CollisionLayer.DEFAULT | CollisionLayer.ENEMY
 
     assert box.collision_layer == CollisionLayer.PLAYER
     assert box.collision_mask == (CollisionLayer.DEFAULT | CollisionLayer.ENEMY)

@@ -1,5 +1,7 @@
 """05 — ECS 씬: 컴포넌트 조합으로 물리 씬 구성."""
+
 import numpy as np
+
 import forge3d as f3d
 
 ew = f3d.EntityWorld()
@@ -18,11 +20,13 @@ box = ew.create_entity(
     f3d.Rigidbody(mass=1.0),
 )
 
+
 # 스크립트: 쿼리로 박스 위치 출력
 def on_update(dt: float) -> None:
     for _e, tf in ew.query(f3d.Transform, f3d.Rigidbody):
         if not tf.rotation[0]:  # type: ignore[index]
             pass  # 위치 출력은 주석처리 (자동 테스트용)
+
 
 ew.create_entity(f3d.Script(on_update=on_update))
 ew.add_system(f3d.ScriptSystem())

@@ -62,14 +62,20 @@ class TestAngularImpulse:
 
         # Box at origin, at rest
         box_id = world.add_box(
-            size=(0.4, 0.4, 0.4), position=(0.0, 0.0, 0.0),
-            mass=1.0, restitution=0.5, friction=0.0,
+            size=(0.4, 0.4, 0.4),
+            position=(0.0, 0.0, 0.0),
+            mass=1.0,
+            restitution=0.5,
+            friction=0.0,
         )
         # Sphere approaching from +x, aimed at bottom corner (z=-0.15)
         # Start close enough to guarantee contact in ~5 steps
         sph_id = world.add_sphere(
-            radius=0.1, position=(0.35, 0.0, -0.15),
-            mass=0.5, restitution=0.5, friction=0.0,
+            radius=0.1,
+            position=(0.35, 0.0, -0.15),
+            mass=0.5,
+            restitution=0.5,
+            friction=0.0,
         )
         # Give sphere leftward velocity
         world._bodies[sph_id] = world._bodies[sph_id].__class__(
@@ -91,12 +97,18 @@ class TestAngularImpulse:
         world = PhysicsWorld(gravity=[0, 0, 0])
 
         box_id = world.add_box(
-            size=(0.4, 0.4, 0.4), position=(0.0, 0.0, 0.0),
-            mass=2.0, restitution=0.5, friction=0.0,
+            size=(0.4, 0.4, 0.4),
+            position=(0.0, 0.0, 0.0),
+            mass=2.0,
+            restitution=0.5,
+            friction=0.0,
         )
         sph_id = world.add_sphere(
-            radius=0.1, position=(0.35, 0.0, 0.0),
-            mass=0.5, restitution=0.5, friction=0.0,
+            radius=0.1,
+            position=(0.35, 0.0, 0.0),
+            mass=0.5,
+            restitution=0.5,
+            friction=0.0,
         )
         world._bodies[sph_id] = world._bodies[sph_id].__class__(
             **{**world._bodies[sph_id].__dict__, "vel": np.array([-5.0, 0.0, 0.0])}
@@ -108,9 +120,7 @@ class TestAngularImpulse:
         box = next(b for b in world._bodies if b.body_id == box_id)
         # Symmetric impact → rotation should be negligible
         omega_mag = float(np.linalg.norm(box.omega))
-        assert omega_mag < 1.0, (
-            f"Box spun unexpectedly from center hit: omega_mag={omega_mag:.4f}"
-        )
+        assert omega_mag < 1.0, f"Box spun unexpectedly from center hit: omega_mag={omega_mag:.4f}"
         # Box should have received momentum (moved or has velocity)
         box_moved = abs(float(box.vel[0])) > 0.01 or abs(float(box.pos[0])) > 0.001
         sph = next(b for b in world._bodies if b.body_id == sph_id)
@@ -158,8 +168,12 @@ class TestCapsuleCollision:
     def _cap(self, pos, radius=0.2, half_length=0.5, quat=None, mass=1.0) -> _Body:
         m = capsule_inertia(mass, radius, half_length)
         return _make_body(
-            "capsule", pos, {"radius": radius, "half_length": half_length},
-            mass=mass, inertia_local=m, quat=quat,
+            "capsule",
+            pos,
+            {"radius": radius, "half_length": half_length},
+            mass=mass,
+            inertia_local=m,
+            quat=quat,
         )
 
     def _sph(self, pos, radius=0.3, mass=1.0) -> _Body:
@@ -220,8 +234,9 @@ class TestCapsuleCollision:
         world = PhysicsWorld(gravity=[0, 0, 0])
         cap_id = world.add_capsule(radius=0.2, half_length=0.4, position=(0, 0, 0), mass=2.0)
         # Sphere starts outside contact range: 0.2 + 0.3 = 0.5, so start at 1.0
-        sph_id = world.add_sphere(radius=0.3, position=(1.0, 0, 0), mass=1.0,
-                                   restitution=0.5, friction=0.0)
+        sph_id = world.add_sphere(
+            radius=0.3, position=(1.0, 0, 0), mass=1.0, restitution=0.5, friction=0.0
+        )
         world._bodies[sph_id] = world._bodies[sph_id].__class__(
             **{**world._bodies[sph_id].__dict__, "vel": np.array([-5.0, 0.0, 0.0])}
         )
@@ -248,12 +263,14 @@ class TestSphereVsBoxGeneral:
     """General sphere-OBB contact: correct normal for any face."""
 
     def _sphere(self, pos, radius=0.3) -> _Body:
-        return _make_body("sphere", pos, {"radius": radius}, mass=1.0,
-                          inertia_local=sphere_inertia(1.0, radius))
+        return _make_body(
+            "sphere", pos, {"radius": radius}, mass=1.0, inertia_local=sphere_inertia(1.0, radius)
+        )
 
     def _box(self, pos, he=(0.5, 0.5, 0.5), quat=None, static=True) -> _Body:
-        return _make_body("box", pos, {"half_extents": np.asarray(he, dtype=float)},
-                          static=static, quat=quat)
+        return _make_body(
+            "box", pos, {"half_extents": np.asarray(he, dtype=float)}, static=static, quat=quat
+        )
 
     def test_top_face_contact(self):
         """Sphere above box: normal is +z (same as old halfspace)."""
@@ -290,8 +307,9 @@ class TestSphereVsBoxGeneral:
         """Sphere moving in x toward box side face bounces back."""
         world = PhysicsWorld(gravity=[0, 0, 0])
         world.add_static_box(size=(1.0, 1.0, 1.0), position=(0, 0, 0))
-        sph_id = world.add_sphere(radius=0.2, position=(1.5, 0, 0),
-                                   restitution=0.8, friction=0.0, mass=1.0)
+        sph_id = world.add_sphere(
+            radius=0.2, position=(1.5, 0, 0), restitution=0.8, friction=0.0, mass=1.0
+        )
         world._bodies[sph_id] = world._bodies[sph_id].__class__(
             **{**world._bodies[sph_id].__dict__, "vel": np.array([-5.0, 0.0, 0.0])}
         )
@@ -322,7 +340,9 @@ class TestStackStability:
             world.add_box(
                 size=box_size,
                 position=(0.0, 0.0, 0.25 + i * 0.51),
-                mass=1.0, restitution=0.0, friction=0.5,
+                mass=1.0,
+                restitution=0.0,
+                friction=0.5,
             )
 
         dt = 1.0 / 120.0
@@ -338,8 +358,7 @@ class TestStackStability:
         assert max_v < 0.5, f"Stack not at rest: max_v={max_v:.4f} m/s"
 
         # Boxes should be approximately stacked (z positions increasing)
-        dynamic = sorted([b for b in world._bodies if not b.static],
-                         key=lambda b: b.pos[2])
+        dynamic = sorted([b for b in world._bodies if not b.static], key=lambda b: b.pos[2])
         for i in range(len(dynamic) - 1):
             z_lo = float(dynamic[i].pos[2])
             z_hi = float(dynamic[i + 1].pos[2])
@@ -388,8 +407,9 @@ class TestEnergyConservation:
     def test_falling_body_energy(self):
         """Free-falling sphere: potential + kinetic energy conserved."""
         world = PhysicsWorld(gravity=[0, 0, -9.81])
-        sph_id = world.add_sphere(radius=0.2, position=(0, 0, 10.0), mass=2.0,
-                                   restitution=0.0, friction=0.0)
+        sph_id = world.add_sphere(
+            radius=0.2, position=(0, 0, 10.0), mass=2.0, restitution=0.0, friction=0.0
+        )
         g = 9.81
         m = 2.0
         dt = 1.0 / 240.0
@@ -444,14 +464,14 @@ class TestOmegaUpdate:
 
         # Dynamic box at origin
         he = np.array([0.5, 0.5, 0.5])
-        body_a = _make_body("box", [0, 0, 0],
-                            {"half_extents": he}, mass=1.0,
-                            inertia_local=box_inertia(1.0, he))
+        body_a = _make_body(
+            "box", [0, 0, 0], {"half_extents": he}, mass=1.0, inertia_local=box_inertia(1.0, he)
+        )
 
         # Static "floor" (to absorb reaction)
-        body_b = _make_body("box", [0, 0, -1.0],
-                            {"half_extents": np.array([5, 5, 0.5])},
-                            static=True, mass=0.0)
+        body_b = _make_body(
+            "box", [0, 0, -1.0], {"half_extents": np.array([5, 5, 0.5])}, static=True, mass=0.0
+        )
 
         # Contact at corner (off-center): creates a torque
         c = ContactPoint(

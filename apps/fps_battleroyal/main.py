@@ -13,6 +13,7 @@ Controls:
     1 / 2 / Scroll — switch weapon
     ESC            — release mouse  (ESC again = exit)
 """
+
 from __future__ import annotations
 
 import math
@@ -47,11 +48,12 @@ from apps.fps_battleroyal.zone import Zone
 import forge3d as f3d
 from forge3d.io import load_obj
 
-_ASSET_DIR   = pathlib.Path(__file__).parents[2] / "assets" / "characters"
+_ASSET_DIR = pathlib.Path(__file__).parents[2] / "assets" / "characters"
 _SOLDIER_OBJ = _ASSET_DIR / "soldier.obj"
 
 
 # ── Sphere intersection hit detection ─────────────────────────────────────────
+
 
 def _ray_sphere(
     origin: np.ndarray,
@@ -61,8 +63,8 @@ def _ray_sphere(
 ) -> float:
     """Return distance to nearest intersection, or -1 if no hit."""
     oc = origin - center
-    b  = float(np.dot(oc, direction))
-    c  = float(np.dot(oc, oc)) - radius * radius
+    b = float(np.dot(oc, direction))
+    c = float(np.dot(oc, oc)) - radius * radius
     disc = b * b - c
     if disc < 0:
         return -1.0
@@ -106,17 +108,18 @@ def _find_hit_bot(
 
 # ── Damage numbers ─────────────────────────────────────────────────────────────
 
+
 class FloatingNumber:
     def __init__(self, text: str, x: int, y: int, color: tuple, ttl: float = 1.0):
-        self.text  = text
+        self.text = text
         self.x, self.y = x, y
         self.color = color
-        self.ttl   = ttl
-        self.age   = 0.0
+        self.ttl = ttl
+        self.age = 0.0
 
     def update(self, dt: float) -> None:
         self.age += dt
-        self.y   -= int(30 * dt)  # float upward
+        self.y -= int(30 * dt)  # float upward
 
     @property
     def alive(self) -> bool:
@@ -129,8 +132,9 @@ class FloatingNumber:
 
 # ── Main game class ────────────────────────────────────────────────────────────
 
+
 class BattleRoyale:
-    WIDTH  = 1280
+    WIDTH = 1280
     HEIGHT = 720
 
     def __init__(self) -> None:
@@ -138,7 +142,7 @@ class BattleRoyale:
 
         # World
         self.world = f3d.World(gravity=GRAVITY)
-        self.world.fixed_dt    = 1 / 60
+        self.world.fixed_dt = 1 / 60
         self.world.max_substeps = 2
 
         # Map (static geometry only — no bot bodies)
@@ -148,18 +152,20 @@ class BattleRoyale:
         self.player = create_player(self.world, np.array([0.0, -5.0, 1.5]))
 
         # Kinematic bots (zero physics bodies)
-        self.bots: list[Bot] = create_bots(
-            self.world, self.assets.bot_spawn_positions, BOT_COUNT
-        )
+        self.bots: list[Bot] = create_bots(self.world, self.assets.bot_spawn_positions, BOT_COUNT)
 
         # Bot visual bodies (OBJ mesh, static, no collision)
         self._bot_vis: list[f3d.Body] = self._make_bot_visuals()
 
         # Exclude player capsule + no other bot physics to exclude
         self.viewer = f3d.Viewer(
-            self.world, width=self.WIDTH, height=self.HEIGHT,
+            self.world,
+            width=self.WIDTH,
+            height=self.HEIGHT,
             title="Battle Royale  —  forge3d",
-            fps=60, shadow_resolution=1024, sky_color=C_SKY,
+            fps=60,
+            shadow_resolution=1024,
+            sky_color=C_SKY,
         )
         self.viewer.set_excluded_names({"player_local"})
 
@@ -168,10 +174,10 @@ class BattleRoyale:
         self._last_zone_r = ZONE_PHASES[0][1]
 
         # State
-        self.game_time    = 0.0
-        self.game_over    = False
-        self.victory      = False
-        self._cursor_cap  = False
+        self.game_time = 0.0
+        self.game_over = False
+        self.victory = False
+        self._cursor_cap = False
         self._first_frame = True
         self._bot_update_idx = 0
         self._rng = np.random.default_rng(42)
@@ -194,8 +200,11 @@ class BattleRoyale:
             p = bot.position
             if mesh:
                 b = self.world.add_mesh(
-                    mesh, position=(p[0], p[1], p[2]),
-                    mass=0, static=True, material=mat,
+                    mesh,
+                    position=(p[0], p[1], p[2]),
+                    mass=0,
+                    static=True,
+                    material=mat,
                     name=f"bot_vis_{i:02d}",
                 )
             else:
@@ -203,11 +212,12 @@ class BattleRoyale:
                     radius=PLAYER_RADIUS,
                     half_length=max(0.01, PLAYER_HEIGHT / 2 - PLAYER_RADIUS),
                     position=(p[0], p[1], p[2]),
-                    static=True, material=mat,
+                    static=True,
+                    material=mat,
                     name=f"bot_vis_{i:02d}",
                 )
             b.collision_layer = 0
-            b.collision_mask  = 0
+            b.collision_mask = 0
             bodies.append(b)
         return bodies
 
@@ -215,7 +225,7 @@ class BattleRoyale:
 
     def run(self) -> None:
         while self.viewer.is_open:
-            dt  = float(np.clip(self.viewer.dt, 1e-4, 0.05))
+            dt = float(np.clip(self.viewer.dt, 1e-4, 0.05))
             inp = self.viewer.input
 
             # Auto-capture cursor on first render
@@ -252,9 +262,14 @@ class BattleRoyale:
             alive = sum(1 for b in self.bots if b.is_alive) + (1 if self.player.is_alive else 0)
             self.hud.update(dt)
             self.hud.draw(
-                self.viewer, self.player, self.zone, self.bots,
-                self.game_time, alive,
-                game_over=self.game_over, victory=self.victory,
+                self.viewer,
+                self.player,
+                self.zone,
+                self.bots,
+                self.game_time,
+                alive,
+                game_over=self.game_over,
+                victory=self.victory,
                 cursor_captured=self._cursor_cap,
             )
 
@@ -290,18 +305,30 @@ class BattleRoyale:
         n = len(alive_bots)
         if n:
             STEP = 6
-            start  = self._bot_update_idx % n
-            subset = (alive_bots[start:start+STEP] + alive_bots[:max(0, start+STEP-n)])[:STEP]
+            start = self._bot_update_idx % n
+            subset = (alive_bots[start : start + STEP] + alive_bots[: max(0, start + STEP - n)])[
+                :STEP
+            ]
             self._bot_update_idx = (self._bot_update_idx + STEP) % n
 
             for bot in subset:
                 shot = bot.update(
-                    dt, self.game_time, self.world,
-                    self.player.position, self.player.is_alive,
-                    alive_bots, self.zone.current_radius, self._rng,
+                    dt,
+                    self.game_time,
+                    self.world,
+                    self.player.position,
+                    self.player.is_alive,
+                    alive_bots,
+                    self.zone.current_radius,
+                    self._rng,
                 )
                 # Bot shot player?
-                if shot and bot.target_is_player and self.player.is_alive and self.game_time > GRACE_PERIOD_SEC:
+                if (
+                    shot
+                    and bot.target_is_player
+                    and self.player.is_alive
+                    and self.game_time > GRACE_PERIOD_SEC
+                ):
                     self.player.take_damage(bot.weapon.data["damage"] * 0.75)
 
                 # Bot kill bookkeeping
@@ -336,7 +363,7 @@ class BattleRoyale:
             return
 
         cam = self.player.camera.to_snapshot()
-        origin    = np.asarray(cam.position)
+        origin = np.asarray(cam.position)
         direction = np.asarray(cam.target) - origin
         d_len = float(np.linalg.norm(direction))
         if d_len < 1e-9:
@@ -351,7 +378,7 @@ class BattleRoyale:
                 dx = float(self._rng.normal(0, spread))
                 dy = float(self._rng.normal(0, spread))
                 right = self.player.camera.right
-                up    = np.cross(direction, right)
+                up = np.cross(direction, right)
                 fired = direction + dx * right + dy * up
                 f_len = float(np.linalg.norm(fired))
                 if f_len > 1e-9:
@@ -365,17 +392,26 @@ class BattleRoyale:
                 bot.take_damage(dmg)
                 hit_any = True
                 # Floating damage number at screen center
-                self._floats.append(FloatingNumber(
-                    f"-{int(dmg)}", self.WIDTH // 2 + 40, self.HEIGHT // 2 - 10,
-                    color=(1.0, 0.8, 0.2),
-                ))
+                self._floats.append(
+                    FloatingNumber(
+                        f"-{int(dmg)}",
+                        self.WIDTH // 2 + 40,
+                        self.HEIGHT // 2 - 10,
+                        color=(1.0, 0.8, 0.2),
+                    )
+                )
                 if not bot.is_alive:
                     self.player.kills += 1
                     self.hud.kill_feed.add(f"You eliminated {bot.name}", self.game_time)
-                    self._floats.append(FloatingNumber(
-                        "KILL", self.WIDTH // 2, self.HEIGHT // 2 - 55,
-                        color=(1.0, 0.3, 0.1), ttl=1.5,
-                    ))
+                    self._floats.append(
+                        FloatingNumber(
+                            "KILL",
+                            self.WIDTH // 2,
+                            self.HEIGHT // 2 - 55,
+                            color=(1.0, 0.3, 0.1),
+                            ttl=1.5,
+                        )
+                    )
 
         wp.consume()
         if hit_any:
@@ -406,8 +442,7 @@ class BattleRoyale:
             a = 2 * math.pi * i / ZONE_N_PILLARS
             self.world.teleport(
                 pillar,
-                position=(ZONE_CENTER[0] + r * math.cos(a),
-                           ZONE_CENTER[1] + r * math.sin(a), 9.0),
+                position=(ZONE_CENTER[0] + r * math.cos(a), ZONE_CENTER[1] + r * math.sin(a), 9.0),
             )
 
     def _sync_visuals(self) -> None:
@@ -429,13 +464,19 @@ class BattleRoyale:
             fn.update(dt)
             if fn.alive:
                 self.viewer.draw_text(
-                    fn.text, fn.x, fn.y, size=28,
-                    color=fn.color, bg_alpha=fn.alpha * 0.3, anchor="center",
+                    fn.text,
+                    fn.x,
+                    fn.y,
+                    size=28,
+                    color=fn.color,
+                    bg_alpha=fn.alpha * 0.3,
+                    anchor="center",
                 )
         self._floats = [f for f in self._floats if f.alive]
 
 
 # ── Entry ─────────────────────────────────────────────────────────────────────
+
 
 def main() -> None:
     game = BattleRoyale()

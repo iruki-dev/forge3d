@@ -38,7 +38,7 @@ class TestOBJLoader:
         mesh = load_obj(ASSETS / "cube.obj")
         v = mesh.interleaved()
         assert v.dtype == np.float32
-        assert v.shape == (mesh.n_vertices, 8)   # [pos3, normal3, uv2]
+        assert v.shape == (mesh.n_vertices, 8)  # [pos3, normal3, uv2]
 
     def test_hull_vertices_are_subset(self) -> None:
         from forge3d.io import load_obj
@@ -65,7 +65,7 @@ class TestOBJLoader:
 
         m1 = load_obj(ASSETS / "cube.obj")
         m2 = load_obj(ASSETS / "cube.obj")
-        assert m1.mesh_id != m2.mesh_id   # different object, different id
+        assert m1.mesh_id != m2.mesh_id  # different object, different id
 
 
 # ── MeshData from_arrays ──────────────────────────────────────────────────────
@@ -87,7 +87,7 @@ class TestMeshDataFromArrays:
         from forge3d.io.mesh_data import MeshData
 
         pos = np.array([[0, 0, 0], [1, 0, 0], [0, 1, 0], [0, 0, 1]], dtype=np.float32)
-        nrm = np.zeros((4, 3), dtype=np.float32)   # all zero → will be recomputed
+        nrm = np.zeros((4, 3), dtype=np.float32)  # all zero → will be recomputed
         idx = np.array([0, 1, 2, 0, 1, 3, 0, 2, 3, 1, 2, 3], dtype=np.uint32)
         mesh = MeshData.from_arrays(pos, nrm, None, idx)
         assert mesh.n_triangles == 4
@@ -118,21 +118,21 @@ class TestMeshPhysics:
         initial_z = body.position[2]
         for _ in range(60):
             world.step(1 / 60)
-        assert body.position[2] < initial_z   # fell under gravity
+        assert body.position[2] < initial_z  # fell under gravity
 
     def test_mesh_vs_plane_collision(self) -> None:
         from forge3d.io import load_obj
         from forge3d.sim.world import PhysicsWorld
 
         w = PhysicsWorld()
-        w.add_static_box((20, 20, 0.2), (0, 0, -0.1))   # ground plane as box
+        w.add_static_box((20, 20, 0.2), (0, 0, -0.1))  # ground plane as box
         mesh = load_obj(ASSETS / "cube.obj")
         w.add_convex_mesh(mesh, position=(0, 0, 0.3), mass=1.0)  # cube just above ground
         for _ in range(120):
             w.step(1 / 60)
         # After settling, cube should be resting near z=0.5 (half-height)
         cube_body = w._bodies[-1]
-        assert cube_body.pos[2] < 2.0   # didn't fly off
+        assert cube_body.pos[2] < 2.0  # didn't fly off
 
     def test_mesh_snapshot_contains_mesh_data(self) -> None:
         from forge3d.io import load_obj
@@ -165,7 +165,7 @@ class TestMeshPhysics:
         assert result is not None
         depth, normal = result
         assert depth > 0.0
-        assert abs(np.linalg.norm(normal) - 1.0) < 1e-5   # unit normal
+        assert abs(np.linalg.norm(normal) - 1.0) < 1e-5  # unit normal
 
 
 # ── Capsule rendering smoke ────────────────────────────────────────────────────
@@ -184,12 +184,14 @@ class TestCapsuleRendering:
         assert cap_body.shape_params["radius"] == 0.3
 
     @pytest.mark.skipif(
-        not __import__("forge3d.render.realtime.context", fromlist=["check_opengl_available"])
-        .check_opengl_available(),
+        not __import__(
+            "forge3d.render.realtime.context", fromlist=["check_opengl_available"]
+        ).check_opengl_available(),
         reason="OpenGL not available",
     )
     def test_capsule_renders_without_error(self) -> None:
         from forge3d.render.realtime.context import check_opengl_available
+
         if not check_opengl_available():
             pytest.skip("OpenGL not available")
 
@@ -210,12 +212,14 @@ class TestCapsuleRendering:
         assert (diff > 10).sum() > 100
 
     @pytest.mark.skipif(
-        not __import__("forge3d.render.realtime.context", fromlist=["check_opengl_available"])
-        .check_opengl_available(),
+        not __import__(
+            "forge3d.render.realtime.context", fromlist=["check_opengl_available"]
+        ).check_opengl_available(),
         reason="OpenGL not available",
     )
     def test_mesh_renders_without_error(self) -> None:
         from forge3d.render.realtime.context import check_opengl_available
+
         if not check_opengl_available():
             pytest.skip("OpenGL not available")
 

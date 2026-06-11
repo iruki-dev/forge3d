@@ -40,11 +40,12 @@ import pygame
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
+from apps.game.renderer import WindowRenderer
+
 import forge3d as f3d
 from forge3d.collision.layers import CollisionLayer
 from forge3d.io.world_snapshot import StateRecorder
 from forge3d.math.quaternion import quat_to_rot
-from apps.game.renderer import WindowRenderer
 
 # ── 윈도우 ────────────────────────────────────────────────────────────────────
 W, H   = 1280, 720
@@ -506,8 +507,8 @@ class GameState:
         speed_kmh = speed_ms * 3.6
         if self.phase == self.INTRO:
             return (
-                f"  출발선을 통과하면 레이스 시작!  "
-                f"[WASD] 이동  [SPACE] 핸드브레이크  [R] 리셋  [C] 카메라  [ESC] 종료"
+                "  출발선을 통과하면 레이스 시작!  "
+                "[WASD] 이동  [SPACE] 핸드브레이크  [R] 리셋  [C] 카메라  [ESC] 종료"
             )
         if self.phase == self.FINISHED:
             total = self.total_time
@@ -809,7 +810,7 @@ def main() -> None:
     print(f"  월드 상태 저장: {save_path}")
 
     if game.lap_times:
-        print(f"\n  ─── 레이스 결과 ───")
+        print("\n  ─── 레이스 결과 ───")
         for i, t in enumerate(game.lap_times):
             print(f"  랩 {i+1}: {t:.3f}s")
         print(f"  베스트 랩: {game.best_lap:.3f}s")

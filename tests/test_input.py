@@ -108,8 +108,8 @@ class TestInputBuilder:
 
     def test_mouse_button(self):
         builder = _InputBuilder()
-        builder.on_mouse_down(0)   # left
-        builder.on_mouse_down(1)   # right
+        builder.on_mouse_down(0)  # left
+        builder.on_mouse_down(1)  # right
         inp = builder.build()
         assert inp.mouse_button(0)
         assert inp.mouse_button(1)
@@ -144,7 +144,7 @@ class TestInputBuilder:
 
     def test_key_normalised_to_lowercase(self):
         builder = _InputBuilder()
-        builder.on_key_down("A")   # uppercase
+        builder.on_key_down("A")  # uppercase
         inp = builder.build()
         assert inp.key_held("a")
         assert not inp.key_held("A")

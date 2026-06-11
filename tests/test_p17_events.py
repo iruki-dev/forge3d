@@ -8,8 +8,7 @@ import forge3d as f3d
 def _simple_world() -> tuple[f3d.World, f3d.Body, f3d.Body]:
     world = f3d.World(gravity=(0, 0, -9.81))
     floor = world.add_ground()
-    ball = world.add_sphere(radius=0.5, position=(0, 0, 3), mass=1.0,
-                             friction=0.5, restitution=0.0)
+    ball = world.add_sphere(radius=0.5, position=(0, 0, 3), mass=1.0, friction=0.5, restitution=0.0)
     return world, floor, ball
 
 
@@ -83,10 +82,8 @@ def test_pair_handler_selectivity():
     """A pair-specific handler should only fire for that pair."""
     world = f3d.World(gravity=(0, 0, -9.81))
     floor = world.add_ground()
-    ball1 = world.add_sphere(radius=0.5, position=(0, 0, 3), mass=1.0,
-                              restitution=0.0)
-    ball2 = world.add_sphere(radius=0.5, position=(5, 0, 3), mass=1.0,
-                              restitution=0.0)
+    ball1 = world.add_sphere(radius=0.5, position=(0, 0, 3), mass=1.0, restitution=0.0)
+    ball2 = world.add_sphere(radius=0.5, position=(5, 0, 3), mass=1.0, restitution=0.0)
 
     ball1_floor_begin = [0]
     ball2_floor_begin = [0]
@@ -98,8 +95,10 @@ def test_pair_handler_selectivity():
     # Global listener for ball2
     @world.on_collision_begin
     def any_hit(event: f3d.CollisionEvent) -> None:
-        if ball2._id in {event.body_a._id if hasattr(event.body_a, '_id') else -1,
-                         event.body_b._id if hasattr(event.body_b, '_id') else -1}:
+        if ball2._id in {
+            event.body_a._id if hasattr(event.body_a, "_id") else -1,
+            event.body_b._id if hasattr(event.body_b, "_id") else -1,
+        }:
             ball2_floor_begin[0] += 1
 
     for _ in range(180):
@@ -128,6 +127,7 @@ def test_trigger_zone_enter():
 
     # Move box into zone
     from dataclasses import replace
+
     world._physics._replace_body(box._id, replace(box._state(), vel=(5, 0, 0)))
 
     # Step until box reaches zone (zone at x=5, box starts at x=0, vel=5 m/s → ~1s)

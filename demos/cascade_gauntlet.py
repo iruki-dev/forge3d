@@ -46,8 +46,8 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-import time
 import tempfile
+import time
 from pathlib import Path
 
 import numpy as np
@@ -56,6 +56,7 @@ import numpy as np
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 import imageio
+
 import forge3d as f3d
 from forge3d.collision.layers import CollisionLayer
 from forge3d.io.world_snapshot import StateRecorder

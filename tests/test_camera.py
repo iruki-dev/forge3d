@@ -2,7 +2,6 @@
 
 from __future__ import annotations
 
-
 import numpy as np
 import pytest
 
@@ -41,14 +40,14 @@ class TestOrbitCamera:
 
     def test_elevation_clamped(self):
         cam = OrbitCamera(elevation=80.0)
-        cam.rotate(d_elevation=20.0)   # would be 100°
+        cam.rotate(d_elevation=20.0)  # would be 100°
         assert cam.elevation == pytest.approx(89.0)
         cam.rotate(d_elevation=-200.0)
         assert cam.elevation == pytest.approx(-89.0)
 
     def test_zoom_reduces_distance(self):
         cam = OrbitCamera(distance=10.0)
-        cam.zoom(1.0)   # positive → closer
+        cam.zoom(1.0)  # positive → closer
         assert cam.distance < 10.0
 
     def test_zoom_negative_increases_distance(self):
@@ -58,7 +57,7 @@ class TestOrbitCamera:
 
     def test_zoom_minimum_distance(self):
         cam = OrbitCamera(distance=0.1)
-        cam.zoom(100.0)   # extreme zoom in
+        cam.zoom(100.0)  # extreme zoom in
         assert cam.distance >= 0.05
 
     def test_set_distance(self):

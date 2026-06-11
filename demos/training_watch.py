@@ -36,7 +36,6 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 import numpy as np
 
-
 # ══════════════════════════════════════════════════════════════════════════════
 #  LiveViewer — pygame + moderngl orbit-camera viewer
 # ══════════════════════════════════════════════════════════════════════════════
@@ -52,8 +51,8 @@ class LiveViewer:
 
     def __init__(self, width: int = 1280, height: int = 720,
                  title: str = "forge3d — 실시간 학습") -> None:
-        import pygame
         import moderngl
+        import pygame
 
         pygame.init()
         pygame.font.init()
@@ -578,7 +577,7 @@ class LiveTrainingCallback:
             f"  성공률 {sr:5.1%}   (최근 {min(len(self._ep_successes),50)}화)",
             f"  거리  [{dist_bar}] {status}",
             f"  보상  {ep_reward:+.2f}   스텝 {step+1:>3}/200",
-            f"  R=카메라초기화  좌드래그=orbit  우드래그=pan  휠=zoom",
+            "  R=카메라초기화  좌드래그=orbit  우드래그=pan  휠=zoom",
             pause,
         ]
 
@@ -837,7 +836,7 @@ def print_summary(out_dir: str, snapshot_results: list[dict]) -> None:
     print("╚══════════════════════════════════════════════════════╝")
     print()
     final_zip = os.path.join(out_dir, "final_model.zip")
-    print(f"  다음 단계:")
+    print("  다음 단계:")
     print(f"    모델 테스트: python demos/interactive_robot.py --model {final_zip}")
     print()
 

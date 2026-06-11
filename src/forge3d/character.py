@@ -63,7 +63,7 @@ class CharacterController:
         # Throttle ground-detection raycast. At 10 Hz (bots) this cuts the
         # per-move cost from ~1 ms to ~0.017 ms with no gameplay difference.
         self._ground_check_interval = 1.0 / max(1.0, float(ground_check_hz))
-        self._ground_check_timer    = 0.0
+        self._ground_check_timer = 0.0
 
         # Jump cooldown prevents infinite jumping when the capsule is still
         # close to the ground in the frame right after a jump.
@@ -156,7 +156,7 @@ class CharacterController:
         # Decrement jump cooldown unconditionally every call
         if self._jump_cooldown > 0.0:
             self._jump_cooldown = max(0.0, self._jump_cooldown - dt)
-            self._grounded = False   # never re-ground during cooldown
+            self._grounded = False  # never re-ground during cooldown
             return
 
         self._ground_check_timer += dt

@@ -20,9 +20,9 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from forge3d.sim.world import PhysicsWorld
 
-SPRING_K = 2000.0   # N/m — contact spring for active squeeze force
-DURATION = 2.0      # seconds
-DT       = 1 / 60
+SPRING_K = 2000.0  # N/m — contact spring for active squeeze force
+DURATION = 2.0  # seconds
+DT = 1 / 60
 
 
 def run_grasp(mu: float) -> float:
@@ -30,20 +30,27 @@ def run_grasp(mu: float) -> float:
 
     Returns the vertical drop (m) after DURATION seconds.
     """
-    world = PhysicsWorld(gravity=[0., 0., -9.81], contact_spring_k=SPRING_K)
+    world = PhysicsWorld(gravity=[0.0, 0.0, -9.81], contact_spring_k=SPRING_K)
 
     obj_id = world.add_box(
-        size=(0.10, 0.10, 0.10), position=(0., 0., 0.50),
-        mass=0.5, friction=mu, restitution=0.0,
+        size=(0.10, 0.10, 0.10),
+        position=(0.0, 0.0, 0.50),
+        mass=0.5,
+        friction=mu,
+        restitution=0.0,
     )
     # Fingers: static boxes, penetrating object by 5 mm in x
     world.add_static_box(
-        size=(0.10, 0.20, 0.20), position=(-0.095, 0., 0.50),
-        friction=mu, restitution=0.0,
+        size=(0.10, 0.20, 0.20),
+        position=(-0.095, 0.0, 0.50),
+        friction=mu,
+        restitution=0.0,
     )
     world.add_static_box(
-        size=(0.10, 0.20, 0.20), position=( 0.095, 0., 0.50),
-        friction=mu, restitution=0.0,
+        size=(0.10, 0.20, 0.20),
+        position=(0.095, 0.0, 0.50),
+        friction=mu,
+        restitution=0.0,
     )
 
     for _ in range(int(DURATION / DT)):

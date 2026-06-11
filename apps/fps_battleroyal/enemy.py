@@ -13,6 +13,7 @@ bots close enough for clipping to matter most of the time).
 Hit detection (player → bot): sphere-intersection test in main.py — O(N).
 LoS (bot → world): single world.raycast per bot per 0.125s (throttled).
 """
+
 from __future__ import annotations
 
 import math
@@ -40,16 +41,17 @@ import forge3d as f3d
 
 
 class BotState(Enum):
-    PATROL  = auto()
-    ALERT   = auto()
-    COMBAT  = auto()
+    PATROL = auto()
+    ALERT = auto()
+    COMBAT = auto()
     RETREAT = auto()
-    DEAD    = auto()
+    DEAD = auto()
 
 
 # ── Distance-based accuracy curve ─────────────────────────────────────────────
-_ACC_D = [0, 8,   20,   35,   55,  100]
+_ACC_D = [0, 8, 20, 35, 55, 100]
 _ACC_V = [0.80, 0.60, 0.42, 0.28, 0.15, 0.05]
+
 
 def _accuracy(dist: float) -> float:
     for i in range(len(_ACC_D) - 1):
@@ -63,33 +65,33 @@ def _accuracy(dist: float) -> float:
 class Bot:
     """Kinematic AI bot — position/velocity tracked in Python, not in physics."""
 
-    position: np.ndarray    # world position (feet base)
-    velocity: np.ndarray    # current velocity m/s
-    yaw:      float         # facing direction in radians
-    name:     str
-    hp:       float = BOT_MAX_HP
-    weapon:   WeaponInstance = field(default_factory=lambda: WeaponInstance.spawn("smg"))
-    state:    BotState = BotState.PATROL
+    position: np.ndarray  # world position (feet base)
+    velocity: np.ndarray  # current velocity m/s
+    yaw: float  # facing direction in radians
+    name: str
+    hp: float = BOT_MAX_HP
+    weapon: WeaponInstance = field(default_factory=lambda: WeaponInstance.spawn("smg"))
+    state: BotState = BotState.PATROL
     is_alive: bool = True
-    kills:    int  = 0
+    kills: int = 0
 
     # AI state
-    target_pos:    np.ndarray = field(default_factory=lambda: np.zeros(3))
+    target_pos: np.ndarray = field(default_factory=lambda: np.zeros(3))
     patrol_target: np.ndarray = field(default_factory=lambda: np.zeros(3))
-    target_is_player: bool    = False
-    target_bot_idx:   int     = -1
+    target_is_player: bool = False
+    target_bot_idx: int = -1
 
     # Timers
-    last_shot_t:    float = 0.0
-    reaction_t:     float = 0.0
-    stuck_t:        float = 0.0
-    saw_target_at:  float = -999.0
+    last_shot_t: float = 0.0
+    reaction_t: float = 0.0
+    stuck_t: float = 0.0
+    saw_target_at: float = -999.0
     zone_retreat_t: float = 0.0
-    strafe_flip_t:  float = 0.0
+    strafe_flip_t: float = 0.0
 
     # LoS cache
-    _los_t:   float = 0.0
-    _los_val: bool  = False
+    _los_t: float = 0.0
+    _los_val: bool = False
 
     _rng: random.Random = field(default_factory=random.Random)
 
@@ -164,7 +166,7 @@ class Bot:
 
     def _integrate(self, dt: float) -> None:
         """Simple Euler integration with gravity and ground clamping."""
-        self.velocity[2] -= 18.0 * dt   # gravity (no physics needed)
+        self.velocity[2] -= 18.0 * dt  # gravity (no physics needed)
         self.position += self.velocity * dt
 
         # Ground: bots always rest on z=1.0 (character base)
@@ -188,22 +190,22 @@ class Bot:
     ) -> None:
         # 1. Player priority
         if player_alive:
-            diff = (player_pos + np.array([0,0,1.0])) - self.eye_pos
+            diff = (player_pos + np.array([0, 0, 1.0])) - self.eye_pos
             dist = float(np.linalg.norm(diff))
             if dist < BOT_SIGHT_RANGE:
                 direction = diff / (dist + 1e-12)
                 hit = world.raycast(self.eye_pos, direction, max_dist=dist + 0.5)
                 if hit is None or hit.distance >= dist * 0.93:
-                    self.target_pos      = (player_pos + np.array([0,0,1.0])).copy()
+                    self.target_pos = (player_pos + np.array([0, 0, 1.0])).copy()
                     self.target_is_player = True
-                    self.target_bot_idx   = -1
-                    self.saw_target_at    = game_time
+                    self.target_bot_idx = -1
+                    self.saw_target_at = game_time
                     self._los_val = True
                     return
 
         # 2. Nearest visible bot
         best_dist = BOT_SIGHT_RANGE
-        best_idx  = -1
+        best_idx = -1
         for i, other in enumerate(all_bots):
             if not other.is_alive or other is self:
                 continue
@@ -215,13 +217,13 @@ class Bot:
             hit = world.raycast(self.eye_pos, direction, max_dist=d + 0.5)
             if hit is None or hit.distance >= d * 0.93:
                 best_dist = d
-                best_idx  = i
+                best_idx = i
 
         if best_idx >= 0:
-            self.target_pos       = all_bots[best_idx].center_pos.copy()
+            self.target_pos = all_bots[best_idx].center_pos.copy()
             self.target_is_player = False
-            self.target_bot_idx   = best_idx
-            self.saw_target_at    = game_time
+            self.target_bot_idx = best_idx
+            self.saw_target_at = game_time
             self._los_val = True
             return
 
@@ -231,7 +233,7 @@ class Bot:
 
     def _transition(self, game_time: float) -> None:
         has_target = self._los_val
-        tgt_dist   = float(np.linalg.norm(self.position - self.target_pos)) if has_target else 999.0
+        tgt_dist = float(np.linalg.norm(self.position - self.target_pos)) if has_target else 999.0
 
         if self.state == BotState.PATROL:
             if has_target:
@@ -289,12 +291,12 @@ class Bot:
                 # Strafe
                 self.strafe_flip_t -= dt
                 if self.strafe_flip_t <= 0:
-                    self._strafe_dir = getattr(self, '_strafe_dir', 1.0) * -1
+                    self._strafe_dir = getattr(self, "_strafe_dir", 1.0) * -1
                     self.strafe_flip_t = self._rng.uniform(0.6, 1.6)
                 perp = np.array([-to_t[1], to_t[0], 0.0])
                 p_len = float(np.linalg.norm(perp))
                 if p_len > 1e-9:
-                    move[:2] += perp[:2] / p_len * 0.35 * getattr(self, '_strafe_dir', 1.0)
+                    move[:2] += perp[:2] / p_len * 0.35 * getattr(self, "_strafe_dir", 1.0)
             else:
                 if d > 1e-9:
                     move[:2] = to_t[:2] / d
@@ -306,14 +308,14 @@ class Bot:
                 move[:2] = away[:2] / d
 
         # Stuck detection
-        last = getattr(self, '_last_pos', self.position.copy())
+        last = getattr(self, "_last_pos", self.position.copy())
         if float(np.linalg.norm(self.position[:2] - last[:2])) < 0.08 * dt * BOT_MOVE_SPEED:
             self.stuck_t += dt
             if self.stuck_t > 0.7:
                 self.stuck_t = 0.0
                 a = self._rng.uniform(0.8, 2.0)
                 c, s = math.cos(a), math.sin(a)
-                move[0], move[1] = c*move[0]-s*move[1], s*move[0]+c*move[1]
+                move[0], move[1] = c * move[0] - s * move[1], s * move[0] + c * move[1]
         else:
             self.stuck_t = 0.0
         self._last_pos = self.position.copy()
@@ -324,7 +326,7 @@ class Bot:
             self.velocity[:2] = move[:2] * BOT_MOVE_SPEED
             self.yaw = math.atan2(move[1], move[0])
         else:
-            self.velocity[:2] *= 0.85   # friction when standing still
+            self.velocity[:2] *= 0.85  # friction when standing still
 
     # ── Shooting ──────────────────────────────────────────────────────────────
 
@@ -359,11 +361,11 @@ class Bot:
         self.last_shot_t = game_time
 
         if rng.random() > acc:
-            return True   # miss
+            return True  # miss
 
         # Hit the target
         if self.target_is_player and player_alive:
-            return True   # damage applied in main.py
+            return True  # damage applied in main.py
         elif self.target_bot_idx >= 0 and 0 <= self.target_bot_idx < len(all_bots):
             target_bot = all_bots[self.target_bot_idx]
             if target_bot.is_alive:
@@ -376,10 +378,11 @@ class Bot:
     def _new_patrol(self) -> None:
         a = self._rng.uniform(0, 2 * math.pi)
         r = self._rng.uniform(10, BOT_PATROL_RADIUS)
-        self.patrol_target = self.position + np.array([r*math.cos(a), r*math.sin(a), 0.0])
+        self.patrol_target = self.position + np.array([r * math.cos(a), r * math.sin(a), 0.0])
 
 
 # ── Factory ───────────────────────────────────────────────────────────────────
+
 
 def create_bots(
     world: f3d.World,  # kept for API compatibility, bots don't add bodies here
@@ -387,7 +390,7 @@ def create_bots(
     count: int = BOT_COUNT,
 ) -> list[Bot]:
     """Create kinematic bots — no physics bodies added to world."""
-    weapon_mix = ["smg"]*5 + ["rifle"]*4 + ["pistol"]*4 + ["shotgun"]*3 + ["sniper"]*3
+    weapon_mix = ["smg"] * 5 + ["rifle"] * 4 + ["pistol"] * 4 + ["shotgun"] * 3 + ["sniper"] * 3
     rng = random.Random(123)
     bots: list[Bot] = []
 
@@ -401,7 +404,7 @@ def create_bots(
         bot = Bot(
             position=spawn.copy(),
             velocity=np.zeros(3),
-            yaw=rng.uniform(0, 2*math.pi),
+            yaw=rng.uniform(0, 2 * math.pi),
             name=f"bot_{i:02d}",
             weapon=WeaponInstance.spawn(kind),
             _rng=random.Random(i * 37 + 7),

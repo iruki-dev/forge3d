@@ -6,6 +6,7 @@
   G3: 충돌 이벤트 → play_at() 호출 횟수 일치
   G4: 전체 기존 테스트 회귀 없음
 """
+
 from __future__ import annotations
 
 import tempfile
@@ -17,8 +18,8 @@ import pytest
 
 import forge3d as f3d
 
-
 # ── 헬퍼 ─────────────────────────────────────────────────────────────────────
+
 
 def _make_wav(path: Path, freq: float = 440.0, duration: float = 0.1, sr: int = 44100) -> None:
     """테스트용 WAV 파일 생성."""
@@ -34,12 +35,13 @@ def _make_wav(path: Path, freq: float = 440.0, duration: float = 0.1, sr: int = 
 
 # ── G1: AudioClip ─────────────────────────────────────────────────────────────
 
+
 def test_clip_from_sine():
     """G1a: AudioClip.from_sine()이 float32 PCM 배열을 반환한다."""
     clip = f3d.AudioClip.from_sine(freq=440.0, duration=0.1, sample_rate=44100)
     assert clip.samples.dtype == np.float32
     assert len(clip.samples) == pytest.approx(4410, abs=1)
-    assert -1.0 <= clip.samples.min() and clip.samples.max() <= 1.0
+    assert clip.samples.min() >= -1.0 and clip.samples.max() <= 1.0
     assert clip.channels == 1
     assert clip.sample_rate == 44100
 
@@ -74,9 +76,11 @@ def test_clip_load_wav():
 
 # ── G2: null 드라이버 AudioSystem ────────────────────────────────────────────
 
+
 def test_null_driver_update():
     """G2a: NullDriver AudioSystem.update()가 예외 없이 실행된다."""
     from forge3d.audio.null_driver import NullDriver
+
     driver = NullDriver()
     sys = f3d.AudioSystem(driver=driver)
     ew = f3d.EntityWorld()
@@ -87,6 +91,7 @@ def test_null_driver_update():
 def test_null_driver_with_sources():
     """G2b: AudioSource 컴포넌트 엔티티가 있어도 예외 없음."""
     from forge3d.audio.null_driver import NullDriver
+
     driver = NullDriver()
     sys = f3d.AudioSystem(driver=driver)
 
@@ -103,6 +108,7 @@ def test_null_driver_with_sources():
 def test_null_driver_listener():
     """G2c: AudioListener가 있어도 예외 없음."""
     from forge3d.audio.null_driver import NullDriver
+
     driver = NullDriver()
     sys = f3d.AudioSystem(driver=driver)
 
@@ -117,6 +123,7 @@ def test_null_driver_listener():
 def test_audio_system_play():
     """G2d: play()가 NullDriver.play_count를 증가시킨다."""
     from forge3d.audio.null_driver import NullDriver
+
     driver = NullDriver()
     sys = f3d.AudioSystem(driver=driver)
     clip = f3d.AudioClip.from_sine()
@@ -128,6 +135,7 @@ def test_audio_system_play():
 def test_audio_system_play_at():
     """G2e: play_at()이 NullDriver.play_at_calls에 기록된다."""
     from forge3d.audio.null_driver import NullDriver
+
     driver = NullDriver()
     sys = f3d.AudioSystem(driver=driver)
     clip = f3d.AudioClip.from_sine()
@@ -139,6 +147,7 @@ def test_audio_system_play_at():
 
 
 # ── G3: 충돌 이벤트 연동 ─────────────────────────────────────────────────────
+
 
 def test_collision_handler_trigger():
     """G3: 충돌 이벤트 콜백이 play_at()을 호출한다."""
@@ -188,9 +197,10 @@ def test_collision_handler_volume_scale():
 
 # ── G7: v1 API 호환 ──────────────────────────────────────────────────────────
 
+
 def test_v1_api_unaffected():
     """오디오 추가 후 v1 World API가 깨지지 않는다."""
     world = f3d.World()
     body = world.add_sphere(radius=0.5, position=(0, 0, 5))
-    world.step(dt=1/60)
+    world.step(dt=1 / 60)
     assert body.position[2] > 0

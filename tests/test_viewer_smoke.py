@@ -93,7 +93,7 @@ class TestViewerSmoke:
         w = _make_world()
         v = f3d.Viewer(w)
         # DEFAULT_HEADLESS_FRAMES should be finite
-        assert f3d.Viewer.DEFAULT_HEADLESS_FRAMES < float("inf")
+        assert float("inf") > f3d.Viewer.DEFAULT_HEADLESS_FRAMES
         v.close()
 
 

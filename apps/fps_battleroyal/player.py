@@ -1,25 +1,32 @@
 """Local player — CharacterController + camera + weapon inventory."""
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
 
 import numpy as np
-
-import forge3d as f3d
 from apps.fps_battleroyal.camera import FPSCamera
 from apps.fps_battleroyal.config import (
-    EYE_HEIGHT, JUMP_IMPULSE, MOVE_SPEED, PLAYER_HEIGHT,
-    PLAYER_MAX_ARMOR, PLAYER_MAX_HP, PLAYER_RADIUS, SPRINT_MULT,
+    EYE_HEIGHT,
+    JUMP_IMPULSE,
+    MOVE_SPEED,
+    PLAYER_HEIGHT,
+    PLAYER_MAX_ARMOR,
+    PLAYER_MAX_HP,
+    PLAYER_RADIUS,
+    SPRINT_MULT,
 )
 from apps.fps_battleroyal.weapon import WeaponInstance
+
+import forge3d as f3d
 
 
 @dataclass
 class Player:
-    cc:     f3d.CharacterController
+    cc: f3d.CharacterController
     camera: FPSCamera
-    hp:     float = PLAYER_MAX_HP
-    armor:  float = 0.0
+    hp: float = PLAYER_MAX_HP
+    armor: float = 0.0
     weapons: list[WeaponInstance] = field(default_factory=list)
     active_slot: int = 0
     kills: int = 0
@@ -52,14 +59,18 @@ class Player:
 
         # Movement
         speed = MOVE_SPEED * (SPRINT_MULT if inp.key_held(f3d.Key.SHIFT) else 1.0)
-        fwd   = self.camera.forward_flat
+        fwd = self.camera.forward_flat
         right = self.camera.right
 
         move = np.zeros(3)
-        if inp.key_held(f3d.Key.W): move += fwd
-        if inp.key_held(f3d.Key.S): move -= fwd
-        if inp.key_held(f3d.Key.A): move -= right
-        if inp.key_held(f3d.Key.D): move += right
+        if inp.key_held(f3d.Key.W):
+            move += fwd
+        if inp.key_held(f3d.Key.S):
+            move -= fwd
+        if inp.key_held(f3d.Key.A):
+            move -= right
+        if inp.key_held(f3d.Key.D):
+            move += right
 
         m_len = float(np.linalg.norm(move[:2]))
         if m_len > 1e-9:

@@ -222,8 +222,8 @@ class _InputBuilder:
         "_keys_pressed",
         "_keys_released",
         "_mouse_pos",
-        "_frame_mdx",   # accumulated delta-x across all events this frame
-        "_frame_mdy",   # accumulated delta-y across all events this frame
+        "_frame_mdx",  # accumulated delta-x across all events this frame
+        "_frame_mdy",  # accumulated delta-y across all events this frame
         "_mouse_buttons",
         "_scroll_accum",
         "_skip_next_delta",  # discard first delta after cursor warp
@@ -238,7 +238,7 @@ class _InputBuilder:
         self._frame_mdy: float = 0.0
         self._mouse_buttons: set[int] = set()
         self._scroll_accum: float = 0.0
-        self._skip_next_delta: bool = True   # skip first event (cursor may jump)
+        self._skip_next_delta: bool = True  # skip first event (cursor may jump)
 
     # ── Event handlers (called by the windowing layer) ────────────────────────
 

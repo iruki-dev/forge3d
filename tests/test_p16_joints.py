@@ -11,7 +11,6 @@ import forge3d as f3d
 from forge3d.constraints import DistanceJoint, HingeJoint, SpringJoint
 from forge3d.constraints.joints import PrismaticJoint
 
-
 # ── G1: FixedJoint — two bodies stay connected under gravity ──────────────────
 
 
@@ -21,10 +20,12 @@ def test_fixed_joint_holds():
     world.add_ground()
 
     # Box A at z=1 (resting on ground), box B at z=2
-    box_a = world.add_box(size=(1, 1, 1), position=(0, 0, 1), mass=2.0,
-                           friction=0.8, restitution=0.0)
-    box_b = world.add_box(size=(0.5, 0.5, 0.5), position=(0, 0, 2.25), mass=0.5,
-                           friction=0.8, restitution=0.0)
+    box_a = world.add_box(
+        size=(1, 1, 1), position=(0, 0, 1), mass=2.0, friction=0.8, restitution=0.0
+    )
+    box_b = world.add_box(
+        size=(0.5, 0.5, 0.5), position=(0, 0, 2.25), mass=0.5, friction=0.8, restitution=0.0
+    )
 
     # Record initial separation
     pos_a0 = box_a.position.copy()
@@ -32,17 +33,14 @@ def test_fixed_joint_holds():
     sep0 = np.linalg.norm(pos_b0 - pos_a0)
 
     # Connect centers; anchors at body centers (offsets = 0)
-    world.add_joint("fixed", box_a, box_b,
-                    anchor_a=(0, 0, 0.5), anchor_b=(0, 0, -0.25))
+    world.add_joint("fixed", box_a, box_b, anchor_a=(0, 0, 0.5), anchor_b=(0, 0, -0.25))
 
     for _ in range(120):
         world.step(dt=1 / 60)
 
     sep_final = np.linalg.norm(box_b.position - box_a.position)
     # Separation should stay close to initial (within 0.5 m tolerance)
-    assert abs(sep_final - sep0) < 1.0, (
-        f"Separation changed too much: {sep0:.3f} → {sep_final:.3f}"
-    )
+    assert abs(sep_final - sep0) < 1.0, f"Separation changed too much: {sep0:.3f} → {sep_final:.3f}"
     # Bodies should not explode
     assert np.linalg.norm(box_a.position) < 100, "box_a flew away"
     assert np.linalg.norm(box_b.position) < 100, "box_b flew away"
@@ -58,13 +56,19 @@ def test_ball_joint_pendulum():
     rod_length = 2.0
     # Bob starts displaced from the static anchor point (0,0,4)
     # Displaced 0.5m horizontally → pendulum should swing back
-    bob = world.add_sphere(radius=0.1, position=(0.5, 0, 4 - rod_length + 0.05),
-                            mass=1.0, friction=0.0, restitution=0.0)
+    bob = world.add_sphere(
+        radius=0.1,
+        position=(0.5, 0, 4 - rod_length + 0.05),
+        mass=1.0,
+        friction=0.0,
+        restitution=0.0,
+    )
 
     # DistanceJoint maintains rod length between bob center and world anchor
     world._physics.add_constraint(
-        DistanceJoint(bob._id, -1, np.zeros(3), np.array([0.0, 0.0, 4.0]),
-                      target_distance=rod_length)
+        DistanceJoint(
+            bob._id, -1, np.zeros(3), np.array([0.0, 0.0, 4.0]), target_distance=rod_length
+        )
     )
 
     n_steps = 300
@@ -95,10 +99,11 @@ def test_hinge_motor():
 
     world._physics.add_constraint(
         HingeJoint(
-            arm._id, -1,
-            np.array([-1.0, 0.0, 0.0]),   # anchor_a at left end of arm (local)
-            np.array([0.0, 0.0, 0.0]),     # world pivot at origin
-            np.array([0.0, 0.0, 1.0]),     # hinge axis = z
+            arm._id,
+            -1,
+            np.array([-1.0, 0.0, 0.0]),  # anchor_a at left end of arm (local)
+            np.array([0.0, 0.0, 0.0]),  # world pivot at origin
+            np.array([0.0, 0.0, 1.0]),  # hinge axis = z
             motor_velocity=target_omega,
             motor_max_torque=100.0,
         )
@@ -123,7 +128,8 @@ def test_hinge_limits():
     arm = world.add_box(size=(1, 0.1, 0.1), position=(0.5, 0, 0), mass=0.2)
     world._physics.add_constraint(
         HingeJoint(
-            arm._id, -1,
+            arm._id,
+            -1,
             np.array([-0.5, 0.0, 0.0]),
             np.array([0.0, 0.0, 0.0]),
             np.array([0.0, 0.0, 1.0]),
@@ -150,9 +156,10 @@ def test_prismatic_slide():
 
     world._physics.add_constraint(
         PrismaticJoint(
-            piston._id, -1,
+            piston._id,
+            -1,
             np.zeros(3),
-            np.zeros(3),               # world anchor at origin
+            np.zeros(3),  # world anchor at origin
             np.array([0.0, 0.0, 1.0]),  # slide axis = z
             motor_velocity=0.5,
             motor_max_force=50.0,
@@ -179,16 +186,15 @@ def test_distance_constraint():
     ball_b = world.add_sphere(radius=0.1, position=(2, 0, 0), mass=1.0)
 
     target = 2.0
-    world.add_joint("distance", ball_a, ball_b,
-                    anchor_a=(0, 0, 0), anchor_b=(0, 0, 0),
-                    target_distance=target)
+    world.add_joint(
+        "distance", ball_a, ball_b, anchor_a=(0, 0, 0), anchor_b=(0, 0, 0), target_distance=target
+    )
 
     # Give them opposing velocities to try to stretch/compress
     from dataclasses import replace
-    world._physics._replace_body(ball_a._id,
-                                  replace(ball_a._state(), vel=np.array([-0.5, 0, 0])))
-    world._physics._replace_body(ball_b._id,
-                                  replace(ball_b._state(), vel=np.array([0.5, 0, 0])))
+
+    world._physics._replace_body(ball_a._id, replace(ball_a._state(), vel=np.array([-0.5, 0, 0])))
+    world._physics._replace_body(ball_b._id, replace(ball_b._state(), vel=np.array([0.5, 0, 0])))
 
     _ = np.linalg.norm(ball_b.position - ball_a.position)
 
@@ -213,14 +219,16 @@ def test_spring_oscillation():
     rest = 1.0
 
     world = f3d.World(gravity=(0, 0, 0))
-    mass_body = world.add_sphere(radius=0.1, position=(0, 0, rest + 0.3), mass=m,
-                                  friction=0.0)
+    mass_body = world.add_sphere(radius=0.1, position=(0, 0, rest + 0.3), mass=m, friction=0.0)
     world._physics.add_constraint(
         SpringJoint(
-            mass_body._id, -1,
+            mass_body._id,
+            -1,
             np.zeros(3),
-            np.zeros(3),               # world anchor at origin
-            stiffness=k, damping=0.5, rest_length=rest,
+            np.zeros(3),  # world anchor at origin
+            stiffness=k,
+            damping=0.5,
+            rest_length=rest,
         )
     )
 
@@ -266,10 +274,15 @@ def test_spring_joint_api():
     """SpringJoint via World.add_joint API should work without error."""
     world = f3d.World(gravity=(0, 0, 0))
     a = world.add_sphere(radius=0.3, position=(0, 0, 2), mass=1.0)
-    handle = world.add_joint("spring", a,
-                              anchor_a=(0, 0, 0),
-                              anchor_b=(0, 0, 0),
-                              stiffness=100.0, damping=5.0, rest_length=2.0)
+    handle = world.add_joint(
+        "spring",
+        a,
+        anchor_a=(0, 0, 0),
+        anchor_b=(0, 0, 0),
+        stiffness=100.0,
+        damping=5.0,
+        rest_length=2.0,
+    )
     assert handle.joint_type == "spring"
     for _ in range(60):
         world.step(dt=1 / 60)
@@ -287,6 +300,7 @@ def test_fixed_joint_no_gravity():
 
     # Push body a upward
     from dataclasses import replace
+
     world._physics._replace_body(a._id, replace(a._state(), vel=np.array([0, 0, 1.0])))
 
     for _ in range(60):

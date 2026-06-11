@@ -14,8 +14,9 @@ from forge3d.io.world_snapshot import StateRecorder
 def _make_world() -> f3d.World:
     world = f3d.World(gravity=(0, 0, -9.81))
     world.add_ground()
-    world.add_box(size=(1, 1, 1), position=(0, 0, 3), mass=2.0,
-                   name="my_box", restitution=0.3, friction=0.5)
+    world.add_box(
+        size=(1, 1, 1), position=(0, 0, 3), mass=2.0, name="my_box", restitution=0.3, friction=0.5
+    )
     world.add_sphere(radius=0.4, position=(1, 0, 4), mass=0.5, name="my_sphere")
     return world
 
@@ -32,6 +33,7 @@ def test_save_creates_json():
     world.save(path)
     assert Path(path).exists(), "JSON file was not created"
     import json
+
     data = json.loads(Path(path).read_text())
     assert "bodies" in data
     assert "gravity" in data
@@ -56,9 +58,9 @@ def test_load_restores_world():
 
     for body in world2.bodies:
         if body.name in positions_before:
-            assert np.allclose(
-                body.position, positions_before[body.name], atol=1e-6
-            ), f"Position mismatch for {body.name}"
+            assert np.allclose(body.position, positions_before[body.name], atol=1e-6), (
+                f"Position mismatch for {body.name}"
+            )
 
 
 # ── G3: determinism — save, load, step N times → same result ─────────────────

@@ -6,6 +6,7 @@
   G3: Canvas.text() 좌표 범위 벗어나면 clip (예외 없음)
   G4: 전체 기존 테스트 회귀 없음
 """
+
 from __future__ import annotations
 
 import numpy as np
@@ -13,8 +14,8 @@ import numpy as np
 import forge3d as f3d
 from forge3d.ui.backend import NullImGui
 
-
 # ── G1: DebugPanel ────────────────────────────────────────────────────────────
+
 
 def test_debug_panel_no_exception():
     """G1: null 백엔드에서 DebugPanel.render()가 예외 없이 실행된다."""
@@ -52,6 +53,7 @@ def test_null_imgui_call_recording():
 
 # ── G2: InspectorPanel ───────────────────────────────────────────────────────
 
+
 def test_inspector_panel_no_exception():
     """G2a: 엔티티 없어도 예외 없음."""
     panel = f3d.InspectorPanel()
@@ -63,7 +65,7 @@ def test_inspector_panel_renders_entity():
     """G2b: 엔티티가 있을 때 예외 없이 렌더한다."""
     panel = f3d.InspectorPanel()
     ew = f3d.EntityWorld()
-    e = ew.create_entity(f3d.Transform(position=np.array([1., 2., 3.])))
+    e = ew.create_entity(f3d.Transform(position=np.array([1.0, 2.0, 3.0])))
     panel.render(ew=ew, selected=e)
 
 
@@ -71,15 +73,15 @@ def test_inspector_panel_field_edit():
     """G2c: set_field + render → ECS Transform 위치 업데이트."""
     panel = f3d.InspectorPanel()
     ew = f3d.EntityWorld()
-    e = ew.create_entity(f3d.Transform(position=np.array([0., 0., 0.])))
+    e = ew.create_entity(f3d.Transform(position=np.array([0.0, 0.0, 0.0])))
 
     # 편집 트리거
     panel.select(e)
-    panel.set_field("position", [5., 6., 7.])
+    panel.set_field("position", [5.0, 6.0, 7.0])
     panel.render(ew=ew)
 
     tf = ew.get_component(e, f3d.Transform)
-    assert np.allclose(tf.position, [5., 6., 7.])
+    assert np.allclose(tf.position, [5.0, 6.0, 7.0])
 
 
 def test_inspector_ignores_destroyed_entity():
@@ -93,6 +95,7 @@ def test_inspector_ignores_destroyed_entity():
 
 # ── HierarchyPanel ────────────────────────────────────────────────────────────
 
+
 def test_hierarchy_panel_entity_list():
     """HierarchyPanel.render() 후 entity_count가 갱신된다."""
     panel = f3d.HierarchyPanel()
@@ -105,6 +108,7 @@ def test_hierarchy_panel_entity_list():
 
 # ── G3: Canvas 클리핑 ─────────────────────────────────────────────────────────
 
+
 def test_canvas_text_in_bounds():
     """G3a: 화면 안 좌표 텍스트는 커맨드 버퍼에 기록된다."""
     canvas = f3d.Canvas(width=800, height=600)
@@ -115,17 +119,17 @@ def test_canvas_text_in_bounds():
 def test_canvas_text_out_of_bounds():
     """G3b: 화면 밖 좌표는 clip — 예외 없고 커맨드 버퍼에 기록 안 됨."""
     canvas = f3d.Canvas(width=800, height=600)
-    canvas.text((-100, -200), "Out")       # 완전 밖
-    canvas.text((900, 700), "Also out")    # 완전 밖
+    canvas.text((-100, -200), "Out")  # 완전 밖
+    canvas.text((900, 700), "Also out")  # 완전 밖
     assert canvas.command_count == 0
 
 
 def test_canvas_rect_clipping():
     """G3c: 직사각형이 완전히 화면 밖이면 clip."""
     canvas = f3d.Canvas(width=800, height=600)
-    canvas.rect((-200, -200), (50, 50), (1., 0., 0., 1.))  # 화면 밖
+    canvas.rect((-200, -200), (50, 50), (1.0, 0.0, 0.0, 1.0))  # 화면 밖
     assert canvas.command_count == 0
-    canvas.rect((100, 100), (50, 50), (0., 1., 0., 1.))    # 화면 안
+    canvas.rect((100, 100), (50, 50), (0.0, 1.0, 0.0, 1.0))  # 화면 안
     assert canvas.command_count == 1
 
 
@@ -142,15 +146,16 @@ def test_canvas_clear():
 def test_canvas_to_numpy():
     """Canvas.to_numpy()가 rect 명령을 픽셀로 래스터화한다."""
     canvas = f3d.Canvas(width=100, height=100)
-    canvas.rect((10, 10), (20, 20), (1., 0., 0., 1.))
+    canvas.rect((10, 10), (20, 20), (1.0, 0.0, 0.0, 1.0))
     buf = canvas.to_numpy()
     assert buf.shape == (100, 100, 4)
     # 직사각형 내부가 빨강
     assert buf[15, 15, 0] == 255  # R
-    assert buf[15, 15, 1] == 0    # G
+    assert buf[15, 15, 1] == 0  # G
 
 
 # ── UISystem ─────────────────────────────────────────────────────────────────
+
 
 def test_ui_system_update():
     """UISystem.update()가 등록된 패널을 호출한다."""

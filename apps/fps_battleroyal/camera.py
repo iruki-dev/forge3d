@@ -1,12 +1,13 @@
 """First-person camera with smooth mouse accumulation."""
+
 from __future__ import annotations
 
 import math
 
 import numpy as np
+from apps.fps_battleroyal.config import MOUSE_SENSITIVITY, MOUSE_SMOOTH
 
 from forge3d.render.snapshot import CameraSnapshot
-from apps.fps_battleroyal.config import MOUSE_SENSITIVITY, MOUSE_SMOOTH
 
 
 class FPSCamera:
@@ -22,10 +23,10 @@ class FPSCamera:
         fov_deg: float = 72.0,
     ) -> None:
         self.sensitivity = sensitivity
-        self.fov_deg     = fov_deg
-        self.fov_target  = fov_deg   # ADS smoothly changes this
+        self.fov_deg = fov_deg
+        self.fov_target = fov_deg  # ADS smoothly changes this
 
-        self.yaw:   float = 0.0
+        self.yaw: float = 0.0
         self.pitch: float = 0.0
 
         self._eye = np.zeros(3)
@@ -71,12 +72,14 @@ class FPSCamera:
         else:
             dx, dy = mouse_dx, mouse_dy
 
-        self.yaw  -= dx * self.sensitivity
-        self.pitch = float(np.clip(
-            self.pitch - dy * self.sensitivity,
-            -math.pi / 2 + 0.015,
-            math.pi / 2 - 0.015,
-        ))
+        self.yaw -= dx * self.sensitivity
+        self.pitch = float(
+            np.clip(
+                self.pitch - dy * self.sensitivity,
+                -math.pi / 2 + 0.015,
+                math.pi / 2 - 0.015,
+            )
+        )
 
         # Smooth FOV change (ADS)
         self.fov_deg += (self.fov_target - self.fov_deg) * min(1.0, dt * 12.0)
@@ -87,9 +90,9 @@ class FPSCamera:
     # ── Snapshot ──────────────────────────────────────────────────────────────
 
     def to_snapshot(self) -> CameraSnapshot:
-        fwd    = self.forward
+        fwd = self.forward
         target = self._eye + fwd
-        up     = np.array([0.0, 0.0, 1.0])
+        up = np.array([0.0, 0.0, 1.0])
         if abs(fwd[2]) > 0.98:
             up = np.array([math.cos(self.yaw), math.sin(self.yaw), 0.0])
         return CameraSnapshot(

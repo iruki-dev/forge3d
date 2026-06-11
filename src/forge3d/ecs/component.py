@@ -53,8 +53,10 @@ def _shape_to_mesh_id(shape: str, size: Any) -> str:
     """Derive a mesh_id string from a shape name and optional size."""
     s = shape.lower()
     if s == "sphere":
-        r = float(size[0]) if size is not None and hasattr(size, "__getitem__") else (
-            float(size) if size is not None else 0.5
+        r = (
+            float(size[0])
+            if size is not None and hasattr(size, "__getitem__")
+            else (float(size) if size is not None else 0.5)
         )
         return f"sphere_{r}"
     if s == "capsule":

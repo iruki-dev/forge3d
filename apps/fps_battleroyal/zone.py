@@ -1,11 +1,11 @@
 """Battle royale safe zone — timing, shrinking, and damage."""
+
 from __future__ import annotations
 
 import math
 from dataclasses import dataclass, field
 
 import numpy as np
-
 from apps.fps_battleroyal.config import ZONE_CENTER, ZONE_PHASES
 
 

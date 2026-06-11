@@ -103,13 +103,15 @@ addopts   = "-q --tb=short"
 line-length    = 100
 target-version = "py312"
 src            = ["src"]
+exclude        = ["archive", "demos"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "C4", "SIM"]
 ignore = ["B008", "SIM118"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["E501"]
+"tests/**"          = ["E501"]
+"apps/**"           = ["E501", "E701", "E702", "B905"]
 
 # ── Type-check ────────────────────────────────────────────────────────────────
 

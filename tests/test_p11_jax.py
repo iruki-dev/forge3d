@@ -162,11 +162,7 @@ def test_shac_gradient_flows():
         params["actor"], params["critic"], q_batch, target_batch, key, 4
     )
     # grad_norm over all actor weights
-    grad_norm = math.sqrt(
-        sum(
-            float(jnp.sum(g["W"] ** 2) + jnp.sum(g["b"] ** 2)) for g in grads
-        )
-    )
+    grad_norm = math.sqrt(sum(float(jnp.sum(g["W"] ** 2) + jnp.sum(g["b"] ** 2)) for g in grads))
     assert math.isfinite(float(loss)), f"actor loss is not finite: {loss}"
     assert grad_norm > 0.0, f"Gradient is zero! norm={grad_norm}"
 

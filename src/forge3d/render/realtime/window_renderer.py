@@ -20,6 +20,7 @@ Key design choices
 
 from __future__ import annotations
 
+import atexit
 import contextlib
 import math
 from typing import Any
@@ -73,9 +74,9 @@ void main() {
 _WHITE_PIXEL = np.array([255, 255, 255], dtype=np.uint8).tobytes()
 
 # Shadow settings
-_SHADOW_SIZE = 2048   # shadow map resolution
-_SHADOW_HALF = 60.0   # smaller frustum = more depth precision (was 150)
-_SHADOW_DEPTH = 400.0 # far plane of shadow frustum
+_SHADOW_SIZE = 2048  # shadow map resolution
+_SHADOW_HALF = 60.0  # smaller frustum = more depth precision (was 150)
+_SHADOW_DEPTH = 400.0  # far plane of shadow frustum
 
 # Sky colour — daytime blue (can be overridden via constructor)
 _SKY_DEFAULT = (0.42, 0.62, 0.88)
@@ -302,7 +303,7 @@ class WindowedRealtimeRenderer:
         self._white_tex: Any = None
         self._vaos: dict[str, Any] = {}
         self._terrain_vaos: dict[Any, tuple] = {}
-        self._mesh_vaos: dict[int, tuple] = {}   # mesh_id → (solid_t, shadow_t)
+        self._mesh_vaos: dict[int, tuple] = {}  # mesh_id → (solid_t, shadow_t)
         self._grid_vao: Any = None
         self._grid_n: int = 0
         self._rect_vbo: Any = None
@@ -340,6 +341,10 @@ class WindowedRealtimeRenderer:
 
         if not glfw.init():
             raise RuntimeError("glfw.init() failed")
+        # Register global GLFW shutdown once — per-window close must NOT call
+        # glfw.terminate() because it would poison any subsequent GLFW users in
+        # the same process (e.g., the next test that opens a Viewer).
+        atexit.register(glfw.terminate)
 
         glfw.window_hint(glfw.CONTEXT_VERSION_MAJOR, 3)
         glfw.window_hint(glfw.CONTEXT_VERSION_MINOR, 3)
@@ -348,7 +353,6 @@ class WindowedRealtimeRenderer:
 
         self._window = glfw.create_window(self._width, self._height, self._title, None, None)
         if not self._window:
-            glfw.terminate()
             raise RuntimeError("glfw.create_window() failed")
 
         glfw.make_context_current(self._window)
@@ -440,9 +444,7 @@ class WindowedRealtimeRenderer:
         self._hud_flat_prog = ctx.program(vertex_shader=_HUD_FLAT_V, fragment_shader=_HUD_FLAT_F)
         # Dynamic rect VBO: 6 vertices × 2 floats = 48 bytes
         self._rect_vbo = ctx.buffer(reserve=48)
-        self._rect_vao = ctx.vertex_array(
-            self._hud_flat_prog, [(self._rect_vbo, "2f", "in_pos")]
-        )
+        self._rect_vao = ctx.vertex_array(self._hud_flat_prog, [(self._rect_vbo, "2f", "in_pos")])
 
         for key, mesh_fn in [("box", unit_box), ("sphere", unit_sphere)]:
             verts, idx = mesh_fn()
@@ -521,9 +523,9 @@ class WindowedRealtimeRenderer:
         if mid not in self._mesh_vaos:
             verts, idx = mesh_from_data(mesh_data)
             ctx = self._ctx
-            vbo_main   = ctx.buffer(verts.tobytes())
-            ibo        = ctx.buffer(idx.tobytes())
-            pos_only   = np.ascontiguousarray(verts.reshape(-1, 8)[:, :3])
+            vbo_main = ctx.buffer(verts.tobytes())
+            ibo = ctx.buffer(idx.tobytes())
+            pos_only = np.ascontiguousarray(verts.reshape(-1, 8)[:, :3])
             vbo_shadow = ctx.buffer(pos_only.tobytes())
             main_vao = ctx.vertex_array(
                 self._main_prog,
@@ -731,10 +733,10 @@ class WindowedRealtimeRenderer:
                 solid_t, _ = self._get_mesh_vaos(mesh_data)
                 vao, n_idx = solid_t
                 scale = np.ones(3, np.float32)
-                M   = self._model_matrix(body, scale)
+                M = self._model_matrix(body, scale)
                 MVP = (P @ V @ M).astype(np.float32)
-                NM  = body.transform.rotation.astype(np.float32)
-                lM  = (light_VP @ M).astype(np.float32)
+                NM = body.transform.rotation.astype(np.float32)
+                lM = (light_VP @ M).astype(np.float32)
                 mat = mat_lookup.get(body.material_id) or mat_lookup.get("default")
                 self._set_pbr_uniforms(prog, MVP, M, NM, lM, mat)
                 vao.render(mode=ctx.TRIANGLES, vertices=n_idx)
@@ -889,9 +891,7 @@ class WindowedRealtimeRenderer:
         if self._ctx is None or self._rect_vbo is None:
             return
         x0, y0, x1, y1 = float(x), float(y), float(x + w), float(y + h)
-        verts = np.array(
-            [x0, y0, x1, y0, x0, y1, x1, y0, x1, y1, x0, y1], dtype=np.float32
-        )
+        verts = np.array([x0, y0, x1, y0, x0, y1, x1, y0, x1, y1, x0, y1], dtype=np.float32)
         self._rect_vbo.write(verts.tobytes())
 
         ctx = self._ctx
@@ -955,4 +955,3 @@ class WindowedRealtimeRenderer:
         if self._window is not None:
             glfw.destroy_window(self._window)
             self._window = None
-            glfw.terminate()

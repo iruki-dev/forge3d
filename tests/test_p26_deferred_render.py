@@ -9,6 +9,7 @@
   G6: 기존 테스트 회귀 없음 (별도 pytest 실행)
   G7: v1 API 호환
 """
+
 from __future__ import annotations
 
 import os
@@ -20,6 +21,7 @@ import pytest
 
 try:
     import moderngl  # noqa: F401
+
     HAS_GL = True
 except ImportError:
     HAS_GL = False
@@ -29,44 +31,55 @@ GOLDEN_DIR = Path(__file__).parent / "golden"
 GOLDEN_PATH = GOLDEN_DIR / "p26_reference.npy"
 
 
-def _make_test_snapshot(n_bodies: int = 3) -> SceneSnapshot:
+def _make_test_snapshot(n_bodies: int = 3):
     from forge3d.render.snapshot import (
-        BodySnapshot, CameraSnapshot, LightSnapshot, SceneSnapshot, Transform,
+        BodySnapshot,
+        CameraSnapshot,
+        LightSnapshot,
+        SceneSnapshot,
+        Transform,
     )
+
     rng = np.random.default_rng(42)
     bodies = []
     for i in range(n_bodies):
         pos = rng.uniform(-3, 3, 3)
         pos[2] = abs(pos[2]) + 0.5
-        bodies.append(BodySnapshot(
-            name=f"b{i}",
-            transform=Transform(position=pos, rotation=np.eye(3)),
-            shape_type="box" if i % 2 == 0 else "sphere",
-            shape_params={"half_extents": [0.4, 0.4, 0.4]} if i % 2 == 0 else {"radius": 0.4},
-            material_id="red" if i % 3 == 0 else ("gold" if i % 3 == 1 else "blue"),
-        ))
+        bodies.append(
+            BodySnapshot(
+                name=f"b{i}",
+                transform=Transform(position=pos, rotation=np.eye(3)),
+                shape_type="box" if i % 2 == 0 else "sphere",
+                shape_params={"half_extents": [0.4, 0.4, 0.4]} if i % 2 == 0 else {"radius": 0.4},
+                material_id="red" if i % 3 == 0 else ("gold" if i % 3 == 1 else "blue"),
+            )
+        )
     return SceneSnapshot(
         camera=CameraSnapshot(
-            position=np.array([0., -10., 6.]),
+            position=np.array([0.0, -10.0, 6.0]),
             target=np.zeros(3),
-            up=np.array([0., 0., 1.]),
+            up=np.array([0.0, 0.0, 1.0]),
         ),
-        lights=[LightSnapshot(
-            direction=np.array([1., 1., -1.]) / np.sqrt(3),
-            color=np.ones(3),
-            intensity=1.5,
-        )],
+        lights=[
+            LightSnapshot(
+                direction=np.array([1.0, 1.0, -1.0]) / np.sqrt(3),
+                color=np.ones(3),
+                intensity=1.5,
+            )
+        ],
         bodies=bodies,
         materials={},
     )
 
 
-def _make_renderer(w: int = 320, h: int = 240, cascades: int = 4) -> DeferredRenderer:
+def _make_renderer(w: int = 320, h: int = 240, cascades: int = 4):
     from forge3d.render.deferred.renderer import DeferredRenderer
+
     return DeferredRenderer(width=w, height=h, shadow_cascades=cascades)
 
 
 # ── G1: G-Buffer 4채널 어태치먼트 ──────────────────────────────────────────
+
 
 @SKIP_GL
 def test_gbuffer_outputs():
@@ -103,6 +116,7 @@ def test_gbuffer_nonzero_for_bodies():
 
 # ── G2: CSM 섀도맵 ────────────────────────────────────────────────────────
 
+
 @SKIP_GL
 def test_shadow_maps_count():
     """G2: 지정한 cascade 수만큼 섀도맵 텍스처가 생성된다."""
@@ -133,6 +147,7 @@ def test_shadow_maps_depth_nonzero():
 
 # ── G3: SceneSnapshot 계약 ────────────────────────────────────────────────
 
+
 @SKIP_GL
 def test_snapshot_contract():
     """G3: 동일 SceneSnapshot이 DeferredRenderer에서 유효한 프레임을 반환한다."""
@@ -153,11 +168,16 @@ def test_hq_renderer_unaffected():
     """G3b: HQRenderer는 DeferredRenderer 추가 후에도 정상 동작한다."""
     from forge3d.render.hq.renderer import HQRenderer
     from forge3d.render.snapshot import (
-        BodySnapshot, CameraSnapshot, LightSnapshot, SceneSnapshot, Transform,
+        BodySnapshot,
+        CameraSnapshot,
+        LightSnapshot,
+        SceneSnapshot,
+        Transform,
     )
+
     snap = SceneSnapshot(
-        camera=CameraSnapshot(np.array([3.,-5.,3.]), np.zeros(3), np.array([0.,0.,1.])),
-        lights=[LightSnapshot(np.array([0.,0.,-1.]), np.ones(3), 1.0)],
+        camera=CameraSnapshot(np.array([3.0, -5.0, 3.0]), np.zeros(3), np.array([0.0, 0.0, 1.0])),
+        lights=[LightSnapshot(np.array([0.0, 0.0, -1.0]), np.ones(3), 1.0)],
         bodies=[BodySnapshot("b0", Transform(np.zeros(3), np.eye(3)), "sphere", {"radius": 0.5})],
     )
     r = HQRenderer(width=64, height=64, samples=1)
@@ -167,6 +187,7 @@ def test_hq_renderer_unaffected():
 
 
 # ── G4: 골든 이미지 SSIM ─────────────────────────────────────────────────
+
 
 @SKIP_GL
 def test_golden_image():
@@ -199,12 +220,14 @@ def _ssim(a: np.ndarray, b: np.ndarray) -> float:
     sigma_b = b.var()
     sigma_ab = ((a - mu_a) * (b - mu_b)).mean()
     return float(
-        (2 * mu_a * mu_b + C1) * (2 * sigma_ab + C2)
+        (2 * mu_a * mu_b + C1)
+        * (2 * sigma_ab + C2)
         / ((mu_a**2 + mu_b**2 + C1) * (sigma_a + sigma_b + C2))
     )
 
 
 # ── G5: FPS 벤치마크 ─────────────────────────────────────────────────────
+
 
 @SKIP_GL
 def test_fps_benchmark():
@@ -239,7 +262,7 @@ def _record_benchmark(fps: float) -> None:
     path = bench_dir / "p26.md"
     content = f"""# P26 벤치마크 결과 — DeferredRenderer (지연 PBR)
 
-> 환경: Python 3.12 / Mesa {os.getenv('MESA_VERSION','llvmpipe')} / Xvfb 소프트 GL / 640×480
+> 환경: Python 3.12 / Mesa {os.getenv("MESA_VERSION", "llvmpipe")} / Xvfb 소프트 GL / 640×480
 
 | 씬 복잡도 | FPS |
 |---------|-----|
@@ -262,9 +285,11 @@ def _record_benchmark(fps: float) -> None:
 
 # ── G7: v1 API 호환 ───────────────────────────────────────────────────────
 
+
 def test_v1_facade_import():
     """G7: v1 퍼사드 API import가 깨지지 않아야 한다."""
     import forge3d
+
     assert hasattr(forge3d, "World")
     assert hasattr(forge3d, "Body")
     assert hasattr(forge3d, "Viewer")
@@ -274,4 +299,5 @@ def test_v1_facade_import():
 def test_deferred_renderer_importable():
     """DeferredRenderer가 forge3d.render에서 import된다."""
     from forge3d.render import DeferredRenderer
+
     assert DeferredRenderer is not None

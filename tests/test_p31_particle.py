@@ -6,6 +6,7 @@
   G3: 지면 충돌 반발 속도 부호 반전
   G4: 전체 기존 테스트 회귀 없음
 """
+
 from __future__ import annotations
 
 import time
@@ -15,12 +16,13 @@ import numpy as np
 import forge3d as f3d
 from forge3d.particle.system import _ALIVE, _PY, _VY, ParticleState
 
-
 # ── 파티클 이미터 기본 ────────────────────────────────────────────────────────
+
 
 def test_emitter_preset_sparks():
     """sparks 프리셋이 올바른 속성을 갖는다."""
     from forge3d.particle.presets import sparks
+
     e = sparks()
     assert e.rate == 500
     assert e.lifetime == 0.5
@@ -30,6 +32,7 @@ def test_emitter_preset_sparks():
 def test_emitter_preset_smoke():
     """smoke 프리셋 속성 확인."""
     from forge3d.particle.presets import smoke
+
     e = smoke()
     assert e.rate == 50
     assert e.lifetime == 3.0
@@ -46,11 +49,15 @@ def test_emitter_all_presets():
 
 # ── G2: 파티클 생성 + 풀링 ───────────────────────────────────────────────────
 
+
 def test_particle_pool_reuse():
     """G2: 수명 만료 후 파티클이 재활용된다."""
     emitter = f3d.ParticleEmitter(
-        rate=1000, lifetime=0.05, initial_speed=1.0,
-        gravity=0.0, max_particles=100,
+        rate=1000,
+        lifetime=0.05,
+        initial_speed=1.0,
+        gravity=0.0,
+        max_particles=100,
     )
     state = ParticleState(emitter, seed=0)
     origin = np.zeros(3, dtype=np.float32)
@@ -86,16 +93,22 @@ def test_particle_rate_controls_spawn():
 
 # ── G3: 지면 충돌 ────────────────────────────────────────────────────────────
 
+
 def test_ground_bounce():
     """G3: y=0 지면에서 반발계수 바운스 — vy 부호 반전."""
     emitter = f3d.ParticleEmitter(
-        rate=0, lifetime=10.0, initial_speed=0.0,
-        gravity=-9.81, restitution=0.5, ground_y=0.0, max_particles=10,
+        rate=0,
+        lifetime=10.0,
+        initial_speed=0.0,
+        gravity=-9.81,
+        restitution=0.5,
+        ground_y=0.0,
+        max_particles=10,
     )
     state = ParticleState(emitter, seed=0)
 
     # 수동으로 파티클 하나 설정: y=0.1, vy=-5 (아래로 낙하)
-    state.buf[0, :] = [0., 0.1, 0.,  0., -5., 0.,  0., 10., 1., 0.]
+    state.buf[0, :] = [0.0, 0.1, 0.0, 0.0, -5.0, 0.0, 0.0, 10.0, 1.0, 0.0]
     state.step(np.zeros(3), dt=0.05)
 
     # y가 ground_y 이상이어야 함
@@ -108,11 +121,15 @@ def test_ground_bounce():
 def test_ground_restitution_magnitude():
     """반발계수 0.5이면 vy가 반절로 줄어든다."""
     emitter = f3d.ParticleEmitter(
-        rate=0, lifetime=10.0, gravity=0.0, restitution=0.5,
-        ground_y=0.0, max_particles=5,
+        rate=0,
+        lifetime=10.0,
+        gravity=0.0,
+        restitution=0.5,
+        ground_y=0.0,
+        max_particles=5,
     )
     state = ParticleState(emitter, seed=0)
-    state.buf[0, :] = [0., -0.01, 0.,  0., -4.0, 0.,  0., 10., 1., 0.]
+    state.buf[0, :] = [0.0, -0.01, 0.0, 0.0, -4.0, 0.0, 0.0, 10.0, 1.0, 0.0]
     state.step(np.zeros(3), dt=0.001)
 
     # vy ≈ 4.0 * 0.5 = 2.0 (중력 없으므로)
@@ -121,11 +138,15 @@ def test_ground_restitution_magnitude():
 
 # ── G1: 성능 벤치마크 ────────────────────────────────────────────────────────
 
+
 def test_performance_100k():
     """G1: 10만 파티클 NumPy 업데이트 < 33ms."""
     emitter = f3d.ParticleEmitter(
-        rate=0, lifetime=10.0, gravity=-9.81,
-        restitution=0.3, max_particles=100_000,
+        rate=0,
+        lifetime=10.0,
+        gravity=-9.81,
+        restitution=0.3,
+        max_particles=100_000,
     )
     state = ParticleState(emitter, seed=42)
     origin = np.zeros(3, dtype=np.float32)
@@ -134,7 +155,7 @@ def test_performance_100k():
     state.buf[:, _ALIVE] = 1.0
     state.buf[:, 3] = np.random.randn(100_000).astype(np.float32)  # vx
     state.buf[:, 4] = np.random.randn(100_000).astype(np.float32)  # vy
-    state.buf[:, 6] = 0.0   # age
+    state.buf[:, 6] = 0.0  # age
     state.buf[:, 7] = 10.0  # lifetime
 
     N = 5
@@ -149,12 +170,13 @@ def test_performance_100k():
 
 # ── ECS 연동 ─────────────────────────────────────────────────────────────────
 
+
 def test_particle_system_ecs():
     """ParticleSystem이 ECS에서 파티클 상태를 업데이트한다."""
     ew = f3d.EntityWorld()
     emitter = f3d.ParticleEmitter(rate=100, lifetime=2.0, max_particles=200)
     ew.create_entity(
-        f3d.Transform(position=np.array([0., 5., 0.])),
+        f3d.Transform(position=np.array([0.0, 5.0, 0.0])),
         emitter,
     )
     ps = f3d.ParticleSystem()

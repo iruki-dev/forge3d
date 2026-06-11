@@ -7,7 +7,6 @@ import pytest
 import forge3d as f3d
 from forge3d import ValidationError
 
-
 # ── Gravity validation ────────────────────────────────────────────────────────
 
 
@@ -91,7 +90,7 @@ def test_error_message_format():
     world = f3d.World()
     try:
         world.add_box(size=(1, 1, 1), mass=-5.0)
-        assert False, "Should have raised"
+        raise AssertionError("Should have raised")
     except ValidationError as e:
         msg = str(e)
         assert "World.add_box" in msg, f"Method name missing: {msg}"
@@ -104,10 +103,27 @@ def test_error_message_format():
 def test_all_exports_present():
     """forge3d.__all__ should contain the documented symbols."""
     import forge3d
-    expected = {"World", "Body", "Shape", "Material", "App", "Input", "Key",
-                "OrbitCamera", "FollowCamera", "Viewer", "Recorder",
-                "JointHandle", "CollisionEvent", "CollisionHandler",
-                "CollisionLayer", "StateRecorder", "Forge3dError",
-                "ValidationError", "__version__"}
+
+    expected = {
+        "World",
+        "Body",
+        "Shape",
+        "Material",
+        "App",
+        "Input",
+        "Key",
+        "OrbitCamera",
+        "FollowCamera",
+        "Viewer",
+        "Recorder",
+        "JointHandle",
+        "CollisionEvent",
+        "CollisionHandler",
+        "CollisionLayer",
+        "StateRecorder",
+        "Forge3dError",
+        "ValidationError",
+        "__version__",
+    }
     missing = expected - set(forge3d.__all__)
     assert not missing, f"Missing from __all__: {missing}"

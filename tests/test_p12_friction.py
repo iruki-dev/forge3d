@@ -22,16 +22,23 @@ def pinch_world():
 
     world = PhysicsWorld(gravity=[0.0, 0.0, -9.81], contact_spring_k=2000.0)
     obj_id = world.add_box(
-        size=(0.10, 0.10, 0.10), position=(0.0, 0.0, 0.50),
-        mass=0.5, friction=0.9, restitution=0.0,
+        size=(0.10, 0.10, 0.10),
+        position=(0.0, 0.0, 0.50),
+        mass=0.5,
+        friction=0.9,
+        restitution=0.0,
     )
     world.add_static_box(
-        size=(0.10, 0.20, 0.20), position=(-0.095, 0.0, 0.50),
-        friction=0.9, restitution=0.0,
+        size=(0.10, 0.20, 0.20),
+        position=(-0.095, 0.0, 0.50),
+        friction=0.9,
+        restitution=0.0,
     )
     world.add_static_box(
-        size=(0.10, 0.20, 0.20), position=(0.095, 0.0, 0.50),
-        friction=0.9, restitution=0.0,
+        size=(0.10, 0.20, 0.20),
+        position=(0.095, 0.0, 0.50),
+        friction=0.9,
+        restitution=0.0,
     )
     return world, obj_id
 
@@ -50,9 +57,7 @@ def test_sat_pinch_contact_normals(pinch_world):
         assert abs(c.normal[2]) < 0.1, (
             f"G1 FAIL: contact normal has z component {c.normal}, expected ±x"
         )
-        assert abs(c.normal[0]) > 0.9, (
-            f"G1 FAIL: contact normal not along x: {c.normal}"
-        )
+        assert abs(c.normal[0]) > 0.9, f"G1 FAIL: contact normal not along x: {c.normal}"
 
 
 def test_sat_rotated_box_contact():
@@ -65,20 +70,28 @@ def test_sat_rotated_box_contact():
 
     # Static box rotated 45° around z
     angle = np.pi / 4
-    R = np.array([
-        [np.cos(angle), -np.sin(angle), 0.0],
-        [np.sin(angle),  np.cos(angle), 0.0],
-        [0.0,            0.0,           1.0],
-    ])
+    R = np.array(
+        [
+            [np.cos(angle), -np.sin(angle), 0.0],
+            [np.sin(angle), np.cos(angle), 0.0],
+            [0.0, 0.0, 1.0],
+        ]
+    )
     quat = quat_from_rot(R)
     world.add_static_box(
-        size=(0.2, 0.2, 0.2), position=(0.0, 0.0, 0.0),
-        restitution=0.0, friction=0.5, quat=quat,
+        size=(0.2, 0.2, 0.2),
+        position=(0.0, 0.0, 0.0),
+        restitution=0.0,
+        friction=0.5,
+        quat=quat,
     )
     # Dynamic box slightly inside the static box
     world.add_box(
-        size=(0.1, 0.1, 0.1), position=(0.05, 0.0, 0.0),
-        mass=1.0, restitution=0.0, friction=0.5,
+        size=(0.1, 0.1, 0.1),
+        position=(0.05, 0.0, 0.0),
+        mass=1.0,
+        restitution=0.0,
+        friction=0.5,
     )
 
     contacts = detect_contacts(world._bodies)
@@ -107,16 +120,23 @@ def _pinch_drop(mu: float, spring_k: float = 2000.0, steps: int = 120) -> float:
 
     world = PhysicsWorld(gravity=[0.0, 0.0, -9.81], contact_spring_k=spring_k)
     obj_id = world.add_box(
-        size=(0.10, 0.10, 0.10), position=(0.0, 0.0, 0.50),
-        mass=0.5, friction=mu, restitution=0.0,
+        size=(0.10, 0.10, 0.10),
+        position=(0.0, 0.0, 0.50),
+        mass=0.5,
+        friction=mu,
+        restitution=0.0,
     )
     world.add_static_box(
-        size=(0.10, 0.20, 0.20), position=(-0.095, 0.0, 0.50),
-        friction=mu, restitution=0.0,
+        size=(0.10, 0.20, 0.20),
+        position=(-0.095, 0.0, 0.50),
+        friction=mu,
+        restitution=0.0,
     )
     world.add_static_box(
-        size=(0.10, 0.20, 0.20), position=(0.095, 0.0, 0.50),
-        friction=mu, restitution=0.0,
+        size=(0.10, 0.20, 0.20),
+        position=(0.095, 0.0, 0.50),
+        friction=mu,
+        restitution=0.0,
     )
     for _ in range(steps):
         world.step(dt=1.0 / 60)

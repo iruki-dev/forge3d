@@ -29,10 +29,17 @@ class TestPublicSurface:
     def test_core_concepts_exported(self) -> None:
         """All core public concepts must appear in __all__."""
         required = {
-            "World", "Body", "Shape", "Material",
-            "App", "Input", "Key",
-            "OrbitCamera", "FollowCamera",
-            "Viewer", "Recorder",
+            "World",
+            "Body",
+            "Shape",
+            "Material",
+            "App",
+            "Input",
+            "Key",
+            "OrbitCamera",
+            "FollowCamera",
+            "Viewer",
+            "Recorder",
         }
         missing = required - set(f3d.__all__)
         assert not missing, f"forge3d.__all__ is missing: {missing}"
@@ -186,7 +193,11 @@ class TestExample01:
                     assert alias.name == "forge3d" or not alias.name.startswith("forge3d"), (
                         f"example imports internal module: {alias.name}"
                     )
-            elif isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("forge3d."):
+            elif (
+                isinstance(node, ast.ImportFrom)
+                and node.module
+                and node.module.startswith("forge3d.")
+            ):
                 raise AssertionError(
                     f"example imports internal module: {node.module}\n"
                     "Only 'import forge3d' is allowed."
