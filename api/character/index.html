@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://forge3d.readthedocs.io/api/camera/">
+        <link rel="canonical" href="https://forge3d.readthedocs.io/api/character/">
       
       
-        <link rel="prev" href="../input/">
+        <link rel="prev" href="../camera/">
       
       
-        <link rel="next" href="../character/">
+        <link rel="next" href="../ecs/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Camera - forge3d</title>
+        <title>Character Controller - forge3d</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#forge3dcamera" class="md-skip">
+        <a href="#forge3dcharactercontroller" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Camera
+              Character Controller
             
           </span>
         </div>
@@ -1001,6 +1001,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -1020,7 +1048,7 @@
   <span class="md-ellipsis">
     
   
-    Camera
+    Character Controller
   
 
     
@@ -1038,7 +1066,7 @@
   <span class="md-ellipsis">
     
   
-    Camera
+    Character Controller
   
 
     
@@ -1064,10 +1092,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#orbitcamera" class="md-nav__link">
+  <a href="#class-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OrbitCamera
+        Class reference
       
     </span>
   </a>
@@ -1075,22 +1103,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OrbitCamera
+        CharacterController
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="OrbitCamera">
+    <nav class="md-nav" aria-label="CharacterController">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera--parameters" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController--attributes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Parameters
+        Attributes
       
     </span>
   </a>
@@ -1098,7 +1126,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.position" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.position" class="md-nav__link">
     <span class="md-ellipsis">
       
         position
@@ -1109,19 +1137,52 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.rotate" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.velocity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        rotate
+        velocity
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="rotate">
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.character.CharacterController.is_grounded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_grounded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.character.CharacterController.is_airborne" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        is_airborne
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.character.CharacterController.move" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        move
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="move">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.rotate--parameters" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.move--parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
         Parameters
@@ -1137,19 +1198,19 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.zoom" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.jump" class="md-nav__link">
     <span class="md-ellipsis">
       
-        zoom
+        jump
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="zoom">
+    <nav class="md-nav" aria-label="jump">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.zoom--parameters" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.jump--parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
         Parameters
@@ -1165,152 +1226,19 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.set_distance" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.glide" class="md-nav__link">
     <span class="md-ellipsis">
       
-        set_distance
+        glide
       
     </span>
   </a>
   
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.pan" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        pan
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="pan">
+    <nav class="md-nav" aria-label="glide">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.pan--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.look_at" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        look_at
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.OrbitCamera.to_snapshot" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_snapshot
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#followcamera" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FollowCamera
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        FollowCamera
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="FollowCamera">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera--examples" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Examples
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera--world-frame-offset-original-behaviour" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        World-frame offset (original behaviour)
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera--body-local-offset-always-behind-the-car" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Body-local offset — always behind the car
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera.to_snapshot" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        to_snapshot
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="to_snapshot">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.camera.FollowCamera.to_snapshot--parameters" class="md-nav__link">
+  <a href="#forge3d.character.CharacterController.glide--parameters" class="md-nav__link">
     <span class="md-ellipsis">
       
         Parameters
@@ -1331,63 +1259,57 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#usage-examples" class="md-nav__link">
+  <a href="#creating-a-character" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage examples
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Usage examples">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#orbitcamera-orbit-around-a-target" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        OrbitCamera — orbit around a target
+        Creating a character
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#followcamera-world-frame-offset-default" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#game-loop-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FollowCamera — world-frame offset (default)
+        Game loop integration
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#followcamera-local-frame-vehicle-camera-v110" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#properties-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FollowCamera — local frame (vehicle camera) (v1.1.0)
+        Properties reference
       
     </span>
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
-  <a href="#smoothing-comparison" class="md-nav__link">
+      
+        <li class="md-nav__item">
+  <a href="#method-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Smoothing comparison
+        Method reference
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#ground-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ground detection
+      
+    </span>
+  </a>
   
 </li>
       
@@ -1395,34 +1317,6 @@
   
 </nav>
       
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../character/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Character Controller
-  
-
-    
-  </span>
-  
-  
-
-      </a>
     </li>
   
 
@@ -1906,44 +1800,47 @@
   
 
 
-<h1 id="forge3dcamera">forge3d.Camera<a class="headerlink" href="#forge3dcamera" title="Permanent link">&para;</a></h1>
-<p>Two camera controllers that produce <code>CameraSnapshot</code> for the <code>Viewer</code>.</p>
+<h1 id="forge3dcharactercontroller">forge3d.CharacterController<a class="headerlink" href="#forge3dcharactercontroller" title="Permanent link">&para;</a></h1>
+<p>A character controller built on a capsule rigid body with ground detection via
+downward raycast. Use <code>world.add_character()</code> to create one.</p>
 <hr />
-<h2 id="orbitcamera">OrbitCamera<a class="headerlink" href="#orbitcamera" title="Permanent link">&para;</a></h2>
+<h2 id="class-reference">Class reference<a class="headerlink" href="#class-reference" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<h2 id="forge3d.camera.OrbitCamera" class="doc doc-heading">
-            <span class="doc doc-object-name doc-class-name">OrbitCamera</span>
+<h2 id="forge3d.character.CharacterController" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">CharacterController</span>
 
 
-<a href="#forge3d.camera.OrbitCamera" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#forge3d.character.CharacterController" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents first">
 
 
 
-        <p>Spherical-coordinate camera that orbits a target point.</p>
-<p>The camera is always looking at <em>target</em> from a point on a sphere of
-radius <em>distance</em>.  <em>azimuth</em> (yaw) rotates around the z-axis;
-<em>elevation</em> (pitch) tilts above/below the horizon.</p>
-<h4 id="forge3d.camera.OrbitCamera--parameters">Parameters<a class="headerlink" href="#forge3d.camera.OrbitCamera--parameters" title="Permanent link">&para;</a></h4>
-<p>target    : Point the camera looks at, world-frame (x, y, z).
-distance  : Eye-to-target distance in metres.
-azimuth   : Horizontal angle in degrees (0 = +x axis).
-elevation : Vertical angle in degrees above the horizon (clamped ±89°).
-fov_deg   : Vertical field-of-view in degrees.</p>
-<p>Usage::</p>
-<div class="language-text highlight"><pre><span></span><code>cam = f3d.OrbitCamera(target=(0, 0, 1), distance=8)
-cam.rotate(d_azimuth=45)         # spin 45° around target
-cam.zoom(2)                      # move 20% closer (delta &gt; 0 = closer)
-snap = cam.to_snapshot()
-viewer.set_camera(snap)
+        <p>Kinematic character controller backed by a capsule rigid body.</p>
+<p>Returned by :meth:<code>forge3d.World.add_character</code>.</p>
+<p>Typical game loop::</p>
+<div class="language-text highlight"><pre><span></span><code>cc = world.add_character(position=(0, 0, 2), height=1.8, radius=0.3)
+
+while viewer.is_open:
+    inp = viewer.input
+    dx = inp.axis(&quot;right&quot;) - inp.axis(&quot;left&quot;)   # -1 … 1
+    dy = inp.axis(&quot;up&quot;)    - inp.axis(&quot;down&quot;)
+    cc.move(direction=(dx, dy, 0), speed=5.5, dt=viewer.dt)
+    if inp.just_pressed(&quot;space&quot;):
+        cc.jump(impulse=6.4)
+    world.step(viewer.dt)
 </code></pre></div>
+<h4 id="forge3d.character.CharacterController--attributes">Attributes<a class="headerlink" href="#forge3d.character.CharacterController--attributes" title="Permanent link">&para;</a></h4>
+<p>body        : The underlying :class:<code>Body</code> (capsule).
+is_grounded : True when the character is standing on solid ground.
+is_airborne : True when the character is not grounded.
+velocity    : Current linear velocity (3,).</p>
 
 
 
@@ -1967,7 +1864,7 @@ viewer.set_camera(snap)
 
 
 
-<h3 id="forge3d.camera.OrbitCamera.position" class="doc doc-heading">
+<h3 id="forge3d.character.CharacterController.position" class="doc doc-heading">
             <span class="doc doc-object-name doc-attribute-name">position</span>
 
 
@@ -1975,13 +1872,85 @@ viewer.set_camera(snap)
       <small class="doc doc-label doc-label-property"><code>property</code></small>
   </span>
 
-<a href="#forge3d.camera.OrbitCamera.position" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#forge3d.character.CharacterController.position" class="headerlink" title="Permanent link">&para;</a></h3>
 <div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">position</span><span class="p">:</span> <span class="n">ndarray</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Current world-space eye position.</p>
+        <p>Current world position (3,).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="forge3d.character.CharacterController.velocity" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">velocity</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#forge3d.character.CharacterController.velocity" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">velocity</span><span class="p">:</span> <span class="n">ndarray</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Current linear velocity (3,) in m/s.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="forge3d.character.CharacterController.is_grounded" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">is_grounded</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#forge3d.character.CharacterController.is_grounded" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">is_grounded</span><span class="p">:</span> <span class="nb">bool</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>True if the character is touching the ground.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="forge3d.character.CharacterController.is_airborne" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">is_airborne</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#forge3d.character.CharacterController.is_airborne" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">is_airborne</span><span class="p">:</span> <span class="nb">bool</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>True if the character is in the air.</p>
 
     </div>
 
@@ -1993,22 +1962,22 @@ viewer.set_camera(snap)
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.camera.OrbitCamera.rotate" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">rotate</span>
+<h3 id="forge3d.character.CharacterController.move" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">move</span>
 
 
-<a href="#forge3d.camera.OrbitCamera.rotate" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">rotate</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">d_azimuth</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">d_elevation</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrbitCamera</span>
+<a href="#forge3d.character.CharacterController.move" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">move</span><span class="p">(</span><span class="n">direction</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">speed</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Orbit around the target.</p>
-<h5 id="forge3d.camera.OrbitCamera.rotate--parameters">Parameters<a class="headerlink" href="#forge3d.camera.OrbitCamera.rotate--parameters" title="Permanent link">&para;</a></h5>
-<p>d_azimuth   : Azimuth delta in degrees.
-d_elevation : Elevation delta in degrees (clamped to ±89°).</p>
+        <p>Apply horizontal movement toward <em>direction</em> at <em>speed</em> m/s.</p>
+<h5 id="forge3d.character.CharacterController.move--parameters">Parameters<a class="headerlink" href="#forge3d.character.CharacterController.move--parameters" title="Permanent link">&para;</a></h5>
+<p>direction : (3,) movement vector (only x/y components used unless z != 0).
+            Does <strong>not</strong> need to be normalised.
+speed     : Maximum movement speed in m/s.
+dt        : Frame delta-time in seconds.</p>
 
 
     </div>
@@ -2018,22 +1987,19 @@ d_elevation : Elevation delta in degrees (clamped to ±89°).</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.camera.OrbitCamera.zoom" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">zoom</span>
+<h3 id="forge3d.character.CharacterController.jump" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">jump</span>
 
 
-<a href="#forge3d.camera.OrbitCamera.zoom" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">zoom</span><span class="p">(</span><span class="n">delta</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrbitCamera</span>
+<a href="#forge3d.character.CharacterController.jump" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">jump</span><span class="p">(</span><span class="n">impulse</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">5.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Adjust distance.</p>
-<p><em>delta &gt; 0</em> moves the camera closer; <em>delta &lt; 0</em> moves it farther.
-The factor is <code>distance *= (1 - delta * 0.1)</code> so a delta of 1.0
-reduces distance by 10%.</p>
-<h5 id="forge3d.camera.OrbitCamera.zoom--parameters">Parameters<a class="headerlink" href="#forge3d.camera.OrbitCamera.zoom--parameters" title="Permanent link">&para;</a></h5>
-<p>delta : Zoom speed; typically <code>Input.scroll_delta()</code>.</p>
+        <p>Apply an upward velocity impulse if grounded.</p>
+<h5 id="forge3d.character.CharacterController.jump--parameters">Parameters<a class="headerlink" href="#forge3d.character.CharacterController.jump--parameters" title="Permanent link">&para;</a></h5>
+<p>impulse : Upward speed added in m/s (think: initial jump velocity).</p>
 
 
     </div>
@@ -2043,81 +2009,23 @@ reduces distance by 10%.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.camera.OrbitCamera.set_distance" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">set_distance</span>
+<h3 id="forge3d.character.CharacterController.glide" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">glide</span>
 
 
-<a href="#forge3d.camera.OrbitCamera.set_distance" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">set_distance</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrbitCamera</span>
+<a href="#forge3d.character.CharacterController.glide" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">glide</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">target_fall_speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">dt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Directly set the eye-to-target distance.</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="forge3d.camera.OrbitCamera.pan" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">pan</span>
-
-
-<a href="#forge3d.camera.OrbitCamera.pan" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">pan</span><span class="p">(</span><span class="n">dx</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">dy</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrbitCamera</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Translate the <em>target</em> point in screen space.</p>
-<p>Useful for middle-mouse-button panning.</p>
-<h5 id="forge3d.camera.OrbitCamera.pan--parameters">Parameters<a class="headerlink" href="#forge3d.camera.OrbitCamera.pan--parameters" title="Permanent link">&para;</a></h5>
-<p>dx, dy : Pixel offsets in screen space.</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="forge3d.camera.OrbitCamera.look_at" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">look_at</span>
-
-
-<a href="#forge3d.camera.OrbitCamera.look_at" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">look_at</span><span class="p">(</span><span class="n">target</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OrbitCamera</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Point the camera at a new target without changing distance.</p>
-
-
-    </div>
-
-</div>
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="forge3d.camera.OrbitCamera.to_snapshot" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">to_snapshot</span>
-
-
-<a href="#forge3d.camera.OrbitCamera.to_snapshot" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">to_snapshot</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">CameraSnapshot</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Build a :class:<code>~forge3d.render.snapshot.CameraSnapshot</code> from the
-current orbit state — suitable for :meth:<code>Viewer.set_camera</code>.</p>
+        <p>Reduce falling speed to <em>target_fall_speed</em> for a glide effect.</p>
+<p>Call each frame while glide input is held.</p>
+<h5 id="forge3d.character.CharacterController.glide--parameters">Parameters<a class="headerlink" href="#forge3d.character.CharacterController.glide--parameters" title="Permanent link">&para;</a></h5>
+<p>target_fall_speed : Target downward z-velocity (negative = downward).
+dt                : Frame delta-time (used to smooth the transition).</p>
 
 
     </div>
@@ -2131,188 +2039,129 @@ current orbit state — suitable for :meth:<code>Viewer.set_camera</code>.</p>
     </div>
 
 </div><hr />
-<h2 id="followcamera">FollowCamera<a class="headerlink" href="#followcamera" title="Permanent link">&para;</a></h2>
-
-
-<div class="doc doc-object doc-class">
-
-
-
-<h2 id="forge3d.camera.FollowCamera" class="doc doc-heading">
-            <span class="doc doc-object-name doc-class-name">FollowCamera</span>
-
-
-<a href="#forge3d.camera.FollowCamera" class="headerlink" title="Permanent link">&para;</a></h2>
-
-
-    <div class="doc doc-contents first">
-
-
-
-        <p>Camera that smoothly tracks a :class:<code>~forge3d.facade.Body</code>.</p>
-<p>The camera sits at <em>body.position + offset</em> and looks at <em>body.position</em>.
-Supports world-frame and body-local-frame offsets, and uses
-dt-corrected exponential smoothing (FPS-independent).</p>
-<h4 id="forge3d.camera.FollowCamera--parameters">Parameters<a class="headerlink" href="#forge3d.camera.FollowCamera--parameters" title="Permanent link">&para;</a></h4>
-<p>body         : The :class:<code>Body</code> to follow.
-offset       : Camera offset from the body in <em>frame</em> coordinates.
-frame        : <code>"world"</code> (default) — offset is world-aligned; stays
-               fixed regardless of body rotation.
-               <code>"local"</code> — offset is body-local; camera always sits
-               <em>behind</em> the body as it turns (ideal for vehicles).
-smoothing_hz : Smoothing speed in Hz (reciprocal of time constant τ).
-               Higher = snappier.  Default 6 ≈ 0.17 s settling time.
-               Pass <code>smoothing_hz=None</code> for legacy per-frame <code>alpha</code>.
-alpha        : Legacy per-frame lerp factor (ignored when smoothing_hz
-               is set).  Kept for backward compatibility.
-fov_deg      : Vertical field-of-view in degrees.</p>
-<h4 id="forge3d.camera.FollowCamera--examples">Examples<a class="headerlink" href="#forge3d.camera.FollowCamera--examples" title="Permanent link">&para;</a></h4>
-<blockquote>
-<blockquote>
-<blockquote>
-<h3 id="forge3d.camera.FollowCamera--world-frame-offset-original-behaviour">World-frame offset (original behaviour)<a class="headerlink" href="#forge3d.camera.FollowCamera--world-frame-offset-original-behaviour" title="Permanent link">&para;</a></h3>
-<p>cam = f3d.FollowCamera(ball, offset=(0, -8, 4))</p>
-<h3 id="forge3d.camera.FollowCamera--body-local-offset-always-behind-the-car">Body-local offset — always behind the car<a class="headerlink" href="#forge3d.camera.FollowCamera--body-local-offset-always-behind-the-car" title="Permanent link">&para;</a></h3>
-<p>cam = f3d.FollowCamera(car, offset=(-8, 0, 3), frame="local",
-...                        smoothing_hz=8)</p>
-</blockquote>
-</blockquote>
-</blockquote>
-<p>Usage (per-frame)::</p>
-<div class="language-text highlight"><pre><span></span><code>viewer.set_camera(cam.to_snapshot(dt=viewer.dt))
-</code></pre></div>
-
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-children">
-
-
-
-
-
-
-
-
-
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="forge3d.camera.FollowCamera.to_snapshot" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">to_snapshot</span>
-
-
-<a href="#forge3d.camera.FollowCamera.to_snapshot" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">to_snapshot</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CameraSnapshot</span>
-</span></code></pre></div>
-
-    <div class="doc doc-contents ">
-
-        <p>Update smoothed position and return a :class:<code>CameraSnapshot</code>.</p>
-<h5 id="forge3d.camera.FollowCamera.to_snapshot--parameters">Parameters<a class="headerlink" href="#forge3d.camera.FollowCamera.to_snapshot--parameters" title="Permanent link">&para;</a></h5>
-<p>dt : Elapsed time since last call (seconds).  When provided, uses
-     dt-corrected exponential smoothing; otherwise falls back to the
-     legacy per-frame <code>alpha</code> factor.</p>
-
-
-    </div>
-
-</div>
-
-
-
-  </div>
-
-    </div>
-
-</div><hr />
-<h2 id="usage-examples">Usage examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
-<h3 id="orbitcamera-orbit-around-a-target">OrbitCamera — orbit around a target<a class="headerlink" href="#orbitcamera-orbit-around-a-target" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">cam</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">OrbitCamera</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">distance</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mi">30</span><span class="p">)</span>
+<h2 id="creating-a-character">Creating a character<a class="headerlink" href="#creating-a-character" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3d</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">inp</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">input</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">mouse_button</span><span class="p">(</span><span class="mi">1</span><span class="p">):</span>                     <span class="c1"># right-drag to orbit</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="n">dx</span><span class="p">,</span> <span class="n">dy</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">mouse_delta</span><span class="p">()</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>        <span class="n">cam</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="n">d_azimuth</span><span class="o">=</span><span class="n">dx</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">,</span> <span class="n">d_elevation</span><span class="o">=-</span><span class="n">dy</span> <span class="o">*</span> <span class="mf">0.4</span><span class="p">)</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">cam</span><span class="o">.</span><span class="n">zoom</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">scroll_delta</span><span class="p">()</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">)</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">set_camera</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">to_snapshot</span><span class="p">())</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">(</span><span class="n">gravity</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.81</span><span class="p">))</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">world</span><span class="o">.</span><span class="n">add_ground</span><span class="p">()</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="n">cc</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_character</span><span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">height</span><span class="o">=</span><span class="mf">1.8</span><span class="p">,</span>       <span class="c1"># capsule height (m)</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span>       <span class="c1"># capsule radius (m)</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="n">mass</span><span class="o">=</span><span class="mf">70.0</span><span class="p">,</span>        <span class="c1"># kg</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;player&quot;</span><span class="p">,</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="n">ground_layer_mask</span><span class="o">=</span><span class="n">f3d</span><span class="o">.</span><span class="n">CollisionLayer</span><span class="o">.</span><span class="n">TERRAIN</span><span class="p">,</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="followcamera-world-frame-offset-default">FollowCamera — world-frame offset (default)<a class="headerlink" href="#followcamera-world-frame-offset-default" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">ball</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">cam</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">FollowCamera</span><span class="p">(</span><span class="n">ball</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">smoothing_hz</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">set_camera</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">to_snapshot</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">))</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+<hr />
+<h2 id="game-loop-integration">Game loop integration<a class="headerlink" href="#game-loop-integration" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">viewer</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Viewer</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">1280</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">720</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Character Demo&quot;</span><span class="p">)</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">cam</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">FollowCamera</span><span class="p">(</span><span class="n">cc</span><span class="o">.</span><span class="n">_body</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span> <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">inp</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">input</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">dt</span> <span class="o">=</span> <span class="n">viewer</span><span class="o">.</span><span class="n">dt</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="c1"># Horizontal movement</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">dx</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">key_held</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">D</span><span class="p">))</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">key_held</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">dy</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">key_held</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">W</span><span class="p">))</span> <span class="o">-</span> <span class="nb">float</span><span class="p">(</span><span class="n">inp</span><span class="o">.</span><span class="n">key_held</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">S</span><span class="p">))</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">cc</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">direction</span><span class="o">=</span><span class="p">(</span><span class="n">dx</span><span class="p">,</span> <span class="n">dy</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">speed</span><span class="o">=</span><span class="mf">5.5</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="c1"># Jump only if on the ground</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>    <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">key_pressed</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">SPACE</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cc</span><span class="o">.</span><span class="n">is_grounded</span><span class="p">:</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="n">cc</span><span class="o">.</span><span class="n">jump</span><span class="p">(</span><span class="n">impulse</span><span class="o">=</span><span class="mf">6.0</span><span class="p">)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="c1"># Slow fall when holding CTRL</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>    <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">key_held</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">Key</span><span class="o">.</span><span class="n">CTRL</span><span class="p">)</span> <span class="ow">and</span> <span class="n">cc</span><span class="o">.</span><span class="n">is_airborne</span><span class="p">:</span>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>        <span class="n">cc</span><span class="o">.</span><span class="n">glide</span><span class="p">(</span><span class="n">target_fall_speed</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">set_camera</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">to_snapshot</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">))</span>
+</span><span id="__span-1-24"><a id="__codelineno-1-24" name="__codelineno-1-24" href="#__codelineno-1-24"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span id="__span-1-25"><a id="__codelineno-1-25" name="__codelineno-1-25" href="#__codelineno-1-25"></a>
+</span><span id="__span-1-26"><a id="__codelineno-1-26" name="__codelineno-1-26" href="#__codelineno-1-26"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw_text</span><span class="p">(</span>
+</span><span id="__span-1-27"><a id="__codelineno-1-27" name="__codelineno-1-27" href="#__codelineno-1-27"></a>        <span class="sa">f</span><span class="s2">&quot;Grounded: </span><span class="si">{</span><span class="n">cc</span><span class="o">.</span><span class="n">is_grounded</span><span class="si">}</span><span class="s2">  Speed: </span><span class="si">{</span><span class="n">cc</span><span class="o">.</span><span class="n">velocity</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m/s&quot;</span><span class="p">,</span>
+</span><span id="__span-1-28"><a id="__codelineno-1-28" name="__codelineno-1-28" href="#__codelineno-1-28"></a>        <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">,</span>
+</span><span id="__span-1-29"><a id="__codelineno-1-29" name="__codelineno-1-29" href="#__codelineno-1-29"></a>    <span class="p">)</span>
 </span></code></pre></div>
-<h3 id="followcamera-local-frame-vehicle-camera-v110">FollowCamera — local frame (vehicle camera) (v1.1.0)<a class="headerlink" href="#followcamera-local-frame-vehicle-camera-v110" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">car</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># Camera always sits 10 m behind and 3 m above the car,</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># regardless of which direction the car is facing.</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">cam</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">FollowCamera</span><span class="p">(</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">car</span><span class="p">,</span>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>   <span class="c1"># local-frame: X=back, Z=up</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>    <span class="n">frame</span><span class="o">=</span><span class="s2">&quot;local&quot;</span><span class="p">,</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">smoothing_hz</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>      <span class="c1"># snappier (default: 6.0)</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">fov_deg</span><span class="o">=</span><span class="mf">60.0</span><span class="p">,</span>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="p">)</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">set_camera</span><span class="p">(</span><span class="n">cam</span><span class="o">.</span><span class="n">to_snapshot</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">))</span>
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-</span></code></pre></div>
-<h3 id="smoothing-comparison">Smoothing comparison<a class="headerlink" href="#smoothing-comparison" title="Permanent link">&para;</a></h3>
+<hr />
+<h2 id="properties-reference">Properties reference<a class="headerlink" href="#properties-reference" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Parameter</th>
-<th>Meaning</th>
-<th>Best for</th>
+<th>Property</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>frame="world"</code></td>
-<td>Offset stays world-aligned</td>
-<td>Ball, spacecraft, top-down</td>
+<td><code>position</code></td>
+<td><code>ndarray (3,)</code></td>
+<td>World-space capsule base position</td>
 </tr>
 <tr>
-<td><code>frame="local"</code></td>
-<td>Offset rotates with the body</td>
-<td>Car, plane, FPS</td>
+<td><code>velocity</code></td>
+<td><code>ndarray (3,)</code></td>
+<td>Linear velocity (m/s)</td>
 </tr>
 <tr>
-<td><code>smoothing_hz=2</code></td>
-<td>Slow, cinematic lag</td>
-<td>Cutscenes</td>
+<td><code>is_grounded</code></td>
+<td><code>bool</code></td>
+<td>True when standing on a surface</td>
 </tr>
 <tr>
-<td><code>smoothing_hz=6</code></td>
-<td>Default, natural</td>
-<td>Most games</td>
-</tr>
-<tr>
-<td><code>smoothing_hz=20</code></td>
-<td>Near-instant snap</td>
-<td>Action games</td>
+<td><code>is_airborne</code></td>
+<td><code>bool</code></td>
+<td><code>not is_grounded</code></td>
 </tr>
 </tbody>
 </table>
+<hr />
+<h2 id="method-reference">Method reference<a class="headerlink" href="#method-reference" title="Permanent link">&para;</a></h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>move(direction, speed, dt)</code></td>
+<td>Apply horizontal velocity; direction is automatically normalized</td>
+</tr>
+<tr>
+<td><code>jump(impulse)</code></td>
+<td>Apply an upward velocity impulse; only effective when grounded</td>
+</tr>
+<tr>
+<td><code>glide(target_fall_speed, dt)</code></td>
+<td>Dampen downward velocity for a glide / slow-fall effect</td>
+</tr>
+<tr>
+<td><code>set_position(pos)</code></td>
+<td>Teleport the character to a new world position</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="ground-detection">Ground detection<a class="headerlink" href="#ground-detection" title="Permanent link">&para;</a></h2>
+<p>The controller shoots a downward ray of length <code>height/2 + radius + 0.15 m</code>
+from the capsule centre. <code>is_grounded</code> is <code>True</code> when this ray hits a body
+matching <code>ground_layer_mask</code> (default: <code>CollisionLayer.TERRAIN | CollisionLayer.DEFAULT</code>).</p>
+<p>To stand on non-terrain bodies, adjust the mask:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">cc</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_character</span><span class="p">(</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">ground_layer_mask</span><span class="o">=</span><span class="p">(</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">f3d</span><span class="o">.</span><span class="n">CollisionLayer</span><span class="o">.</span><span class="n">TERRAIN</span> <span class="o">|</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">f3d</span><span class="o">.</span><span class="n">CollisionLayer</span><span class="o">.</span><span class="n">DEFAULT</span> <span class="o">|</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="n">f3d</span><span class="o">.</span><span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span>   <span class="c1"># can stand on top of enemies</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="p">),</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">)</span>
+</span></code></pre></div>
 
 
 

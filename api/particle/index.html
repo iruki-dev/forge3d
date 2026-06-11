@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://forge3d.readthedocs.io/contributing/">
+        <link rel="canonical" href="https://forge3d.readthedocs.io/api/particle/">
       
       
-        <link rel="prev" href="../whats_new_v1_1/">
+        <link rel="prev" href="../audio/">
       
       
-        <link rel="next" href="../changelog/">
+        <link rel="next" href="../scene/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Contributing - forge3d</title>
+        <title>Particle System - forge3d</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -79,6 +79,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#forge3dparticle-particle-system" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -91,7 +96,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="forge3d" class="md-header__button md-logo" aria-label="forge3d" data-md-component="logo">
+    <a href="../.." title="forge3d" class="md-header__button md-logo" aria-label="forge3d" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -111,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Contributing
+              Particle System
             
           </span>
         </div>
@@ -218,7 +223,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -239,7 +244,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../install/" class="md-tabs__link">
+        <a href="../../install/" class="md-tabs__link">
           
   
   
@@ -259,7 +264,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../tutorials/01_physics/" class="md-tabs__link">
+        <a href="../../tutorials/01_physics/" class="md-tabs__link">
           
   
   
@@ -277,7 +282,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../architecture/" class="md-tabs__link">
+      <a href="../../architecture/" class="md-tabs__link">
         
   
   
@@ -294,11 +299,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../api/world/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../world/" class="md-tabs__link">
           
   
   
@@ -318,7 +325,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../whats_new_v2_1/" class="md-tabs__link">
+        <a href="../../whats_new_v2_1/" class="md-tabs__link">
           
   
   
@@ -334,11 +341,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../contributing/" class="md-tabs__link">
         
   
   
@@ -357,7 +362,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../changelog/" class="md-tabs__link">
+      <a href="../../changelog/" class="md-tabs__link">
         
   
   
@@ -400,7 +405,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="forge3d" class="md-nav__button md-logo" aria-label="forge3d" data-md-component="logo">
+    <a href="../.." title="forge3d" class="md-nav__button md-logo" aria-label="forge3d" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -430,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -511,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../install/" class="md-nav__link">
+      <a href="../../install/" class="md-nav__link">
         
   
   
@@ -539,7 +544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   
@@ -628,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/01_physics/" class="md-nav__link">
+      <a href="../../tutorials/01_physics/" class="md-nav__link">
         
   
   
@@ -656,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/02_rendering/" class="md-nav__link">
+      <a href="../../tutorials/02_rendering/" class="md-nav__link">
         
   
   
@@ -684,7 +689,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/03_robot/" class="md-nav__link">
+      <a href="../../tutorials/03_robot/" class="md-nav__link">
         
   
   
@@ -712,7 +717,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/04_rl/" class="md-nav__link">
+      <a href="../../tutorials/04_rl/" class="md-nav__link">
         
   
   
@@ -747,7 +752,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../architecture/" class="md-nav__link">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -771,28 +776,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -810,7 +818,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -828,7 +836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/world/" class="md-nav__link">
+      <a href="../world/" class="md-nav__link">
         
   
   
@@ -856,7 +864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/body/" class="md-nav__link">
+      <a href="../body/" class="md-nav__link">
         
   
   
@@ -884,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/shapes/" class="md-nav__link">
+      <a href="../shapes/" class="md-nav__link">
         
   
   
@@ -912,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/app/" class="md-nav__link">
+      <a href="../app/" class="md-nav__link">
         
   
   
@@ -940,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/rendering/" class="md-nav__link">
+      <a href="../rendering/" class="md-nav__link">
         
   
   
@@ -968,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/input/" class="md-nav__link">
+      <a href="../input/" class="md-nav__link">
         
   
   
@@ -996,7 +1004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/camera/" class="md-nav__link">
+      <a href="../camera/" class="md-nav__link">
         
   
   
@@ -1024,7 +1032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/character/" class="md-nav__link">
+      <a href="../character/" class="md-nav__link">
         
   
   
@@ -1052,7 +1060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/ecs/" class="md-nav__link">
+      <a href="../ecs/" class="md-nav__link">
         
   
   
@@ -1080,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/animation/" class="md-nav__link">
+      <a href="../animation/" class="md-nav__link">
         
   
   
@@ -1108,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/audio/" class="md-nav__link">
+      <a href="../audio/" class="md-nav__link">
         
   
   
@@ -1133,10 +1141,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../api/particle/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Particle System
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1152,6 +1187,148 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.particle.ParticleEmitter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ParticleEmitter
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="ParticleEmitter">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.particle.ParticleEmitter.preset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        preset
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.particle.ParticleSystem" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ParticleSystem
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#built-in-presets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Built-in presets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-emitter" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic emitter
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#preset-sparks-at-a-collision-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Preset sparks at a collision point
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#attach-emitter-to-a-moving-body" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Attach emitter to a moving body
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#particlesystem-cleanup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        ParticleSystem cleanup
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1164,7 +1341,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/scene/" class="md-nav__link">
+      <a href="../scene/" class="md-nav__link">
         
   
   
@@ -1192,7 +1369,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/editor/" class="md-nav__link">
+      <a href="../editor/" class="md-nav__link">
         
   
   
@@ -1220,7 +1397,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/profiler/" class="md-nav__link">
+      <a href="../profiler/" class="md-nav__link">
         
   
   
@@ -1248,7 +1425,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/robot/" class="md-nav__link">
+      <a href="../robot/" class="md-nav__link">
         
   
   
@@ -1276,7 +1453,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/backends/" class="md-nav__link">
+      <a href="../backends/" class="md-nav__link">
         
   
   
@@ -1365,7 +1542,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../whats_new_v2_1/" class="md-nav__link">
+      <a href="../../whats_new_v2_1/" class="md-nav__link">
         
   
   
@@ -1393,7 +1570,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migration_v2/" class="md-nav__link">
+      <a href="../../migration_v2/" class="md-nav__link">
         
   
   
@@ -1421,7 +1598,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../whats_new_v1_1/" class="md-nav__link">
+      <a href="../../whats_new_v1_1/" class="md-nav__link">
         
   
   
@@ -1453,17 +1630,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   
@@ -1479,7 +1649,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -1491,7 +1660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../changelog/" class="md-nav__link">
+      <a href="../../changelog/" class="md-nav__link">
         
   
   
@@ -1531,9 +1700,218 @@
   
 
 
-  <h1>Contributing</h1>
+<h1 id="forge3dparticle-particle-system">forge3d.particle — Particle System<a class="headerlink" href="#forge3dparticle-particle-system" title="Permanent link">&para;</a></h1>
+<p>forge3d's particle system supports CPU-based emitters with configurable spawn
+rates, velocities, lifetimes, and rendering via the realtime renderer.</p>
+<hr />
+<h2 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">&para;</a></h2>
 
-<p>{% include "../CONTRIBUTING.md" %}</p>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.particle.ParticleEmitter" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ParticleEmitter</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#forge3d.particle.ParticleEmitter" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="forge3d.ecs.component.Component">Component</span></code></p>
+
+
+
+        <p>파티클 생성 설정 ECS 컴포넌트.</p>
+<p>ParticleSystem이 매 프레임 이 컴포넌트를 읽어 파티클을 생성한다.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.particle.ParticleEmitter.preset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">preset</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-classmethod"><code>classmethod</code></small>
+  </span>
+
+<a href="#forge3d.particle.ParticleEmitter.preset" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">preset</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ParticleEmitter</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>VFX 프리셋 팩토리.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.particle.ParticleSystem" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">ParticleSystem</span>
+
+
+<a href="#forge3d.particle.ParticleSystem" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="forge3d.ecs.system.System">System</span></code></p>
+
+
+
+        <p>ECS 시스템 — ParticleEmitter 엔티티를 순회해 파티클 상태를 업데이트한다.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><hr />
+<h2 id="built-in-presets">Built-in presets<a class="headerlink" href="#built-in-presets" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">particle_sparks</span><span class="p">,</span> <span class="n">particle_smoke</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.particle.presets</span><span class="w"> </span><span class="kn">import</span> <span class="n">rain</span><span class="p">,</span> <span class="n">debris</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Preset</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>particle_sparks</code></td>
+<td>Short-lived bright sparks with downward gravity</td>
+</tr>
+<tr>
+<td><code>particle_smoke</code></td>
+<td>Slow-rising dark particles with fade-out</td>
+</tr>
+<tr>
+<td><code>rain</code></td>
+<td>Downward streaks with high emission rate</td>
+</tr>
+<tr>
+<td><code>debris</code></td>
+<td>Random tumbling fragments from an explosion</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="usage-examples">Usage examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
+<h3 id="basic-emitter">Basic emitter<a class="headerlink" href="#basic-emitter" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3d</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">()</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">emitter</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">ParticleEmitter</span><span class="p">(</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>    <span class="n">position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]),</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">rate</span><span class="o">=</span><span class="mf">50.0</span><span class="p">,</span>            <span class="c1"># particles per second</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">lifetime</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">),</span>  <span class="c1"># (min, max) seconds</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">speed</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">),</span>     <span class="c1"># (min, max) initial speed m/s</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">spread_angle</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>    <span class="c1"># cone half-angle in degrees</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">gravity_scale</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>    <span class="c1"># gravity multiplier</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>    <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.02</span><span class="p">,</span> <span class="mf">0.08</span><span class="p">),</span>    <span class="c1"># (min, max) radius</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="p">)</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a><span class="n">ps</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">ParticleSystem</span><span class="p">()</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a><span class="n">ps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">emitter</span><span class="p">)</span>
+</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>
+</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a><span class="n">dt</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">60</span>
+</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">300</span><span class="p">):</span>
+</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a>    <span class="n">ps</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-1-23"><a id="__codelineno-1-23" name="__codelineno-1-23" href="#__codelineno-1-23"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="preset-sparks-at-a-collision-point">Preset sparks at a collision point<a class="headerlink" href="#preset-sparks-at-a-collision-point" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nd">@world</span><span class="o">.</span><span class="n">on_collision_begin</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">on_hit</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">f3d</span><span class="o">.</span><span class="n">CollisionEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">relative_speed</span> <span class="o">&gt;</span> <span class="mf">3.0</span><span class="p">:</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        <span class="n">sparks</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">particle_sparks</span><span class="p">()</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>        <span class="n">sparks</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">event</span><span class="o">.</span><span class="n">body_a</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        <span class="n">ps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sparks</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>        <span class="c1"># One-shot: auto-remove after particles die</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>        <span class="n">ps</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">sparks</span><span class="p">,</span> <span class="n">one_shot</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="attach-emitter-to-a-moving-body">Attach emitter to a moving body<a class="headerlink" href="#attach-emitter-to-a-moving-body" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">rocket</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">thruster</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">particle_smoke</span><span class="p">()</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nd">@app</span><span class="o">.</span><span class="n">on_update</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">update</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">dt</span><span class="p">,</span> <span class="n">inp</span><span class="p">):</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">thruster</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">rocket</span><span class="o">.</span><span class="n">position</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">thruster</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">rocket</span><span class="o">.</span><span class="n">velocity</span> <span class="o">+</span> <span class="p">[</span><span class="mf">1e-6</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">ps</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="particlesystem-cleanup">ParticleSystem cleanup<a class="headerlink" href="#particlesystem-cleanup" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">ps</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>          <span class="c1"># remove all active emitters</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">ps</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">emitter</span><span class="p">)</span>  <span class="c1"># remove a specific emitter</span>
+</span></code></pre></div>
 
 
 
@@ -1616,10 +1994,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

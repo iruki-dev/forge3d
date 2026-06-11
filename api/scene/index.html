@@ -10,13 +10,13 @@
       
       
       
-        <link rel="canonical" href="https://forge3d.readthedocs.io/api/robot/">
+        <link rel="canonical" href="https://forge3d.readthedocs.io/api/scene/">
       
       
-        <link rel="prev" href="../profiler/">
+        <link rel="prev" href="../particle/">
       
       
-        <link rel="next" href="../backends/">
+        <link rel="next" href="../editor/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Robot - forge3d</title>
+        <title>Scene Management - forge3d</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#forge3drobot" class="md-skip">
+        <a href="#forge3dscene-scene-management" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Robot
+              Scene Management
             
           </span>
         </div>
@@ -1169,10 +1169,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../scene/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene Management
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1188,6 +1215,281 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneNode" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SceneNode
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SceneNode">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneNode.world_matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        world_matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneNode.find" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        find
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneNode.descendants" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        descendants
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.scene.Prefab" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefab
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Prefab">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.Prefab.save" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        save
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.Prefab.load" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.Prefab.instantiate" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        instantiate
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SceneManager
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SceneManager">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager.entity_count" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        entity_count
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager.load_scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        load_scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager.add_scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        add_scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager.unload_scene" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        unload_scene
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager.on_scene_loaded" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on_scene_loaded
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.scene.SceneManager.on_scene_unloading" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on_scene_unloading
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage examples
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage examples">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#build-a-scene-hierarchy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Build a scene hierarchy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#prefab-reusable-entity-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Prefab — reusable entity template
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scene-manager-queries" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene manager queries
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#scene-serialization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scene serialization
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1253,37 +1555,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Robot
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../robot/" class="md-nav__link">
         
   
   
@@ -1299,165 +1574,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Robot
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Robot">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot--parameters" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Parameters
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.q" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        q
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.set_joint" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        set_joint
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.set_joints" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        set_joints
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.link_world_poses" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        link_world_poses
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="link_world_poses">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.link_world_poses--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.ee_pose" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        ee_pose
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.link_visual_boxes" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        link_visual_boxes
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="link_visual_boxes">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#forge3d.robot.robot.Robot.link_visual_boxes--returns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Returns
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#loading-a-preset" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Loading a preset
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -1717,34 +1833,257 @@
   
 
 
-<h1 id="forge3drobot">forge3d.robot<a class="headerlink" href="#forge3drobot" title="Permanent link">&para;</a></h1>
-<p>Robot arm loading, FK, IK, and Jacobian.</p>
+<h1 id="forge3dscene-scene-management">forge3d.scene — Scene Management<a class="headerlink" href="#forge3dscene-scene-management" title="Permanent link">&para;</a></h1>
+<p>The scene module provides hierarchical scene nodes, prefab templates, and a scene
+manager for organizing complex game worlds.</p>
+<hr />
+<h2 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">&para;</a></h2>
 
 
 <div class="doc doc-object doc-class">
 
 
 
-<h2 id="forge3d.robot.robot.Robot" class="doc doc-heading">
-            <span class="doc doc-object-name doc-class-name">Robot</span>
+<h2 id="forge3d.scene.SceneNode" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">SceneNode</span>
 
 
-<a href="#forge3d.robot.robot.Robot" class="headerlink" title="Permanent link">&para;</a></h2>
+<a href="#forge3d.scene.SceneNode" class="headerlink" title="Permanent link">&para;</a></h2>
 
 
     <div class="doc doc-contents first">
 
 
 
-        <p>Kinematic robot arm.</p>
-<p>Holds joint angles, computes FK, and exposes link poses for rendering.
-Physics (dynamics) is NOT simulated — the arm is kinematically controlled.</p>
-<h4 id="forge3d.robot.robot.Robot--parameters">Parameters<a class="headerlink" href="#forge3d.robot.robot.Robot--parameters" title="Permanent link">&para;</a></h4>
-<p>model         : RigidBodyModel (n revolute joints, serial chain).
-link_radii    : Visual cylinder radius per link (m).  Default: 0.04 m.
-name          : Display name.
-material      : Snapshot material ID for link boxes.
-base_position : World-frame position of the robot base.</p>
+        <p>씬 계층 트리의 단일 노드.</p>
+<p>ECS Transform을 감싸 부모/자식 계층을 관리하고
+월드 행렬을 dirty flag로 캐시한다.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.scene.SceneNode.world_matrix" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">world_matrix</span>
+
+
+<a href="#forge3d.scene.SceneNode.world_matrix" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">world_matrix</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>(4,4) 월드 변환 행렬 (dirty flag 캐시).</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.scene.SceneNode.find" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">find</span>
+
+
+<a href="#forge3d.scene.SceneNode.find" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">find</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneNode</span> <span class="o">|</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>이름으로 자신 또는 하위 노드를 검색한다.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.scene.SceneNode.descendants" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">descendants</span>
+
+
+<a href="#forge3d.scene.SceneNode.descendants" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">descendants</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">SceneNode</span><span class="p">]</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>자신을 포함한 모든 하위 노드 리스트.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.scene.Prefab" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">Prefab</span>
+
+
+<a href="#forge3d.scene.Prefab" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>재사용 가능한 엔티티+컴포넌트 묶음 템플릿.</p>
+<p>JSON 파일에서 로드하거나 SceneNode 트리에서 생성할 수 있다.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.scene.Prefab.save" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">save</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#forge3d.scene.Prefab.save" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">save</span><span class="p">(</span><span class="n">node</span><span class="p">:</span> <span class="n">SceneNode</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>SceneNode 트리를 JSON Prefab 파일로 저장한다.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.scene.Prefab.load" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">load</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#forge3d.scene.Prefab.load" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">load</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Prefab</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>JSON 파일에서 Prefab을 로드한다.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.scene.Prefab.instantiate" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">instantiate</span>
+
+
+<a href="#forge3d.scene.Prefab.instantiate" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">instantiate</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">ew</span><span class="p">:</span> <span class="n">EntityWorld</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">position</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">rotation</span><span class="p">:</span> <span class="n">ndarray</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SceneNode</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Prefab을 EntityWorld에 인스턴스화하고 SceneNode 트리를 반환한다.</p>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.scene.SceneManager" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">SceneManager</span>
+
+
+<a href="#forge3d.scene.SceneManager" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>씬 파일의 로드·언로드를 관리하는 싱글톤 스타일 매니저.</p>
+<p>씬 파일 = P27 <code>save_scene()</code> 포맷의 JSON.</p>
 
 
 
@@ -1768,22 +2107,21 @@ base_position : World-frame position of the robot base.</p>
 
 
 
-<h3 id="forge3d.robot.robot.Robot.q" class="doc doc-heading">
-            <span class="doc doc-object-name doc-attribute-name">q</span>
+<h3 id="forge3d.scene.SceneManager.entity_count" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">entity_count</span>
 
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
-      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
   </span>
 
-<a href="#forge3d.robot.robot.Robot.q" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">q</span><span class="p">:</span> <span class="n">ndarray</span>
+<a href="#forge3d.scene.SceneManager.entity_count" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">entity_count</span><span class="p">:</span> <span class="nb">int</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Current joint angles (rad), shape (n,).</p>
+        <p>현재 씬의 살아있는 엔티티 수.</p>
 
     </div>
 
@@ -1795,17 +2133,17 @@ base_position : World-frame position of the robot base.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.robot.robot.Robot.set_joint" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">set_joint</span>
+<h3 id="forge3d.scene.SceneManager.load_scene" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">load_scene</span>
 
 
-<a href="#forge3d.robot.robot.Robot.set_joint" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">set_joint</span><span class="p">(</span><span class="n">idx</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">angle</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a href="#forge3d.scene.SceneManager.load_scene" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">load_scene</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Set joint <code>idx</code> to <code>angle</code> (radians).</p>
+        <p>현재 씬을 언로드하고 새 씬을 로드한다.</p>
 
 
     </div>
@@ -1815,17 +2153,17 @@ base_position : World-frame position of the robot base.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.robot.robot.Robot.set_joints" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">set_joints</span>
+<h3 id="forge3d.scene.SceneManager.add_scene" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">add_scene</span>
 
 
-<a href="#forge3d.robot.robot.Robot.set_joints" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">set_joints</span><span class="p">(</span><span class="n">q</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+<a href="#forge3d.scene.SceneManager.add_scene" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">add_scene</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Set all joint angles at once.</p>
+        <p>현재 씬에 중첩(additive)으로 씬을 추가한다.</p>
 
 
     </div>
@@ -1835,21 +2173,17 @@ base_position : World-frame position of the robot base.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.robot.robot.Robot.link_world_poses" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">link_world_poses</span>
+<h3 id="forge3d.scene.SceneManager.unload_scene" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">unload_scene</span>
 
 
-<a href="#forge3d.robot.robot.Robot.link_world_poses" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">link_world_poses</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]</span>
+<a href="#forge3d.scene.SceneManager.unload_scene" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">unload_scene</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>FK for all links.</p>
-<h5 id="forge3d.robot.robot.Robot.link_world_poses--returns">Returns<a class="headerlink" href="#forge3d.robot.robot.Robot.link_world_poses--returns" title="Permanent link">&para;</a></h5>
-<p>List of (pos, R) pairs (one per link), world frame.
-pos : (3,) float64 — joint origin position.
-R   : (3,3) float64 — link frame orientation.</p>
+        <p>현재 씬의 모든 엔티티를 소멸시킨다.</p>
 
 
     </div>
@@ -1859,17 +2193,17 @@ R   : (3,3) float64 — link frame orientation.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.robot.robot.Robot.ee_pose" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">ee_pose</span>
+<h3 id="forge3d.scene.SceneManager.on_scene_loaded" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">on_scene_loaded</span>
 
 
-<a href="#forge3d.robot.robot.Robot.ee_pose" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">ee_pose</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
+<a href="#forge3d.scene.SceneManager.on_scene_loaded" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">on_scene_loaded</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>End-effector pose (last link): (pos, R) in world frame.</p>
+        <p>씬 로드 완료 후 호출될 콜백을 등록한다.</p>
 
 
     </div>
@@ -1879,23 +2213,17 @@ R   : (3,3) float64 — link frame orientation.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="forge3d.robot.robot.Robot.link_visual_boxes" class="doc doc-heading">
-            <span class="doc doc-object-name doc-function-name">link_visual_boxes</span>
+<h3 id="forge3d.scene.SceneManager.on_scene_unloading" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">on_scene_unloading</span>
 
 
-<a href="#forge3d.robot.robot.Robot.link_visual_boxes" class="headerlink" title="Permanent link">&para;</a></h3>
-<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">link_visual_boxes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="nb">tuple</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="p">]</span>
+<a href="#forge3d.scene.SceneManager.on_scene_unloading" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">on_scene_unloading</span><span class="p">(</span><span class="n">callback</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
 </span></code></pre></div>
 
     <div class="doc doc-contents ">
 
-        <p>Compute (center, R, half_extents) for each link visual box.</p>
-<p>Each box connects the joint-i origin to the joint-(i+1) origin.
-Box z-axis is aligned along the segment direction.</p>
-<h5 id="forge3d.robot.robot.Robot.link_visual_boxes--returns">Returns<a class="headerlink" href="#forge3d.robot.robot.Robot.link_visual_boxes--returns" title="Permanent link">&para;</a></h5>
-<p>List of (center, R, half_extents) tuples.</p>
+        <p>씬 언로드 시작 전 호출될 콜백을 등록한다.</p>
 
 
     </div>
@@ -1909,12 +2237,68 @@ Box z-axis is aligned along the segment direction.</p>
     </div>
 
 </div><hr />
-<h2 id="loading-a-preset">Loading a preset<a class="headerlink" href="#loading-a-preset" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d.robot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3r</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">arm</span> <span class="o">=</span> <span class="n">f3r</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;ur5&quot;</span><span class="p">,</span> <span class="n">base_position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<h2 id="usage-examples">Usage examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
+<h3 id="build-a-scene-hierarchy">Build a scene hierarchy<a class="headerlink" href="#build-a-scene-hierarchy" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3d</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">sm</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">SceneManager</span><span class="p">()</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">()</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Root node (the scene root is always implicitly present)</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">root</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">root</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="c1"># Create a car node</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="n">car_node</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">SceneNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;car&quot;</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">car_node</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="n">sm</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">car_node</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">root</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="c1"># Attach wheels as children — they inherit the car&#39;s transform</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([(</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span> <span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>                              <span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mf">1.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]):</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="n">wheel</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">SceneNode</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;wheel_</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>    <span class="n">wheel</span><span class="o">.</span><span class="n">position</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>    <span class="n">sm</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">wheel</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">car_node</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Available presets: <code>"ur5"</code> (UR5 6-DOF)</p>
+<h3 id="prefab-reusable-entity-template">Prefab — reusable entity template<a class="headerlink" href="#prefab-reusable-entity-template" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Define a tree prefab once</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">tree_prefab</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Prefab</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;pine_tree&quot;</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">tree_prefab</span><span class="o">.</span><span class="n">add_body</span><span class="p">(</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">shape</span><span class="o">=</span><span class="n">f3d</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">)),</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">material</span><span class="o">=</span><span class="n">f3d</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)),</span>  <span class="c1"># trunk</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="p">)</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">tree_prefab</span><span class="o">.</span><span class="n">add_body</span><span class="p">(</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="n">shape</span><span class="o">=</span><span class="n">f3d</span><span class="o">.</span><span class="n">Shape</span><span class="o">.</span><span class="n">box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">)),</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">material</span><span class="o">=</span><span class="n">f3d</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">)),</span>  <span class="c1"># canopy</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">offset</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">),</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="p">)</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">sm</span><span class="o">.</span><span class="n">register_prefab</span><span class="p">(</span><span class="n">tree_prefab</span><span class="p">)</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>
+</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a><span class="c1"># Instantiate many trees</span>
+</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
+</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="o">-</span><span class="mi">30</span><span class="p">,</span> <span class="mi">30</span><span class="p">)</span>
+</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>    <span class="n">sm</span><span class="o">.</span><span class="n">instantiate</span><span class="p">(</span><span class="s2">&quot;pine_tree&quot;</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">world</span><span class="o">=</span><span class="n">world</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="scene-manager-queries">Scene manager queries<a class="headerlink" href="#scene-manager-queries" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Find a node by name</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">car</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;car&quot;</span><span class="p">)</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">car</span><span class="o">.</span><span class="n">world_position</span><span class="p">)</span>    <span class="c1"># absolute world-space position</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="c1"># Find all nodes matching a tag</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">enemies</span> <span class="o">=</span> <span class="n">sm</span><span class="o">.</span><span class="n">find_all_by_tag</span><span class="p">(</span><span class="s2">&quot;enemy&quot;</span><span class="p">)</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Destroy a node (and its children)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">sm</span><span class="o">.</span><span class="n">destroy</span><span class="p">(</span><span class="n">car</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="scene-serialization">Scene serialization<a class="headerlink" href="#scene-serialization" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Save the scene graph</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">sm</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;scene.json&quot;</span><span class="p">)</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="c1"># Load it back</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">sm2</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">SceneManager</span><span class="p">()</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">sm2</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;scene.json&quot;</span><span class="p">)</span>
+</span></code></pre></div>
 
 
 

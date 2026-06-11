@@ -10,31 +10,31 @@
       
       
       
-        <link rel="canonical" href="https://forge3d.readthedocs.io/architecture/">
+        <link rel="canonical" href="https://forge3d.readthedocs.io/api/profiler/">
       
       
-        <link rel="prev" href="../tutorials/04_rl/">
+        <link rel="prev" href="../editor/">
       
       
-        <link rel="next" href="../api/world/">
+        <link rel="next" href="../robot/">
       
       
         
       
       
-      <link rel="icon" href="../assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Architecture - forge3d</title>
+        <title>Profiler - forge3d</title>
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
         
-        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
       
       
 
@@ -53,9 +53,9 @@
       
     
     
-      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#architecture" class="md-skip">
+        <a href="#forge3dphysicsprofiler" class="md-skip">
           Skip to content
         </a>
       
@@ -96,7 +96,7 @@
 
 <header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href=".." title="forge3d" class="md-header__button md-logo" aria-label="forge3d" data-md-component="logo">
+    <a href="../.." title="forge3d" class="md-header__button md-logo" aria-label="forge3d" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Architecture
+              Profiler
             
           </span>
         </div>
@@ -223,7 +223,7 @@
   
   
     <li class="md-tabs__item">
-      <a href=".." class="md-tabs__link">
+      <a href="../.." class="md-tabs__link">
         
   
   
@@ -244,7 +244,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../install/" class="md-tabs__link">
+        <a href="../../install/" class="md-tabs__link">
           
   
   
@@ -264,7 +264,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../tutorials/01_physics/" class="md-tabs__link">
+        <a href="../../tutorials/01_physics/" class="md-tabs__link">
           
   
   
@@ -280,11 +280,9 @@
   
   
   
-    
   
-  
-    <li class="md-tabs__item md-tabs__item--active">
-      <a href="./" class="md-tabs__link">
+    <li class="md-tabs__item">
+      <a href="../../architecture/" class="md-tabs__link">
         
   
   
@@ -301,11 +299,13 @@
   
   
   
+    
+  
   
     
     
-      <li class="md-tabs__item">
-        <a href="../api/world/" class="md-tabs__link">
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../world/" class="md-tabs__link">
           
   
   
@@ -325,7 +325,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../whats_new_v2_1/" class="md-tabs__link">
+        <a href="../../whats_new_v2_1/" class="md-tabs__link">
           
   
   
@@ -343,7 +343,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../contributing/" class="md-tabs__link">
+      <a href="../../contributing/" class="md-tabs__link">
         
   
   
@@ -362,7 +362,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../changelog/" class="md-tabs__link">
+      <a href="../../changelog/" class="md-tabs__link">
         
   
   
@@ -405,7 +405,7 @@
 
 <nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href=".." title="forge3d" class="md-nav__button md-logo" aria-label="forge3d" data-md-component="logo">
+    <a href="../.." title="forge3d" class="md-nav__button md-logo" aria-label="forge3d" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -435,7 +435,7 @@
   
   
     <li class="md-nav__item">
-      <a href=".." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -516,7 +516,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../install/" class="md-nav__link">
+      <a href="../../install/" class="md-nav__link">
         
   
   
@@ -544,7 +544,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../quickstart/" class="md-nav__link">
+      <a href="../../quickstart/" class="md-nav__link">
         
   
   
@@ -633,7 +633,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/01_physics/" class="md-nav__link">
+      <a href="../../tutorials/01_physics/" class="md-nav__link">
         
   
   
@@ -661,7 +661,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/02_rendering/" class="md-nav__link">
+      <a href="../../tutorials/02_rendering/" class="md-nav__link">
         
   
   
@@ -689,7 +689,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/03_robot/" class="md-nav__link">
+      <a href="../../tutorials/03_robot/" class="md-nav__link">
         
   
   
@@ -717,7 +717,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../tutorials/04_rl/" class="md-nav__link">
+      <a href="../../tutorials/04_rl/" class="md-nav__link">
         
   
   
@@ -749,37 +749,10 @@
       
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
         
   
   
@@ -795,92 +768,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#the-scenesnapshot-contract" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The SceneSnapshot contract
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#layer-diagram" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Layer diagram
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#module-map" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Module map
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#design-rules-enforced-by-tests" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Design rules (enforced by tests)
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#backends" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Backends
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#two-layer-project-structure" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Two-layer project structure
-      
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -889,28 +776,31 @@
       
   
   
+    
   
   
+  
     
     
     
     
+      
+        
+        
       
       
         
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
-        
-          
-          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
             
   
   
@@ -928,7 +818,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -946,7 +836,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/world/" class="md-nav__link">
+      <a href="../world/" class="md-nav__link">
         
   
   
@@ -974,7 +864,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/body/" class="md-nav__link">
+      <a href="../body/" class="md-nav__link">
         
   
   
@@ -1002,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/shapes/" class="md-nav__link">
+      <a href="../shapes/" class="md-nav__link">
         
   
   
@@ -1030,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/app/" class="md-nav__link">
+      <a href="../app/" class="md-nav__link">
         
   
   
@@ -1058,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/rendering/" class="md-nav__link">
+      <a href="../rendering/" class="md-nav__link">
         
   
   
@@ -1086,7 +976,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/input/" class="md-nav__link">
+      <a href="../input/" class="md-nav__link">
         
   
   
@@ -1114,7 +1004,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/camera/" class="md-nav__link">
+      <a href="../camera/" class="md-nav__link">
         
   
   
@@ -1142,7 +1032,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/character/" class="md-nav__link">
+      <a href="../character/" class="md-nav__link">
         
   
   
@@ -1170,7 +1060,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/ecs/" class="md-nav__link">
+      <a href="../ecs/" class="md-nav__link">
         
   
   
@@ -1198,7 +1088,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/animation/" class="md-nav__link">
+      <a href="../animation/" class="md-nav__link">
         
   
   
@@ -1226,7 +1116,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/audio/" class="md-nav__link">
+      <a href="../audio/" class="md-nav__link">
         
   
   
@@ -1254,7 +1144,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/particle/" class="md-nav__link">
+      <a href="../particle/" class="md-nav__link">
         
   
   
@@ -1282,7 +1172,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/scene/" class="md-nav__link">
+      <a href="../scene/" class="md-nav__link">
         
   
   
@@ -1310,7 +1200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/editor/" class="md-nav__link">
+      <a href="../editor/" class="md-nav__link">
         
   
   
@@ -1335,10 +1225,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../api/profiler/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiler
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -1354,6 +1271,192 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#classes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Classes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhysicsProfiler
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PhysicsProfiler">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler.last" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        last
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler.step" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        step
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler.average" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        average
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler.reset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        reset
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler.__enter__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __enter__
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfiler.__exit__" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __exit__
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.profiler.PhysicsProfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhysicsProfile
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#measure-one-step-manually" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Measure one step manually
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#context-manager-wraps-worldstep" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Context manager (wraps world.step)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rolling-average-smooth-hud-display" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rolling average (smooth HUD display)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#physicsprofile-fields" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PhysicsProfile fields
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1366,7 +1469,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/robot/" class="md-nav__link">
+      <a href="../robot/" class="md-nav__link">
         
   
   
@@ -1394,7 +1497,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../api/backends/" class="md-nav__link">
+      <a href="../backends/" class="md-nav__link">
         
   
   
@@ -1483,7 +1586,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../whats_new_v2_1/" class="md-nav__link">
+      <a href="../../whats_new_v2_1/" class="md-nav__link">
         
   
   
@@ -1511,7 +1614,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../migration_v2/" class="md-nav__link">
+      <a href="../../migration_v2/" class="md-nav__link">
         
   
   
@@ -1539,7 +1642,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../whats_new_v1_1/" class="md-nav__link">
+      <a href="../../whats_new_v1_1/" class="md-nav__link">
         
   
   
@@ -1574,7 +1677,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../contributing/" class="md-nav__link">
+      <a href="../../contributing/" class="md-nav__link">
         
   
   
@@ -1601,7 +1704,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../changelog/" class="md-nav__link">
+      <a href="../../changelog/" class="md-nav__link">
         
   
   
@@ -1641,205 +1744,334 @@
   
 
 
-<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
-<p>forge3d is built around one principle: <strong>physics and rendering never know about each other</strong>.</p>
+<h1 id="forge3dphysicsprofiler">forge3d.PhysicsProfiler<a class="headerlink" href="#forge3dphysicsprofiler" title="Permanent link">&para;</a></h1>
+<p>The physics profiler measures how long each phase of <code>world.step()</code> takes so
+you can identify bottlenecks.</p>
 <hr />
-<h2 id="the-scenesnapshot-contract">The SceneSnapshot contract<a class="headerlink" href="#the-scenesnapshot-contract" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>world.step()               # pure physics — no renderer import
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>snap = world.snapshot()    # SceneSnapshot — pure data, no physics
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>frame = renderer.render(snap)  # renderer only knows about data
+<h2 id="classes">Classes<a class="headerlink" href="#classes" title="Permanent link">&para;</a></h2>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.profiler.PhysicsProfiler" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">PhysicsProfiler</span>
+
+
+<a href="#forge3d.profiler.PhysicsProfiler" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>Context-manager profiler that wraps world.step().</p>
+<p>Attach to a :class:<code>~forge3d.facade.World</code> via :attr:<code>world.profiler</code>
+(set automatically when first accessed) or create manually::</p>
+<div class="language-text highlight"><pre><span></span><code>world.profiler = PhysicsProfiler(world)
+</code></pre></div>
+<p>Use as context manager to measure one step::</p>
+<div class="language-text highlight"><pre><span></span><code>with world.profiler:
+    world.step(dt)
+
+print(world.profiler.last)
+</code></pre></div>
+<p>Or measure automatically by replacing <code>world.step</code>::</p>
+<div class="language-text highlight"><pre><span></span><code># Already handled by world.profiler — just use world.profiler.step(dt)
+world.profiler.step(dt)
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="forge3d.profiler.PhysicsProfiler.last" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">last</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-instance-attribute"><code>instance-attribute</code></small>
+  </span>
+
+<a href="#forge3d.profiler.PhysicsProfiler.last" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">last</span><span class="p">:</span> <span class="n">PhysicsProfile</span> <span class="o">=</span> <span class="n">PhysicsProfile</span><span class="p">()</span>
 </span></code></pre></div>
-<p><code>SceneSnapshot</code> is the sole bridge between physics and rendering. It contains:</p>
-<ul>
-<li>Per-body transforms (position + 3×3 rotation matrix)</li>
-<li>Shape descriptors (box / sphere / capsule / mesh)</li>
-<li>Material parameters (colour, roughness, metallic, emissive, texture path)</li>
-<li>Camera and light configuration</li>
-<li>Terrain heightfield data</li>
-</ul>
-<p>This means you can swap renderers — or skip rendering entirely (headless training) — without touching any physics code.</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>Physics core               → SceneSnapshot →  RealtimeRenderer   (OpenGL 3.3, PBR)
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>(RNEA / CRBA / ABA)                       →  DeferredRenderer   (OpenGL 4.3, G-buffer)
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>                                           →  HQRenderer         (NumPy ray-tracer)
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>                                           →  headless / training (no snapshot needed)
+
+    <div class="doc doc-contents ">
+
+    </div>
+
+</div>
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.profiler.PhysicsProfiler.step" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">step</span>
+
+
+<a href="#forge3d.profiler.PhysicsProfiler.step" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">step</span><span class="p">(</span><span class="n">dt</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Call world.step(dt) and record timing.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.profiler.PhysicsProfiler.average" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">average</span>
+
+
+<a href="#forge3d.profiler.PhysicsProfiler.average" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">average</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">60</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PhysicsProfile</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return average of the last <em>n</em> recorded steps.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.profiler.PhysicsProfiler.reset" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">reset</span>
+
+
+<a href="#forge3d.profiler.PhysicsProfiler.reset" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">reset</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Clear history.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.profiler.PhysicsProfiler.__enter__" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">__enter__</span>
+
+
+<a href="#forge3d.profiler.PhysicsProfiler.__enter__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">__enter__</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">PhysicsProfiler</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.profiler.PhysicsProfiler.__exit__" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">__exit__</span>
+
+
+<a href="#forge3d.profiler.PhysicsProfiler.__exit__" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">__exit__</span><span class="p">(</span><span class="o">*</span><span class="n">_</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.profiler.PhysicsProfile" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">PhysicsProfile</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-dataclass"><code>dataclass</code></small>
+  </span>
+
+<a href="#forge3d.profiler.PhysicsProfile" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>Timing snapshot for one physics step.</p>
+<p>All times are in milliseconds.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><hr />
+<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
+<h3 id="measure-one-step-manually">Measure one step manually<a class="headerlink" href="#measure-one-step-manually" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3d</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">()</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">world</span><span class="o">.</span><span class="n">add_ground</span><span class="p">()</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="n">world</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span>    <span class="c1"># measures this single step</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">p</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">last</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">total</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  broadphase:  </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">broadphase</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  narrowphase: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">narrowphase</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  solver:      </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">solver</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  integration: </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">integration</span><span class="o">*</span><span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> ms&quot;</span><span class="p">)</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  contacts:    </span><span class="si">{</span><span class="n">p</span><span class="o">.</span><span class="n">contacts</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="context-manager-wraps-worldstep">Context manager (wraps world.step)<a class="headerlink" href="#context-manager-wraps-worldstep" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="k">with</span> <span class="n">world</span><span class="o">.</span><span class="n">profiler</span><span class="p">:</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="nb">print</span><span class="p">(</span><span class="n">world</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">last</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="rolling-average-smooth-hud-display">Rolling average (smooth HUD display)<a class="headerlink" href="#rolling-average-smooth-hud-display" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">viewer</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Viewer</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Profile Demo&quot;</span><span class="p">)</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>    <span class="n">avg</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">profiler</span><span class="o">.</span><span class="n">average</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>   <span class="c1"># last-60-frame average</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">ms</span> <span class="o">=</span> <span class="n">avg</span><span class="o">.</span><span class="n">total</span> <span class="o">*</span> <span class="mi">1000</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Physics: </span><span class="si">{</span><span class="n">ms</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> ms (</span><span class="si">{</span><span class="n">avg</span><span class="o">.</span><span class="n">contacts</span><span class="si">}</span><span class="s2"> contacts)&quot;</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>                     <span class="n">x</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </span></code></pre></div>
 <hr />
-<h2 id="layer-diagram">Layer diagram<a class="headerlink" href="#layer-diagram" title="Permanent link">&para;</a></h2>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>┌────────────────────────────────────────────────────────────────────────────┐
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>│                          Public API (Facade)                                │
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>│   World · Body · Shape · Material · App · Viewer · Recorder                 │
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>│   Input · Key · OrbitCamera · FollowCamera · CharacterController            │
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>│   PhysicsProfiler                                                           │
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>├───────────────────────────────┬────────────────────────────────────────────┤
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>│   Advanced systems (v2.0)     │   Rendering layer                           │
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>│   ├─ ECS (EntityWorld)        │   Renderer (ABC)                            │
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>│   ├─ Animation (Skeleton,     │   ├── RealtimeRenderer (moderngl, PBR,      │
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>│   │    AnimationClip, FABRIK) │   │     PCF shadow, terrain)                │
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>│   ├─ Audio (AudioSystem,      │   ├── WindowedRealtimeRenderer (glfw, HUD)  │
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>│   │    AudioSource)           │   ├── DeferredRenderer (G-buf, SSAO, bloom) │
-</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>│   ├─ Particles (Emitter)      │   └── HQRenderer (NumPy ray-tracer)         │
-</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>│   ├─ Scene (SceneManager)     │                  ▲                          │
-</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>│   ├─ UI (Canvas, Panels)      │                  │  SceneSnapshot (data)    │
-</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>│   └─ Editor (EditorApp)       │──────────────────┘                          │
-</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>├───────────────────────────────┴────────────────────────────────────────────┤
-</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>│                          Physics core                                        │
-</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>│   math/        — SE3, quaternion, spatial algebra                           │
-</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>│   dynamics/    — RNEA, CRBA, ABA (Newton-Euler + Articulated-Body)          │
-</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>│   collision/   — SAT OBB-OBB, GJK+EPA, sphere/capsule analytic, heightfield│
-</span><span id="__span-2-22"><a id="__codelineno-2-22" name="__codelineno-2-22" href="#__codelineno-2-22"></a>│   contact/     — Impulse PGS solver, Coulomb friction, Baumgarte            │
-</span><span id="__span-2-23"><a id="__codelineno-2-23" name="__codelineno-2-23" href="#__codelineno-2-23"></a>│   constraints/ — Hinge, Prismatic, Ball, Fixed, Distance, Spring joints     │
-</span><span id="__span-2-24"><a id="__codelineno-2-24" name="__codelineno-2-24" href="#__codelineno-2-24"></a>│   model/       — URDF loader, DH kinematics, robot config                  │
-</span><span id="__span-2-25"><a id="__codelineno-2-25" name="__codelineno-2-25" href="#__codelineno-2-25"></a>│   sim/         — PhysicsWorld (step/CRUD/snapshot), JAX batch, domain rand │
-</span><span id="__span-2-26"><a id="__codelineno-2-26" name="__codelineno-2-26" href="#__codelineno-2-26"></a>└────────────────────────────────────────────────────────────────────────────┘
-</span></code></pre></div>
-<hr />
-<h2 id="module-map">Module map<a class="headerlink" href="#module-map" title="Permanent link">&para;</a></h2>
+<h2 id="physicsprofile-fields">PhysicsProfile fields<a class="headerlink" href="#physicsprofile-fields" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
-<th>Module</th>
-<th>Responsibility</th>
+<th>Field</th>
+<th>Type</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td><code>forge3d.math</code></td>
-<td>SE3 transforms, quaternion operations, spatial vector algebra</td>
+<td><code>total</code></td>
+<td><code>float</code></td>
+<td>Total <code>world.step()</code> wall time (seconds)</td>
 </tr>
 <tr>
-<td><code>forge3d.dynamics</code></td>
-<td>RNEA (Newton-Euler), CRBA (composite-rigid-body), ABA (Articulated-Body)</td>
+<td><code>broadphase</code></td>
+<td><code>float</code></td>
+<td>AABB overlap check time</td>
 </tr>
 <tr>
-<td><code>forge3d.collision</code></td>
-<td>SAT OBB-OBB, GJK+EPA convex narrow-phase, capsule/sphere analytic, AABB broad-phase, heightfield, raycast</td>
+<td><code>narrowphase</code></td>
+<td><code>float</code></td>
+<td>GJK/EPA / SAT time</td>
 </tr>
 <tr>
-<td><code>forge3d.contact</code></td>
-<td>Impulse PGS solver (6 iterations), Coulomb friction cones, Baumgarte position correction</td>
+<td><code>solver</code></td>
+<td><code>float</code></td>
+<td>PGS contact solve time</td>
 </tr>
 <tr>
-<td><code>forge3d.constraints</code></td>
-<td>Sequential Impulse joint solver — Hinge, Prismatic, Ball, Fixed, Distance, Spring</td>
+<td><code>integration</code></td>
+<td><code>float</code></td>
+<td>Semi-implicit Euler integration time</td>
 </tr>
 <tr>
-<td><code>forge3d.model</code></td>
-<td>URDF loader, DH kinematics model, robot config</td>
+<td><code>joints</code></td>
+<td><code>float</code></td>
+<td>Joint constraint solve time</td>
 </tr>
 <tr>
-<td><code>forge3d.sim</code></td>
-<td><code>PhysicsWorld</code> (step, CRUD, snapshot, sleeping), JAX batch step, domain randomization</td>
+<td><code>contacts</code></td>
+<td><code>int</code></td>
+<td>Number of active contact points this step</td>
 </tr>
 <tr>
-<td><code>forge3d.render</code></td>
-<td><code>Renderer</code> ABC, <code>SceneSnapshot</code> data contract, all renderers</td>
+<td><code>bodies</code></td>
+<td><code>int</code></td>
+<td>Number of dynamic (non-sleeping) bodies</td>
 </tr>
 <tr>
-<td><code>forge3d.robot</code></td>
-<td><code>Robot</code> class, UR5 preset, FK/IK</td>
-</tr>
-<tr>
-<td><code>forge3d.io</code></td>
-<td>OBJ loader, <code>MeshData</code>, convex hull inertia</td>
-</tr>
-<tr>
-<td><code>forge3d.facade</code></td>
-<td><code>World</code>, <code>Body</code>, <code>Shape</code>, <code>Material</code> — thin API wrappers</td>
-</tr>
-<tr>
-<td><code>forge3d.viewer</code></td>
-<td><code>Viewer</code> (headless + windowed realtime loop)</td>
-</tr>
-<tr>
-<td><code>forge3d.recorder</code></td>
-<td><code>Recorder</code> (video capture, policy rollout)</td>
-</tr>
-<tr>
-<td><code>forge3d.app</code></td>
-<td><code>App</code> (game-loop abstraction)</td>
-</tr>
-<tr>
-<td><code>forge3d.input</code></td>
-<td><code>Input</code> snapshot, <code>Key</code> constants, <code>InputBuilder</code></td>
-</tr>
-<tr>
-<td><code>forge3d.camera</code></td>
-<td><code>OrbitCamera</code>, <code>FollowCamera</code></td>
-</tr>
-<tr>
-<td><code>forge3d.character</code></td>
-<td><code>CharacterController</code> (capsule + ground raycast)</td>
-</tr>
-<tr>
-<td><code>forge3d.profiler</code></td>
-<td><code>PhysicsProfiler</code>, <code>PhysicsProfile</code></td>
-</tr>
-<tr>
-<td><code>forge3d.ecs</code></td>
-<td><code>EntityWorld</code>, <code>Component</code>, <code>System</code>, built-in components</td>
-</tr>
-<tr>
-<td><code>forge3d.animation</code></td>
-<td><code>Skeleton</code>, <code>AnimationClip</code>, <code>AnimationPlayer</code>, <code>BlendTree</code>, <code>FABRIKSolver</code></td>
-</tr>
-<tr>
-<td><code>forge3d.audio</code></td>
-<td><code>AudioSystem</code>, <code>AudioSource</code>, <code>AudioListener</code>, <code>AudioClip</code></td>
-</tr>
-<tr>
-<td><code>forge3d.particle</code></td>
-<td><code>ParticleEmitter</code>, <code>ParticleSystem</code>, presets</td>
-</tr>
-<tr>
-<td><code>forge3d.scene</code></td>
-<td><code>SceneManager</code>, <code>SceneNode</code>, <code>Prefab</code></td>
-</tr>
-<tr>
-<td><code>forge3d.ui</code></td>
-<td><code>Canvas</code>, <code>DebugPanel</code>, <code>InspectorPanel</code>, <code>HierarchyPanel</code>, <code>UISystem</code></td>
-</tr>
-<tr>
-<td><code>forge3d.editor</code></td>
-<td><code>EditorApp</code>, <code>PlayState</code>, gizmos</td>
-</tr>
-<tr>
-<td><code>forge3d.errors</code></td>
-<td><code>Forge3dError</code>, <code>ValidationError</code>, <code>PhysicsError</code>, <code>RenderError</code></td>
+<td><code>sleeping</code></td>
+<td><code>int</code></td>
+<td>Number of sleeping bodies skipped</td>
 </tr>
 </tbody>
 </table>
-<hr />
-<h2 id="design-rules-enforced-by-tests">Design rules (enforced by tests)<a class="headerlink" href="#design-rules-enforced-by-tests" title="Permanent link">&para;</a></h2>
-<ol>
-<li><strong>Physics core never imports render</strong> — <code>grep -r "from forge3d.render" src/forge3d/{math,dynamics,collision,contact,model,sim}</code> must return nothing.</li>
-<li><strong>Functional immutability</strong> — physics functions take a state and return a new state. No in-place mutation.</li>
-<li><strong>Both backends identical</strong> — <code>ENGINE_BACKEND=numpy</code> and <code>ENGINE_BACKEND=jax</code> produce numerically equal results within float64 tolerance.</li>
-<li><strong>Rust fallback</strong> — <code>USE_RUST_CORE=0</code> must pass all tests. The Python path is always correct; Rust is only a speed accelerator.</li>
-</ol>
-<hr />
-<h2 id="backends">Backends<a class="headerlink" href="#backends" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="nv">ENGINE_BACKEND</span><span class="o">=</span>numpy<span class="w"> </span>python<span class="w"> </span>my_sim.py<span class="w">   </span><span class="c1"># NumPy (default, always available)</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="nv">ENGINE_BACKEND</span><span class="o">=</span>jax<span class="w">   </span>python<span class="w"> </span>my_sim.py<span class="w">   </span><span class="c1"># JAX JIT + vmap (optional acceleration)</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="nv">USE_RUST_CORE</span><span class="o">=</span><span class="m">1</span><span class="w">      </span>python<span class="w"> </span>my_sim.py<span class="w">   </span><span class="c1"># Enable Rust PGS + GJK (requires build)</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="nv">USE_RUST_CORE</span><span class="o">=</span><span class="m">0</span><span class="w">      </span>python<span class="w"> </span>my_sim.py<span class="w">   </span><span class="c1"># Force Python fallback</span>
-</span></code></pre></div>
-<p>The physics core uses a thin <code>backend.py</code> shim mapping <code>xp.array</code>, <code>xp.dot</code>, etc. to
-either <code>numpy</code> or <code>jax.numpy</code>. JAX unlocks JIT compilation and <code>vmap</code> for batched
-multi-environment rollouts, achieving ~2,000× throughput over single-step Python.</p>
-<hr />
-<h2 id="two-layer-project-structure">Two-layer project structure<a class="headerlink" href="#two-layer-project-structure" title="Permanent link">&para;</a></h2>
-<p>forge3d enforces a strict library / application separation:</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>src/forge3d/          ← Library (1st-class product)
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>  facade.py           ← Public World/Body/Shape/Material API
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>  sim/world.py        ← PhysicsWorld internal engine
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>  ...
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>apps/                 ← Application layer (uses library as external user)
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>  my_game/
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    main.py           ← import forge3d  (never touches src/forge3d internals)
-</span></code></pre></div>
-<p>If writing an application requires changing the library internals, the abstraction has failed.
-Stop and fix the API instead.</p>
 
 
 
@@ -1922,10 +2154,10 @@ Stop and fix the API instead.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.integrate"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.tabs", "navigation.tabs.sticky", "navigation.sections", "navigation.expand", "navigation.top", "search.suggest", "search.highlight", "content.code.copy", "content.code.annotate", "toc.integrate"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

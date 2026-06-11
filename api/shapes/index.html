@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation.">
+        <meta name="description" content="Pure-Python 3D physics game engine — fast like native, beautiful like simulation.">
       
       
       
@@ -27,7 +27,7 @@
     
     
       
-        <title>forge3d.Shape & Material - forge3d</title>
+        <title>Shape & Material - forge3d</title>
       
     
     
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              forge3d.Shape & Material
+              Shape & Material
             
           </span>
         </div>
@@ -322,6 +322,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../whats_new_v2_1/" class="md-tabs__link">
+          
+  
+  
+  What's New
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../contributing/" class="md-tabs__link">
         
@@ -352,26 +372,6 @@
 
       </a>
     </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../whats_new_v1_1/" class="md-tabs__link">
-          
-  
-  
-  What's New
-
-        </a>
-      </li>
-    
   
 
       
@@ -640,7 +640,7 @@
   <span class="md-ellipsis">
     
   
-    Physics Simulation
+    1 — Physics Simulation
   
 
     
@@ -668,7 +668,7 @@
   <span class="md-ellipsis">
     
   
-    Realtime & HQ Rendering
+    2 — Realtime & HQ Rendering
   
 
     
@@ -696,7 +696,7 @@
   <span class="md-ellipsis">
     
   
-    Robot Arm (FK / IK)
+    3 — Robot Arm (FK / IK)
   
 
     
@@ -724,7 +724,7 @@
   <span class="md-ellipsis">
     
   
-    Reinforcement Learning
+    4 — Reinforcement Learning
   
 
     
@@ -843,7 +843,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.World
+    World
   
 
     
@@ -871,7 +871,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Body
+    Body
   
 
     
@@ -908,7 +908,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Shape & Material
+    Shape & Material
   
 
     
@@ -926,7 +926,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Shape & Material
+    Shape & Material
   
 
     
@@ -1057,6 +1057,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#material-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Material parameters
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1067,6 +1078,100 @@
     <span class="md-ellipsis">
       
         Built-in colour presets
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#collisionlayer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollisionLayer
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.collision.layers.CollisionLayer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CollisionLayer
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="CollisionLayer">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.collision.layers.CollisionLayer.mask_for" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        mask_for
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#layer-table" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Layer table
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collision-rule" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collision rule
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Usage
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#jointtype" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JointType
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#forge3d.constraints.joint_type.JointType" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        JointType
       
     </span>
   </a>
@@ -1096,35 +1201,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.App
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../input/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    forge3d.Input & Key
+    App
   
 
     
@@ -1152,7 +1229,35 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Viewer & Recorder
+    Viewer & Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input & Key
   
 
     
@@ -1180,7 +1285,231 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Camera
+    Camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../character/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Character Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../animation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Animation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../particle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Particle System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiler
   
 
     
@@ -1208,7 +1537,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.robot
+    Robot
   
 
     
@@ -1237,6 +1566,151 @@
     
   
     Backend (NumPy / JAX)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What's New
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    What's New
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whats_new_v2_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.1.0 — Advanced Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.0 — Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whats_new_v1_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.1.0 — Game-Ready
   
 
     
@@ -1307,95 +1781,6 @@
   
 
       </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What's New
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    What's New
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../whats_new_v1_1/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v1.1.0 — Game-Ready
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1650,7 +2035,65 @@ Material(texture_path="wall.png")</p>
 
     </div>
 
-</div><hr />
+</div><h3 id="material-parameters">Material parameters<a class="headerlink" href="#material-parameters" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Type</th>
+<th>Default</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>color</code></td>
+<td><code>str \| tuple</code></td>
+<td><code>"default"</code></td>
+<td>Preset name or <code>(R, G, B)</code> in [0, 1]</td>
+</tr>
+<tr>
+<td><code>roughness</code></td>
+<td><code>float</code></td>
+<td><code>0.5</code></td>
+<td>0 = mirror, 1 = fully diffuse</td>
+</tr>
+<tr>
+<td><code>metallic</code></td>
+<td><code>float</code></td>
+<td><code>0.0</code></td>
+<td>0 = dielectric, 1 = conductor</td>
+</tr>
+<tr>
+<td><code>emissive</code></td>
+<td><code>float</code></td>
+<td><code>0.0</code></td>
+<td>Emissive glow intensity (0 = no glow)</td>
+</tr>
+<tr>
+<td><code>texture_path</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to albedo PNG/JPEG</td>
+</tr>
+<tr>
+<td><code>normal_map_path</code></td>
+<td><code>str \| None</code></td>
+<td><code>None</code></td>
+<td>Path to tangent-space normal map</td>
+</tr>
+</tbody>
+</table>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># Standard PBR material</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">f3d</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span> <span class="n">roughness</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">metallic</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># Glowing object (e.g. lava, neon sign)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">f3d</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span> <span class="n">emissive</span><span class="o">=</span><span class="mf">3.0</span><span class="p">)</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># Textured surface</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">f3d</span><span class="o">.</span><span class="n">Material</span><span class="p">(</span><span class="n">texture_path</span><span class="o">=</span><span class="s2">&quot;assets/sand.png&quot;</span><span class="p">,</span> <span class="n">roughness</span><span class="o">=</span><span class="mf">0.9</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
 <h2 id="built-in-colour-presets">Built-in colour presets<a class="headerlink" href="#built-in-colour-presets" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -1662,35 +2105,329 @@ Material(texture_path="wall.png")</p>
 <tbody>
 <tr>
 <td><code>"default"</code></td>
-<td>(0.7, 0.7, 0.7)</td>
+<td>(0.75, 0.75, 0.75)</td>
 </tr>
 <tr>
 <td><code>"red"</code></td>
-<td>(0.8, 0.2, 0.2)</td>
+<td>(0.90, 0.20, 0.10)</td>
 </tr>
 <tr>
 <td><code>"blue"</code></td>
-<td>(0.2, 0.4, 0.8)</td>
+<td>(0.15, 0.35, 0.90)</td>
 </tr>
 <tr>
 <td><code>"green"</code></td>
-<td>(0.2, 0.7, 0.2)</td>
+<td>(0.15, 0.70, 0.25)</td>
 </tr>
 <tr>
 <td><code>"orange"</code></td>
-<td>(0.9, 0.5, 0.1)</td>
+<td>(0.95, 0.55, 0.05)</td>
 </tr>
 <tr>
 <td><code>"gold"</code></td>
-<td>(1.0, 0.8, 0.0)</td>
+<td>(0.83, 0.68, 0.21) metallic=1</td>
 </tr>
 <tr>
 <td><code>"white"</code></td>
-<td>(1.0, 1.0, 1.0)</td>
+<td>(0.95, 0.95, 0.95)</td>
 </tr>
 <tr>
 <td><code>"ground"</code></td>
-<td>(0.4, 0.35, 0.3)</td>
+<td>(0.30, 0.48, 0.28)</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="collisionlayer">CollisionLayer<a class="headerlink" href="#collisionlayer" title="Permanent link">&para;</a></h2>
+<p>Bit-field constants for collision filtering.</p>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.collision.layers.CollisionLayer" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">CollisionLayer</span>
+
+
+<a href="#forge3d.collision.layers.CollisionLayer" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+
+
+
+        <p>Named bit-field constants for collision layers.</p>
+<p>Collision rule: bodies A and B collide if and only if:
+<code>(A.collision_layer &amp; B.collision_mask) != 0</code>
+and
+<code>(B.collision_layer &amp; A.collision_mask) != 0</code></p>
+<p>The default is layer 0x0001 with mask 0xFFFF (collide with everything).</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.collision.layers.CollisionLayer.mask_for" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">mask_for</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-staticmethod"><code>staticmethod</code></small>
+  </span>
+
+<a href="#forge3d.collision.layers.CollisionLayer.mask_for" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">mask_for</span><span class="p">(</span><span class="o">*</span><span class="n">layers</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return a bitmask that matches any of the given layers.</p>
+<p>Example::</p>
+<div class="language-text highlight"><pre><span></span><code># Player body collides with terrain and enemies:
+player.collision_mask = CollisionLayer.mask_for(
+    CollisionLayer.TERRAIN,
+    CollisionLayer.ENEMY,
+)
+# → 0b00001100 = 0x000C
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+
+
+  </div>
+
+    </div>
+
+</div><h3 id="layer-table">Layer table<a class="headerlink" href="#layer-table" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>DEFAULT</code></td>
+<td>0x0001</td>
+<td>Generic objects</td>
+</tr>
+<tr>
+<td><code>PLAYER</code></td>
+<td>0x0002</td>
+<td>Player character</td>
+</tr>
+<tr>
+<td><code>ENEMY</code></td>
+<td>0x0004</td>
+<td>Enemy bodies</td>
+</tr>
+<tr>
+<td><code>TERRAIN</code></td>
+<td>0x0008</td>
+<td>Heightfield terrain</td>
+</tr>
+<tr>
+<td><code>TRIGGER</code></td>
+<td>0x0010</td>
+<td>Trigger zones</td>
+</tr>
+<tr>
+<td><code>BULLET</code></td>
+<td>0x0020</td>
+<td>Projectiles</td>
+</tr>
+<tr>
+<td><code>DEBRIS</code></td>
+<td>0x0040</td>
+<td>Breakable pieces</td>
+</tr>
+<tr>
+<td><code>SENSOR</code></td>
+<td>0x0080</td>
+<td>Sensor-only bodies</td>
+</tr>
+<tr>
+<td><code>NONE</code></td>
+<td>0x0000</td>
+<td>Disable all collision</td>
+</tr>
+<tr>
+<td><code>ALL</code></td>
+<td>0xFFFF</td>
+<td>Collide with everything</td>
+</tr>
+</tbody>
+</table>
+<h3 id="collision-rule">Collision rule<a class="headerlink" href="#collision-rule" title="Permanent link">&para;</a></h3>
+<p>Bodies A and B collide <strong>if and only if</strong>:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>(A.collision_layer &amp; B.collision_mask) != 0
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>AND
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>(B.collision_layer &amp; A.collision_mask) != 0
+</span></code></pre></div>
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionLayer</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">player</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_capsule</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;player&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">PLAYER</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_mask</span>  <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">mask_for</span><span class="p">(</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">TERRAIN</span><span class="p">,</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span><span class="p">,</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="p">)</span>  <span class="c1"># player collides with terrain and enemies only</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">bullet</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">mass</span><span class="o">=</span><span class="mf">0.01</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">bullet</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">BULLET</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">bullet</span><span class="o">.</span><span class="n">collision_mask</span>  <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">mask_for</span><span class="p">(</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span><span class="p">,</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">DEFAULT</span><span class="p">,</span>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="p">)</span>  <span class="c1"># bullets hit enemies and default objects, not other bullets</span>
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a><span class="c1"># Filter overlap / raycast queries by layer</span>
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a><span class="n">hits</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast_all</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span>
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>                          <span class="n">layer_mask</span><span class="o">=</span><span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span><span class="p">)</span>
+</span></code></pre></div>
+<hr />
+<h2 id="jointtype">JointType<a class="headerlink" href="#jointtype" title="Permanent link">&para;</a></h2>
+<p>Type-safe enumeration for <code>world.add_joint()</code>.</p>
+
+
+<div class="doc doc-object doc-class">
+
+
+
+<h2 id="forge3d.constraints.joint_type.JointType" class="doc doc-heading">
+            <span class="doc doc-object-name doc-class-name">JointType</span>
+
+
+<a href="#forge3d.constraints.joint_type.JointType" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents first">
+            <p class="doc doc-class-bases">
+              Bases: <code><span title="enum.StrEnum">StrEnum</span></code></p>
+
+
+
+        <p>Enumeration of supported joint types.</p>
+<p>Pass to :meth:<code>forge3d.World.add_joint</code> as <code>joint_type</code>::</p>
+<div class="language-text highlight"><pre><span></span><code>hinge = world.add_joint(JointType.HINGE, door, frame,
+                        anchor_a=(-0.5, 0, 0),
+                        anchor_b=( 0.5, 0, 0),
+                        axis=(0, 0, 1))
+</code></pre></div>
+<p>All values are also accepted as plain strings (case-insensitive):
+<code>"hinge"</code> == <code>JointType.HINGE</code>.</p>
+
+
+
+
+
+
+
+
+
+
+
+<div class="doc doc-children">
+
+
+
+
+
+
+
+
+
+
+
+
+  </div>
+
+    </div>
+
+</div><div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointType</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">hinge</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">JointType</span><span class="o">.</span><span class="n">HINGE</span><span class="p">,</span> <span class="n">door</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">anchor_a</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">anchor_b</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="n">spring</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">JointType</span><span class="o">.</span><span class="n">SPRING</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">ceiling</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">stiffness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span> <span class="n">damping</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">rest_length</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="p">)</span>
+</span></code></pre></div>
+<table>
+<thead>
+<tr>
+<th>Value</th>
+<th>Alias</th>
+<th>DOF</th>
+<th>Typical use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>FIXED</code></td>
+<td>—</td>
+<td>0</td>
+<td>Rigid weld</td>
+</tr>
+<tr>
+<td><code>BALL</code></td>
+<td>—</td>
+<td>3 rot</td>
+<td>Shoulder, ball-socket</td>
+</tr>
+<tr>
+<td><code>HINGE</code></td>
+<td><code>REVOLUTE</code></td>
+<td>1 rot</td>
+<td>Door hinge, wheel</td>
+</tr>
+<tr>
+<td><code>PRISMATIC</code></td>
+<td><code>SLIDER</code></td>
+<td>1 lin</td>
+<td>Piston, elevator</td>
+</tr>
+<tr>
+<td><code>DISTANCE</code></td>
+<td>—</td>
+<td>—</td>
+<td>Keep anchor distance</td>
+</tr>
+<tr>
+<td><code>SPRING</code></td>
+<td>—</td>
+<td>—</td>
+<td>Elastic tether</td>
 </tr>
 </tbody>
 </table>

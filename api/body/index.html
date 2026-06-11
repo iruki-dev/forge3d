@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation.">
+        <meta name="description" content="Pure-Python 3D physics game engine — fast like native, beautiful like simulation.">
       
       
       
@@ -27,7 +27,7 @@
     
     
       
-        <title>forge3d.Body - forge3d</title>
+        <title>Body - forge3d</title>
       
     
     
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              forge3d.Body
+              Body
             
           </span>
         </div>
@@ -322,6 +322,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../whats_new_v2_1/" class="md-tabs__link">
+          
+  
+  
+  What's New
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../contributing/" class="md-tabs__link">
         
@@ -352,26 +372,6 @@
 
       </a>
     </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../whats_new_v1_1/" class="md-tabs__link">
-          
-  
-  
-  What's New
-
-        </a>
-      </li>
-    
   
 
       
@@ -640,7 +640,7 @@
   <span class="md-ellipsis">
     
   
-    Physics Simulation
+    1 — Physics Simulation
   
 
     
@@ -668,7 +668,7 @@
   <span class="md-ellipsis">
     
   
-    Realtime & HQ Rendering
+    2 — Realtime & HQ Rendering
   
 
     
@@ -696,7 +696,7 @@
   <span class="md-ellipsis">
     
   
-    Robot Arm (FK / IK)
+    3 — Robot Arm (FK / IK)
   
 
     
@@ -724,7 +724,7 @@
   <span class="md-ellipsis">
     
   
-    Reinforcement Learning
+    4 — Reinforcement Learning
   
 
     
@@ -843,7 +843,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.World
+    World
   
 
     
@@ -880,7 +880,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Body
+    Body
   
 
     
@@ -898,7 +898,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Body
+    Body
   
 
     
@@ -1002,6 +1002,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forge3d.facade.Body.rotation_matrix" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        rotation_matrix
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#forge3d.facade.Body.name" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1039,6 +1050,28 @@
     <span class="md-ellipsis">
       
         mass
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.facade.Body.shape_type" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shape_type
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.facade.Body.shape_params" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        shape_params
       
     </span>
   </a>
@@ -1205,6 +1238,28 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#forge3d.facade.Body.on_collision_begin" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on_collision_begin
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#forge3d.facade.Body.on_collision_end" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        on_collision_end
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1267,6 +1322,39 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#runtime-name-change" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runtime name change
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#shape-query" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Shape query
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#per-body-collision-callbacks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Per-body collision callbacks
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#collision-layers" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1305,7 +1393,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Shape & Material
+    Shape & Material
   
 
     
@@ -1333,35 +1421,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.App
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../input/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    forge3d.Input & Key
+    App
   
 
     
@@ -1389,7 +1449,35 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Viewer & Recorder
+    Viewer & Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input & Key
   
 
     
@@ -1417,7 +1505,231 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Camera
+    Camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../character/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Character Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ecs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../animation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Animation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../particle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Particle System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../profiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiler
   
 
     
@@ -1445,7 +1757,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.robot
+    Robot
   
 
     
@@ -1474,6 +1786,151 @@
     
   
     Backend (NumPy / JAX)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What's New
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    What's New
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whats_new_v2_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.1.0 — Advanced Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.0 — Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whats_new_v1_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.1.0 — Game-Ready
   
 
     
@@ -1544,95 +2001,6 @@
   
 
       </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What's New
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    What's New
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../whats_new_v1_1/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v1.1.0 — Game-Ready
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1813,12 +2181,37 @@ box.apply_force((0, 0, 10))     # applied on next world.step()</p>
 
 
 
+<h3 id="forge3d.facade.Body.rotation_matrix" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">rotation_matrix</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#forge3d.facade.Body.rotation_matrix" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">rotation_matrix</span><span class="p">:</span> <span class="n">ndarray</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Body orientation as a 3×3 rotation matrix (world frame).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
 <h3 id="forge3d.facade.Body.name" class="doc doc-heading">
             <span class="doc doc-object-name doc-attribute-name">name</span>
 
 
   <span class="doc doc-labels">
       <small class="doc doc-label doc-label-property"><code>property</code></small>
+      <small class="doc doc-label doc-label-writable"><code>writable</code></small>
   </span>
 
 <a href="#forge3d.facade.Body.name" class="headerlink" title="Permanent link">&para;</a></h3>
@@ -1827,7 +2220,7 @@ box.apply_force((0, 0, 10))     # applied on next world.step()</p>
 
     <div class="doc doc-contents ">
 
-        <p>Human-readable name assigned at creation.</p>
+        <p>Human-readable name assigned at creation.  Can be changed at runtime.</p>
 
     </div>
 
@@ -1900,6 +2293,55 @@ box.apply_force((0, 0, 10))     # applied on next world.step()</p>
     <div class="doc doc-contents ">
 
         <p>Body mass in kg (0.0 for static bodies).</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="forge3d.facade.Body.shape_type" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">shape_type</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#forge3d.facade.Body.shape_type" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">shape_type</span><span class="p">:</span> <span class="nb">str</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Shape kind: <code>'box'</code>, <code>'sphere'</code>, <code>'capsule'</code>, <code>'mesh'</code>, etc.</p>
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-attribute">
+
+
+
+<h3 id="forge3d.facade.Body.shape_params" class="doc doc-heading">
+            <span class="doc doc-object-name doc-attribute-name">shape_params</span>
+
+
+  <span class="doc doc-labels">
+      <small class="doc doc-label doc-label-property"><code>property</code></small>
+  </span>
+
+<a href="#forge3d.facade.Body.shape_params" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">shape_params</span><span class="p">:</span> <span class="nb">dict</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Shape parameters dict (e.g. <code>{'half_extents': array([0.5, 0.5, 0.5])}</code>).</p>
+<p>Returns a copy — mutating the dict does not affect the simulation.</p>
 
     </div>
 
@@ -2190,6 +2632,52 @@ world.step(dt=1/60)                       # force applied here
 
 </div>
 
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.facade.Body.on_collision_begin" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">on_collision_begin</span>
+
+
+<a href="#forge3d.facade.Body.on_collision_begin" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">on_collision_begin</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Register a callback fired when this body first contacts another.</p>
+<p>The callback receives <code>(other: Body, event: CollisionEvent)</code>.</p>
+<p>Can be used as a decorator::</p>
+<div class="language-text highlight"><pre><span></span><code>@player.on_collision_begin
+def hit(other, event):
+    print(f&quot;player hit {other.name}&quot;)
+</code></pre></div>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.facade.Body.on_collision_end" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">on_collision_end</span>
+
+
+<a href="#forge3d.facade.Body.on_collision_end" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">on_collision_end</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Register a callback fired when this body separates from another.</p>
+
+
+    </div>
+
+</div>
+
 
 
   </div>
@@ -2250,15 +2738,45 @@ world.step(dt=1/60)                       # force applied here
 </span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="mi">1</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span>
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">print</span><span class="p">(</span><span class="n">box</span><span class="o">.</span><span class="n">velocity</span><span class="p">)</span>
 </span></code></pre></div>
+<h3 id="runtime-name-change">Runtime name change<a class="headerlink" href="#runtime-name-change" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">head</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.21</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mf">1.8</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;head&quot;</span><span class="p">)</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">head</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;player_head&quot;</span>   <span class="c1"># settable at any time</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">head</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>             <span class="c1"># &quot;player_head&quot;</span>
+</span></code></pre></div>
+<h3 id="shape-query">Shape query<a class="headerlink" href="#shape-query" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">capsule</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_capsule</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">capsule</span><span class="o">.</span><span class="n">shape_type</span><span class="p">)</span>     <span class="c1"># &quot;capsule&quot;</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="nb">print</span><span class="p">(</span><span class="n">capsule</span><span class="o">.</span><span class="n">shape_params</span><span class="p">)</span>   <span class="c1"># {&#39;radius&#39;: 0.3, &#39;half_length&#39;: 0.9}</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="c1"># Rotation as 3×3 matrix (alternative to .orientation quaternion)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">R</span> <span class="o">=</span> <span class="n">capsule</span><span class="o">.</span><span class="n">rotation_matrix</span>   <span class="c1"># np.ndarray (3, 3)</span>
+</span></code></pre></div>
+<h3 id="per-body-collision-callbacks">Per-body collision callbacks<a class="headerlink" href="#per-body-collision-callbacks" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">player</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_capsule</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;player&quot;</span><span class="p">)</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">floor</span>  <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_ground</span><span class="p">()</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="nd">@player</span><span class="o">.</span><span class="n">on_collision_begin</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="k">def</span><span class="w"> </span><span class="nf">hit</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;player hit </span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">  speed=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">relative_speed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m/s&quot;</span><span class="p">)</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="nd">@player</span><span class="o">.</span><span class="n">on_collision_end</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="k">def</span><span class="w"> </span><span class="nf">left</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;player separated from </span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="c1"># Callbacks fire automatically inside world.step()</span>
+</span></code></pre></div>
 <h3 id="collision-layers">Collision layers<a class="headerlink" href="#collision-layers" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionLayer</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">player</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">PLAYER</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_mask</span>  <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ALL</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">ghost</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">ghost</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">NONE</span>   <span class="c1"># no collision</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionLayer</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">player</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">PLAYER</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_mask</span>  <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">mask_for</span><span class="p">(</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">TERRAIN</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span><span class="p">,</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a><span class="p">)</span>  <span class="c1"># collide only with terrain and enemies</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">ghost</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">ghost</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">NONE</span>   <span class="c1"># no collision</span>
 </span></code></pre></div>
 
 

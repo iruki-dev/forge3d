@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Pure-Python 3D physics game engine — easy like pygame, beautiful like simulation.">
+        <meta name="description" content="Pure-Python 3D physics game engine — fast like native, beautiful like simulation.">
       
       
       
@@ -27,7 +27,7 @@
     
     
       
-        <title>Reinforcement Learning - forge3d</title>
+        <title>4 — Reinforcement Learning - forge3d</title>
       
     
     
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Reinforcement Learning
+              4 — Reinforcement Learning
             
           </span>
         </div>
@@ -322,6 +322,26 @@
   
   
   
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../whats_new_v2_1/" class="md-tabs__link">
+          
+  
+  
+  What's New
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
     <li class="md-tabs__item">
       <a href="../../contributing/" class="md-tabs__link">
         
@@ -352,26 +372,6 @@
 
       </a>
     </li>
-  
-
-      
-        
-  
-  
-  
-  
-    
-    
-      <li class="md-tabs__item">
-        <a href="../../whats_new_v1_1/" class="md-tabs__link">
-          
-  
-  
-  What's New
-
-        </a>
-      </li>
-    
   
 
       
@@ -643,7 +643,7 @@
   <span class="md-ellipsis">
     
   
-    Physics Simulation
+    1 — Physics Simulation
   
 
     
@@ -671,7 +671,7 @@
   <span class="md-ellipsis">
     
   
-    Realtime & HQ Rendering
+    2 — Realtime & HQ Rendering
   
 
     
@@ -699,7 +699,7 @@
   <span class="md-ellipsis">
     
   
-    Robot Arm (FK / IK)
+    3 — Robot Arm (FK / IK)
   
 
     
@@ -736,7 +736,7 @@
   <span class="md-ellipsis">
     
   
-    Reinforcement Learning
+    4 — Reinforcement Learning
   
 
     
@@ -754,7 +754,7 @@
   <span class="md-ellipsis">
     
   
-    Reinforcement Learning
+    4 — Reinforcement Learning
   
 
     
@@ -830,21 +830,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#render-modes" class="md-nav__link">
+  <a href="#rendering-a-rollout" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Render modes
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#pickplaceenv-pick-and-place" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        PickPlaceEnv — pick and place
+        Rendering a rollout
       
     </span>
   </a>
@@ -863,13 +852,52 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#learning-dashboard" class="md-nav__link">
+  <a href="#domain-randomization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Learning dashboard
+        Domain randomization
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#switch-to-jax-backend" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Switch to JAX backend
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pickplaceenv-pick-and-place" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        PickPlaceEnv — pick and place
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="PickPlaceEnv — pick and place">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#observation-18-dims" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Observation (18 dims)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -984,7 +1012,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.World
+    World
   
 
     
@@ -1012,7 +1040,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Body
+    Body
   
 
     
@@ -1040,7 +1068,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Shape & Material
+    Shape & Material
   
 
     
@@ -1068,35 +1096,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.App
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/input/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    forge3d.Input & Key
+    App
   
 
     
@@ -1124,7 +1124,35 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Viewer & Recorder
+    Viewer & Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input & Key
   
 
     
@@ -1152,7 +1180,231 @@
   <span class="md-ellipsis">
     
   
-    forge3d.Camera
+    Camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/character/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Character Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/ecs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/animation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Animation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/particle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Particle System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/profiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiler
   
 
     
@@ -1180,7 +1432,7 @@
   <span class="md-ellipsis">
     
   
-    forge3d.robot
+    Robot
   
 
     
@@ -1209,6 +1461,151 @@
     
   
     Backend (NumPy / JAX)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    What's New
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    What's New
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whats_new_v2_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.1.0 — Advanced Systems
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../migration_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.0 — Migration Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../whats_new_v1_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.1.0 — Game-Ready
   
 
     
@@ -1283,95 +1680,6 @@
   
 
     
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-      
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_8" >
-        
-          
-          <label class="md-nav__link" for="__nav_8" id="__nav_8_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    What's New
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_8">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    What's New
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../whats_new_v1_1/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    v1.1.0 — Game-Ready
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
   </ul>
 </nav>
                   </div>
@@ -1393,17 +1701,15 @@
 
 
 <h1 id="tutorial-4-reinforcement-learning">Tutorial 4 — Reinforcement Learning<a class="headerlink" href="#tutorial-4-reinforcement-learning" title="Permanent link">&para;</a></h1>
-<p>forge3d provides Gymnasium-compatible environments for robot learning. Training runs headless (no renderer) and is fast enough for CPU-only machines with JAX JIT+vmap.</p>
+<p>forge3d ships two Gymnasium-compatible environments for robot learning.
+Training runs headless (no renderer), and with JAX <code>vmap</code> you can step
+thousands of parallel environments at near-native speed.</p>
 <hr />
 <h2 id="reachenv-robot-reaching">ReachEnv — robot reaching<a class="headerlink" href="#reachenv-robot-reaching" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">apps.robot_rl.envs.reach_env</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReachEnv</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.sim.jax_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch_reach_reset</span><span class="p">,</span> <span class="n">batch_reach_step</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gymnasium</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gym</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="n">env</span> <span class="o">=</span> <span class="n">ReachEnv</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>   <span class="c1"># headless (fast)</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="n">obs</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Obs shape: </span><span class="si">{</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (12,)</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Action space: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">action_space</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Box(-1, 1, (6,))</span>
 </span></code></pre></div>
+<p>The <code>ReachEnv</code> is available via the <code>forge3d.sim</code> module or as a direct Gymnasium env.</p>
 <h3 id="observation-12-dims">Observation (12 dims)<a class="headerlink" href="#observation-12-dims" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
@@ -1431,53 +1737,110 @@
 <p>Delta joint angles Δq ∈ [−1, 1] rad/step.</p>
 <hr />
 <h2 id="training-with-sb3">Training with SB3<a class="headerlink" href="#training-with-sb3" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">stable_baselines3</span><span class="w"> </span><span class="kn">import</span> <span class="n">PPO</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">apps.robot_rl.envs.reach_env</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReachEnv</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">gymnasium</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">gym</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">stable_baselines3</span><span class="w"> </span><span class="kn">import</span> <span class="n">PPO</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">env</span>   <span class="o">=</span> <span class="n">ReachEnv</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">model</span> <span class="o">=</span> <span class="n">PPO</span><span class="p">(</span><span class="s2">&quot;MlpPolicy&quot;</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">model</span><span class="o">.</span><span class="n">learn</span><span class="p">(</span><span class="n">total_timesteps</span><span class="o">=</span><span class="mi">200_000</span><span class="p">)</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;reach_policy&quot;</span><span class="p">)</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="c1"># Import the Gymnasium wrapper directly</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.sim.jax_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_reach_env</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">env</span> <span class="o">=</span> <span class="n">make_reach_env</span><span class="p">()</span>         <span class="c1"># headless, fast</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="n">model</span> <span class="o">=</span> <span class="n">PPO</span><span class="p">(</span><span class="s2">&quot;MlpPolicy&quot;</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_steps</span><span class="o">=</span><span class="mi">2048</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="mi">64</span><span class="p">)</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">model</span><span class="o">.</span><span class="n">learn</span><span class="p">(</span><span class="n">total_timesteps</span><span class="o">=</span><span class="mi">200_000</span><span class="p">)</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;reach_policy&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="render-modes">Render modes<a class="headerlink" href="#render-modes" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Headless (training)</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">env</span> <span class="o">=</span> <span class="n">ReachEnv</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<h2 id="rendering-a-rollout">Rendering a rollout<a class="headerlink" href="#rendering-a-rollout" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3d</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="c1"># RGB array (video capture)</span>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">env</span> <span class="o">=</span> <span class="n">ReachEnv</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="s2">&quot;rgb_array&quot;</span><span class="p">)</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="n">frame</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">render</span><span class="p">()</span>      <span class="c1"># (H, W, 3) uint8</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">(</span><span class="n">gravity</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.81</span><span class="p">))</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">world</span><span class="o">.</span><span class="n">add_ground</span><span class="p">()</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># … add robot arm …</span>
 </span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="c1"># Human (interactive window)</span>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">env</span> <span class="o">=</span> <span class="n">ReachEnv</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="s2">&quot;human&quot;</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="n">model</span> <span class="o">=</span> <span class="n">PPO</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;reach_policy&quot;</span><span class="p">)</span>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a><span class="n">rec</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Recorder</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;hq&quot;</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;rollout.mp4&quot;</span><span class="p">)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">rec</span><span class="o">.</span><span class="n">run_policy</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">env</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
 </span></code></pre></div>
-<hr />
-<h2 id="pickplaceenv-pick-and-place">PickPlaceEnv — pick and place<a class="headerlink" href="#pickplaceenv-pick-and-place" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">apps.robot_rl.envs.pick_place_env</span><span class="w"> </span><span class="kn">import</span> <span class="n">PickPlaceEnv</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">env</span> <span class="o">=</span> <span class="n">PickPlaceEnv</span><span class="p">(</span><span class="n">render_mode</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="n">obs</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Obs shape: </span><span class="si">{</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (18,)</span>
-</span></code></pre></div>
-<p>The pick-and-place environment uses the <code>weld</code> kinematic constraint to simulate grasping.</p>
 <hr />
 <h2 id="jax-batch-stepping-2000-speedup">JAX batch stepping — 2,000× speedup<a class="headerlink" href="#jax-batch-stepping-2000-speedup" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.sim.jax_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch_reach_reset</span><span class="p">,</span> <span class="n">batch_reach_step</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">q</span><span class="p">,</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">obs</span> <span class="o">=</span> <span class="n">batch_reach_reset</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n_envs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="c1"># One batched step across 256 environments</span>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">q</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">done</span> <span class="o">=</span> <span class="n">batch_reach_step</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">256</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">jax.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">jnp</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.sim.jax_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">batch_reach_reset</span><span class="p">,</span> <span class="n">batch_reach_step</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">key</span> <span class="o">=</span> <span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">q</span><span class="p">,</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">obs</span> <span class="o">=</span> <span class="n">batch_reach_reset</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">n_envs</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="c1"># One batched step across 256 environments — single JIT kernel</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">q</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">rew</span><span class="p">,</span> <span class="n">done</span> <span class="o">=</span> <span class="n">batch_reach_step</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">tgt</span><span class="p">,</span> <span class="n">jnp</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">256</span><span class="p">,</span> <span class="mi">6</span><span class="p">)))</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rewards: </span><span class="si">{</span><span class="n">rew</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># (256,)</span>
 </span></code></pre></div>
-<p>JAX JIT + vmap runs 256 environments in a single kernel call.</p>
+<p>JAX JIT + <code>vmap</code> runs all 256 environments in a single compiled kernel.
+No Python loop overhead, no device-host round-trips per step.</p>
 <hr />
-<h2 id="learning-dashboard">Learning dashboard<a class="headerlink" href="#learning-dashboard" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>apps/robot_rl/dashboard.py<span class="w"> </span>--log-dir<span class="w"> </span>logs/reach/
+<h2 id="domain-randomization">Domain randomization<a class="headerlink" href="#domain-randomization" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.sim.domain_rand</span><span class="w"> </span><span class="kn">import</span> <span class="n">DomainRand</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">rand</span> <span class="o">=</span> <span class="n">DomainRand</span><span class="p">(</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">mass_scale</span><span class="o">=</span><span class="p">(</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">1.2</span><span class="p">),</span>       <span class="c1"># uniform random mass factor</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">friction_range</span><span class="o">=</span><span class="p">(</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">),</span>   <span class="c1"># random friction coefficient</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">gravity_noise</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>           <span class="c1"># small perturbation in gravity magnitude</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">joint_damping</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>   <span class="c1"># random damping per joint</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="p">)</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="c1"># Apply randomization to a world at episode start</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">()</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">rand</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="n">jax</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">PRNGKey</span><span class="p">(</span><span class="n">episode</span><span class="p">))</span>
 </span></code></pre></div>
-<p>Displays a matplotlib dashboard with reward curve, success rate, and episode length.</p>
+<p>Domain randomization improves sim-to-real transfer by training the policy
+across a distribution of physical parameters rather than a single point.</p>
+<hr />
+<h2 id="switch-to-jax-backend">Switch to JAX backend<a class="headerlink" href="#switch-to-jax-backend" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nv">ENGINE_BACKEND</span><span class="o">=</span>jax<span class="w"> </span>python<span class="w"> </span>train.py
+</span></code></pre></div>
+<p>The entire physics stack — including collision detection and contact solving —
+runs under JAX JIT when <code>ENGINE_BACKEND=jax</code>. This allows <code>jax.grad</code> through
+the physics step for model-based RL.</p>
+<hr />
+<h2 id="pickplaceenv-pick-and-place">PickPlaceEnv — pick and place<a class="headerlink" href="#pickplaceenv-pick-and-place" title="Permanent link">&para;</a></h2>
+<p>The pick-and-place environment uses the <code>weld</code> kinematic constraint to simulate grasping.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.sim.jax_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_pick_place_env</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">env</span> <span class="o">=</span> <span class="n">make_pick_place_env</span><span class="p">()</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">obs</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Obs shape: </span><span class="si">{</span><span class="n">obs</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>   <span class="c1"># (18,)</span>
+</span></code></pre></div>
+<h3 id="observation-18-dims">Observation (18 dims)<a class="headerlink" href="#observation-18-dims" title="Permanent link">&para;</a></h3>
+<table>
+<thead>
+<tr>
+<th>Index</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–5</td>
+<td>Joint angles q₀–q₅ (rad)</td>
+</tr>
+<tr>
+<td>6–8</td>
+<td>End-effector position (m)</td>
+</tr>
+<tr>
+<td>9–11</td>
+<td>Object position (m)</td>
+</tr>
+<tr>
+<td>12–14</td>
+<td>Object orientation (Euler, rad)</td>
+</tr>
+<tr>
+<td>15–17</td>
+<td>Target position (m)</td>
+</tr>
+</tbody>
+</table>
 
 
 
