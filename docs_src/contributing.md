@@ -10,8 +10,8 @@ cd forge3d
 pip install -e ".[dev]"
 ```
 
-!!! note
-    PyPI 배포명은 `pyforge3d`이지만 코드에서는 `import forge3d`를 사용합니다.
+!!! note "Package name vs import name"
+    The PyPI distribution is named **`pyforge3d`**, but you always `import forge3d` in code.
 
 ## Workflow
 

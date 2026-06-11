@@ -1,7 +1,7 @@
 # What's New in v1.1.0 — Game-Ready Release
 
-v1.1.0은 **게임 제작 경험**을 대폭 개선하는 릴리즈입니다.  
-18개의 개선 요청을 분석해 구현 가능한 항목 15개를 완성했습니다.
+v1.1.0 significantly improves the **game development experience**.
+15 actionable improvements were implemented from 18 feature requests.
 
 ---
 
@@ -149,9 +149,9 @@ while running:
     builder.end_frame()
 ```
 
-!!! note "v2.1 변경"
-    v2.1부터 `WindowRenderer`의 윈도우 백엔드가 **glfw**로 교체됐습니다.
-    새 코드에서는 `f3d.Viewer`를 직접 사용하세요 — glfw 콜백이 자동으로 연결됩니다.
+!!! note "Changed in v2.1"
+    Starting in v2.1, the `WindowRenderer` window backend was replaced with **glfw**.
+    For new code, use `f3d.Viewer` directly — glfw callbacks are wired automatically.
 
 ---
 

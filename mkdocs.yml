@@ -110,6 +110,41 @@ nav:
     - "v1.1.0 — Game-Ready": whats_new_v1_1.md
   - Contributing: contributing.md
   - Changelog: changelog.md
+  - 한국어:
+    - 홈: ko/index.md
+    - 시작하기:
+      - 설치: ko/install.md
+      - 빠른 시작: ko/quickstart.md
+    - 튜토리얼:
+      - "1 — 물리 시뮬레이션": ko/tutorials/01_physics.md
+      - "2 — 렌더링": ko/tutorials/02_rendering.md
+      - "3 — 로봇 팔 (FK / IK)": ko/tutorials/03_robot.md
+      - "4 — 강화학습": ko/tutorials/04_rl.md
+    - 아키텍처: ko/architecture.md
+    - API 레퍼런스:
+      - "World": api/world.md
+      - "Body": api/body.md
+      - "Shape & Material": api/shapes.md
+      - "App": api/app.md
+      - "Viewer & Recorder": api/rendering.md
+      - "Input & Key": api/input.md
+      - "Camera": api/camera.md
+      - "Character Controller": api/character.md
+      - "ECS": api/ecs.md
+      - "Animation": api/animation.md
+      - "Audio": api/audio.md
+      - "Particle System": api/particle.md
+      - "Scene Management": api/scene.md
+      - "Editor": api/editor.md
+      - "Profiler": api/profiler.md
+      - "Robot": api/robot.md
+      - "Backend (NumPy / JAX)": api/backends.md
+    - 새로운 기능:
+      - "v2.1.0 — 고급 시스템": ko/whats_new_v2_1.md
+      - "v2.0.0 — 마이그레이션 가이드": ko/migration_v2.md
+      - "v1.1.0 — 게임 제작 대비": ko/whats_new_v1_1.md
+    - 기여 가이드: ko/contributing.md
+    - 변경 내역: ko/changelog.md
 
 extra:
   social:
