@@ -27,7 +27,7 @@ jobs:
       - name: Install system deps (Xvfb for headless GL)
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y xvfb libgl1-mesa-dri libgles2-mesa
+          sudo apt-get install -y xvfb libgl1-mesa-dri libgles2
 
       - name: Install pyforge3d + dev deps
         run: pip install -e ".[dev]"
