@@ -1907,10 +1907,27 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="바디 추가">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        바디 제거 &amp; 스테일 핸들 주의
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
         <li class="md-nav__item">
-  <a href="#_3" class="md-nav__link">
+  <a href="#_4" class="md-nav__link">
     <span class="md-ellipsis">
       
         시뮬레이션 스텝
@@ -1921,7 +1938,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_4" class="md-nav__link">
+  <a href="#_5" class="md-nav__link">
     <span class="md-ellipsis">
       
         재질 — 마찰 &amp; 반발
@@ -1932,7 +1949,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_5" class="md-nav__link">
+  <a href="#_6" class="md-nav__link">
     <span class="md-ellipsis">
       
         정적 바디
@@ -1943,7 +1960,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_6" class="md-nav__link">
+  <a href="#_7" class="md-nav__link">
     <span class="md-ellipsis">
       
         속도 감쇠
@@ -1954,7 +1971,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_7" class="md-nav__link">
+  <a href="#_8" class="md-nav__link">
     <span class="md-ellipsis">
       
         레이캐스트
@@ -1965,7 +1982,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_8" class="md-nav__link">
+  <a href="#_9" class="md-nav__link">
     <span class="md-ellipsis">
       
         오버랩 쿼리
@@ -1976,7 +1993,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_9" class="md-nav__link">
+  <a href="#_10" class="md-nav__link">
     <span class="md-ellipsis">
       
         조인트
@@ -1987,7 +2004,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_10" class="md-nav__link">
+  <a href="#_11" class="md-nav__link">
     <span class="md-ellipsis">
       
         충돌 이벤트
@@ -1998,7 +2015,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_11" class="md-nav__link">
+  <a href="#_12" class="md-nav__link">
     <span class="md-ellipsis">
       
         트리거 존
@@ -2009,7 +2026,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_12" class="md-nav__link">
+  <a href="#_13" class="md-nav__link">
     <span class="md-ellipsis">
       
         충돌 레이어
@@ -2020,7 +2037,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_13" class="md-nav__link">
+  <a href="#_14" class="md-nav__link">
     <span class="md-ellipsis">
       
         고정 타임스텝
@@ -2031,7 +2048,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_14" class="md-nav__link">
+  <a href="#_15" class="md-nav__link">
     <span class="md-ellipsis">
       
         직렬화
@@ -2042,7 +2059,7 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#_15" class="md-nav__link">
+  <a href="#_16" class="md-nav__link">
     <span class="md-ellipsis">
       
         다음: 렌더링 튜토리얼
@@ -2972,166 +2989,185 @@
 </span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="n">cap</span>  <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_capsule</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
 </span></code></pre></div>
 <p>모든 <code>add_*</code> 호출은 이후에 조회·수정할 수 있는 <code>Body</code> 핸들을 반환합니다.</p>
+<h3 id="_3">바디 제거 &amp; 스테일 핸들 주의<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">world</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">box</span><span class="p">)</span>                    <span class="c1"># 특정 바디 제거</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="n">world</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>                        <span class="c1"># 동적 바디 전체 제거</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">world</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">keep_statics</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>      <span class="c1"># 모든 바디 제거</span>
+</span></code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">remove / clear 후 핸들은 무효화됩니다</p>
+<p><code>world.remove(body)</code> 또는 <code>world.clear()</code> 이후, 기존 변수(<code>ball</code>, <code>box</code> 등)는
+<strong>스테일(stale) 핸들</strong>이 됩니다.  이 핸들로 <code>apply_impulse</code>, <code>body.position</code> 등을
+호출하면 <code>RuntimeError: Body id=N not found in world</code>가 발생합니다.</p>
+<p><strong>패턴: clear 후 반드시 재할당</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">world</span><span class="o">.</span><span class="n">clear</span><span class="p">(</span><span class="n">keep_statics</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">ball</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>   <span class="c1"># 새 핸들 — 이전 &#39;ball&#39; 변수는 이제 무효</span>
+</span></code></pre></div>
+<p><strong>패턴: <code>world.contains()</code>로 유효성 확인</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">if</span> <span class="n">world</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">ball</span><span class="p">):</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">world</span><span class="o">.</span><span class="n">apply_impulse</span><span class="p">(</span><span class="n">ball</span><span class="p">,</span> <span class="n">force</span> <span class="o">*</span> <span class="n">dt</span><span class="p">)</span>
+</span></code></pre></div>
+</div>
 <hr />
-<h2 id="_3">시뮬레이션 스텝<a class="headerlink" href="#_3" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">240</span>          <span class="c1"># 접촉에는 240 Hz 권장</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2400</span><span class="p">):</span>   <span class="c1"># 10초</span>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;박스 위치: </span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;박스 속도: </span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">velocity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<h2 id="_4">시뮬레이션 스텝<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">dt</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mi">240</span>          <span class="c1"># 접촉에는 240 Hz 권장</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2400</span><span class="p">):</span>   <span class="c1"># 10초</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    <span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;박스 위치: </span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">position</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;박스 속도: </span><span class="si">{</span><span class="n">box</span><span class="o">.</span><span class="n">velocity</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_4">재질 — 마찰 &amp; 반발<a class="headerlink" href="#_4" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">ice_box</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">mass</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">friction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>          <span class="c1"># 매우 미끄러움</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">restitution</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>        <span class="c1"># 튀지 않음</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">)</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">rubber_ball</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a>    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a>    <span class="n">mass</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="n">friction</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>           <span class="c1"># 점착력 강함</span>
-</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="n">restitution</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>       <span class="c1"># 매우 탄성</span>
-</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a><span class="p">)</span>
+<h2 id="_5">재질 — 마찰 &amp; 반발<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">ice_box</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">mass</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">friction</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>          <span class="c1"># 매우 미끄러움</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">restitution</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>        <span class="c1"># 튀지 않음</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="n">rubber_ball</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_sphere</span><span class="p">(</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">radius</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>    <span class="n">mass</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>    <span class="n">friction</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span>           <span class="c1"># 점착력 강함</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>    <span class="n">restitution</span><span class="o">=</span><span class="mf">0.85</span><span class="p">,</span>       <span class="c1"># 매우 탄성</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_5">정적 바디<a class="headerlink" href="#_5" title="Permanent link">&para;</a></h2>
+<h2 id="_6">정적 바디<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
 <p>질량 없는 충돌 가능한 형상 생성:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># 세 가지 방법 모두 동일</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">wall</span>  <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="n">post</span>  <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_capsule</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="n">shelf</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_static_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">wall</span><span class="o">.</span><span class="n">is_static</span><span class="p">)</span>        <span class="c1"># True</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">shelf</span> <span class="ow">in</span> <span class="n">world</span><span class="o">.</span><span class="n">bodies</span><span class="p">)</span> <span class="c1"># True</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># 세 가지 방법 모두 동일</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">wall</span>  <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">),</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">post</span>  <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_capsule</span><span class="p">(</span><span class="n">radius</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">half_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">static</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">shelf</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_static_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="nb">print</span><span class="p">(</span><span class="n">wall</span><span class="o">.</span><span class="n">is_static</span><span class="p">)</span>        <span class="c1"># True</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="nb">print</span><span class="p">(</span><span class="n">shelf</span> <span class="ow">in</span> <span class="n">world</span><span class="o">.</span><span class="n">bodies</span><span class="p">)</span> <span class="c1"># True</span>
 </span></code></pre></div>
 <p>정적 바디는 충돌 감지 외부 루프에서 제외되어 시뮬레이션을 느리게 하지 않습니다.</p>
 <hr />
-<h2 id="_6">속도 감쇠<a class="headerlink" href="#_6" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">box</span><span class="o">.</span><span class="n">linear_damping</span>  <span class="o">=</span> <span class="mf">1.0</span>   <span class="c1"># 지수적 감쇠: 초당 63% 제거</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">box</span><span class="o">.</span><span class="n">angular_damping</span> <span class="o">=</span> <span class="mf">2.0</span>   <span class="c1"># 초당 86% 회전 제거</span>
+<h2 id="_7">속도 감쇠<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">box</span><span class="o">.</span><span class="n">linear_damping</span>  <span class="o">=</span> <span class="mf">1.0</span>   <span class="c1"># 지수적 감쇠: 초당 63% 제거</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">box</span><span class="o">.</span><span class="n">angular_damping</span> <span class="o">=</span> <span class="mf">2.0</span>   <span class="c1"># 초당 86% 회전 제거</span>
 </span></code></pre></div>
 <p>감쇠는 <strong>dt 보정됨</strong> (FPS 독립적):</p>
-<div class="language-text highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>v_next = v × exp(−linear_damping × dt)
+<div class="language-text highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>v_next = v × exp(−linear_damping × dt)
 </span></code></pre></div>
 <hr />
-<h2 id="_7">레이캐스트<a class="headerlink" href="#_7" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># 지면 감지 (서스펜션 시뮬레이션용)</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">hit</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast</span><span class="p">(</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">origin</span><span class="o">=</span><span class="n">car</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">direction</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
-</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="n">max_dist</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="p">)</span>
-</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">on_ground</span> <span class="o">=</span> <span class="n">hit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hit</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="mf">0.6</span>
-</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># 시야선 체크</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">los</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">player</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">can_see_target</span> <span class="o">=</span> <span class="n">los</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">los</span><span class="o">.</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="mi">49</span>
+<h2 id="_8">레이캐스트<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 지면 감지 (서스펜션 시뮬레이션용)</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">hit</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast</span><span class="p">(</span>
+</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">origin</span><span class="o">=</span><span class="n">car</span><span class="o">.</span><span class="n">position</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span>
+</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">direction</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">max_dist</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a><span class="p">)</span>
+</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a><span class="n">on_ground</span> <span class="o">=</span> <span class="n">hit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">hit</span><span class="o">.</span><span class="n">distance</span> <span class="o">&lt;</span> <span class="mf">0.6</span>
+</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>
+</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="c1"># 시야선 체크</span>
+</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a><span class="n">los</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="n">player</span><span class="o">.</span><span class="n">position</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">target_dir</span><span class="p">,</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="n">can_see_target</span> <span class="o">=</span> <span class="n">los</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">los</span><span class="o">.</span><span class="n">distance</span> <span class="o">&gt;</span> <span class="mi">49</span>
 </span></code></pre></div>
 <p><code>RayHit(body, point, normal, distance)</code> namedtuple 또는 <code>None</code>을 반환합니다.</p>
 <p>전체 히트 목록은 <code>raycast_all()</code>:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">hits</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast_all</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">distance</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">hits</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">raycast_all</span><span class="p">(</span><span class="n">origin</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">direction</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">),</span> <span class="n">max_dist</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">for</span> <span class="n">hit</span> <span class="ow">in</span> <span class="n">hits</span><span class="p">:</span>
+</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">hit</span><span class="o">.</span><span class="n">body</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">hit</span><span class="o">.</span><span class="n">distance</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> m&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_8">오버랩 쿼리<a class="headerlink" href="#_8" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 폭발 범위 내 바디 찾기</span>
-</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">nearby</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">overlap_sphere</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">explosion_pos</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
-</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="k">for</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>
-</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">body</span><span class="o">.</span><span class="n">apply_force</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>   <span class="c1"># 폭발 밀치기</span>
-</span><span id="__span-9-5"><a id="__codelineno-9-5" name="__codelineno-9-5" href="#__codelineno-9-5"></a>
-</span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a><span class="c1"># 공간 내 바디 찾기</span>
-</span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="n">in_room</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">overlap_box</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">half_extents</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+<h2 id="_9">오버랩 쿼리<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># 폭발 범위 내 바디 찾기</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">nearby</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">overlap_sphere</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="n">explosion_pos</span><span class="p">,</span> <span class="n">radius</span><span class="o">=</span><span class="mf">5.0</span><span class="p">)</span>
+</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="k">for</span> <span class="n">body</span> <span class="ow">in</span> <span class="n">nearby</span><span class="p">:</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">body</span><span class="o">.</span><span class="n">apply_force</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">300</span><span class="p">))</span>   <span class="c1"># 폭발 밀치기</span>
+</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>
+</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a><span class="c1"># 공간 내 바디 찾기</span>
+</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="n">in_room</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">overlap_box</span><span class="p">(</span><span class="n">center</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">half_extents</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_9">조인트<a class="headerlink" href="#_9" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># 힌지 조인트 (문)</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">hinge</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="s2">&quot;hinge&quot;</span><span class="p">,</span> <span class="n">door</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a>    <span class="n">anchor_a</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">anchor_b</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-</span><span id="__span-10-5"><a id="__codelineno-10-5" name="__codelineno-10-5" href="#__codelineno-10-5"></a>    <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-</span><span id="__span-10-6"><a id="__codelineno-10-6" name="__codelineno-10-6" href="#__codelineno-10-6"></a>    <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-</span><span id="__span-10-7"><a id="__codelineno-10-7" name="__codelineno-10-7" href="#__codelineno-10-7"></a>    <span class="n">motor_velocity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-</span><span id="__span-10-8"><a id="__codelineno-10-8" name="__codelineno-10-8" href="#__codelineno-10-8"></a>    <span class="n">motor_max_torque</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
-</span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="p">)</span>
-</span><span id="__span-10-10"><a id="__codelineno-10-10" name="__codelineno-10-10" href="#__codelineno-10-10"></a>
-</span><span id="__span-10-11"><a id="__codelineno-10-11" name="__codelineno-10-11" href="#__codelineno-10-11"></a><span class="c1"># 스프링 조인트</span>
-</span><span id="__span-10-12"><a id="__codelineno-10-12" name="__codelineno-10-12" href="#__codelineno-10-12"></a><span class="n">spring</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span>
-</span><span id="__span-10-13"><a id="__codelineno-10-13" name="__codelineno-10-13" href="#__codelineno-10-13"></a>    <span class="s2">&quot;spring&quot;</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">ceiling</span><span class="p">,</span>
-</span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="n">stiffness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span> <span class="n">damping</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">rest_length</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-</span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="p">)</span>
-</span><span id="__span-10-16"><a id="__codelineno-10-16" name="__codelineno-10-16" href="#__codelineno-10-16"></a>
-</span><span id="__span-10-17"><a id="__codelineno-10-17" name="__codelineno-10-17" href="#__codelineno-10-17"></a><span class="c1"># JointType enum (v2.1+)</span>
-</span><span id="__span-10-18"><a id="__codelineno-10-18" name="__codelineno-10-18" href="#__codelineno-10-18"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointType</span>
-</span><span id="__span-10-19"><a id="__codelineno-10-19" name="__codelineno-10-19" href="#__codelineno-10-19"></a><span class="n">hinge2</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span><span class="n">JointType</span><span class="o">.</span><span class="n">HINGE</span><span class="p">,</span> <span class="n">door</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
-</span><span id="__span-10-20"><a id="__codelineno-10-20" name="__codelineno-10-20" href="#__codelineno-10-20"></a>
-</span><span id="__span-10-21"><a id="__codelineno-10-21" name="__codelineno-10-21" href="#__codelineno-10-21"></a><span class="n">world</span><span class="o">.</span><span class="n">remove_joint</span><span class="p">(</span><span class="n">hinge</span><span class="p">)</span>
+<h2 id="_10">조인트<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="c1"># 힌지 조인트 (문)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">hinge</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="s2">&quot;hinge&quot;</span><span class="p">,</span> <span class="n">door</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span>
+</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">anchor_a</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">anchor_b</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">limits</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a>    <span class="n">motor_velocity</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
+</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>    <span class="n">motor_max_torque</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span>
+</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="p">)</span>
+</span><span id="__span-13-10"><a id="__codelineno-13-10" name="__codelineno-13-10" href="#__codelineno-13-10"></a>
+</span><span id="__span-13-11"><a id="__codelineno-13-11" name="__codelineno-13-11" href="#__codelineno-13-11"></a><span class="c1"># 스프링 조인트</span>
+</span><span id="__span-13-12"><a id="__codelineno-13-12" name="__codelineno-13-12" href="#__codelineno-13-12"></a><span class="n">spring</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span>
+</span><span id="__span-13-13"><a id="__codelineno-13-13" name="__codelineno-13-13" href="#__codelineno-13-13"></a>    <span class="s2">&quot;spring&quot;</span><span class="p">,</span> <span class="n">box</span><span class="p">,</span> <span class="n">ceiling</span><span class="p">,</span>
+</span><span id="__span-13-14"><a id="__codelineno-13-14" name="__codelineno-13-14" href="#__codelineno-13-14"></a>    <span class="n">stiffness</span><span class="o">=</span><span class="mf">200.0</span><span class="p">,</span> <span class="n">damping</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">rest_length</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+</span><span id="__span-13-15"><a id="__codelineno-13-15" name="__codelineno-13-15" href="#__codelineno-13-15"></a><span class="p">)</span>
+</span><span id="__span-13-16"><a id="__codelineno-13-16" name="__codelineno-13-16" href="#__codelineno-13-16"></a>
+</span><span id="__span-13-17"><a id="__codelineno-13-17" name="__codelineno-13-17" href="#__codelineno-13-17"></a><span class="c1"># JointType enum (v2.1+)</span>
+</span><span id="__span-13-18"><a id="__codelineno-13-18" name="__codelineno-13-18" href="#__codelineno-13-18"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">JointType</span>
+</span><span id="__span-13-19"><a id="__codelineno-13-19" name="__codelineno-13-19" href="#__codelineno-13-19"></a><span class="n">hinge2</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_joint</span><span class="p">(</span><span class="n">JointType</span><span class="o">.</span><span class="n">HINGE</span><span class="p">,</span> <span class="n">door</span><span class="p">,</span> <span class="n">frame</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</span><span id="__span-13-20"><a id="__codelineno-13-20" name="__codelineno-13-20" href="#__codelineno-13-20"></a>
+</span><span id="__span-13-21"><a id="__codelineno-13-21" name="__codelineno-13-21" href="#__codelineno-13-21"></a><span class="n">world</span><span class="o">.</span><span class="n">remove_joint</span><span class="p">(</span><span class="n">hinge</span><span class="p">)</span>
 </span></code></pre></div>
 <p>지원 조인트: <code>HingeJoint</code>, <code>SpringJoint</code>, <code>DistanceJoint</code>, <code>BallJoint</code>, <code>FixedJoint</code>, <code>PrismaticJoint</code>.</p>
 <hr />
-<h2 id="_10">충돌 이벤트<a class="headerlink" href="#_10" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="nd">@world</span><span class="o">.</span><span class="n">on_collision_begin</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">hit</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">f3d</span><span class="o">.</span><span class="n">CollisionEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">body_a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">body_b</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
-</span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>          <span class="sa">f</span><span class="s2">&quot;impact=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">relative_speed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m/s&quot;</span><span class="p">)</span>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a>
-</span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="c1"># 개별 바디 콜백 (v2.1+)</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="nd">@player</span><span class="o">.</span><span class="n">on_collision_begin</span>
-</span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">player_hit</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
-</span><span id="__span-11-9"><a id="__codelineno-11-9" name="__codelineno-11-9" href="#__codelineno-11-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;플레이어가 </span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">에 충돌  속도=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">relative_speed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m/s&quot;</span><span class="p">)</span>
+<h2 id="_11">충돌 이벤트<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nd">@world</span><span class="o">.</span><span class="n">on_collision_begin</span>
+</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="k">def</span><span class="w"> </span><span class="nf">hit</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">f3d</span><span class="o">.</span><span class="n">CollisionEvent</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">body_a</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;-&gt;&quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">body_b</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>          <span class="sa">f</span><span class="s2">&quot;impact=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">relative_speed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m/s&quot;</span><span class="p">)</span>
+</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>
+</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="c1"># 개별 바디 콜백 (v2.1+)</span>
+</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a><span class="nd">@player</span><span class="o">.</span><span class="n">on_collision_begin</span>
+</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a><span class="k">def</span><span class="w"> </span><span class="nf">player_hit</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>
+</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;플레이어가 </span><span class="si">{</span><span class="n">other</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">에 충돌  속도=</span><span class="si">{</span><span class="n">event</span><span class="o">.</span><span class="n">relative_speed</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2"> m/s&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_11">트리거 존<a class="headerlink" href="#_11" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">goal</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_trigger_zone</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
-</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>
-</span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a><span class="nd">@goal</span><span class="o">.</span><span class="n">on_enter</span>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">scored</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;골: </span><span class="si">{</span><span class="n">body</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</span><span id="__span-12-6"><a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>
-</span><span id="__span-12-7"><a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a><span class="c1"># 런타임 조작 (v2.1+)</span>
-</span><span id="__span-12-8"><a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a><span class="n">goal</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
-</span><span id="__span-12-9"><a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a><span class="n">goal</span><span class="o">.</span><span class="n">set_half_extents</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
-</span><span id="__span-12-10"><a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a><span class="n">goal</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># 잠시 감지 중지</span>
+<h2 id="_12">트리거 존<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">goal</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_trigger_zone</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a>
+</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="nd">@goal</span><span class="o">.</span><span class="n">on_enter</span>
+</span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a><span class="k">def</span><span class="w"> </span><span class="nf">scored</span><span class="p">(</span><span class="n">body</span><span class="p">:</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Body</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a>    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;골: </span><span class="si">{</span><span class="n">body</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-15-6"><a id="__codelineno-15-6" name="__codelineno-15-6" href="#__codelineno-15-6"></a>
+</span><span id="__span-15-7"><a id="__codelineno-15-7" name="__codelineno-15-7" href="#__codelineno-15-7"></a><span class="c1"># 런타임 조작 (v2.1+)</span>
+</span><span id="__span-15-8"><a id="__codelineno-15-8" name="__codelineno-15-8" href="#__codelineno-15-8"></a><span class="n">goal</span><span class="o">.</span><span class="n">set_position</span><span class="p">((</span><span class="mi">10</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">))</span>
+</span><span id="__span-15-9"><a id="__codelineno-15-9" name="__codelineno-15-9" href="#__codelineno-15-9"></a><span class="n">goal</span><span class="o">.</span><span class="n">set_half_extents</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+</span><span id="__span-15-10"><a id="__codelineno-15-10" name="__codelineno-15-10" href="#__codelineno-15-10"></a><span class="n">goal</span><span class="o">.</span><span class="n">enabled</span> <span class="o">=</span> <span class="kc">False</span>   <span class="c1"># 잠시 감지 중지</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_12">충돌 레이어<a class="headerlink" href="#_12" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionLayer</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">PLAYER</span>
-</span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_mask</span>  <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">mask_for</span><span class="p">(</span>
-</span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">TERRAIN</span><span class="p">,</span>
-</span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span><span class="p">,</span>
-</span><span id="__span-13-7"><a id="__codelineno-13-7" name="__codelineno-13-7" href="#__codelineno-13-7"></a><span class="p">)</span>  <span class="c1"># 지형과 적과만 충돌</span>
-</span><span id="__span-13-8"><a id="__codelineno-13-8" name="__codelineno-13-8" href="#__codelineno-13-8"></a>
-</span><span id="__span-13-9"><a id="__codelineno-13-9" name="__codelineno-13-9" href="#__codelineno-13-9"></a><span class="n">ghost</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">NONE</span>   <span class="c1"># 충돌 없음</span>
+<h2 id="_13">충돌 레이어<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionLayer</span>
+</span><span id="__span-16-2"><a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>
+</span><span id="__span-16-3"><a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">PLAYER</span>
+</span><span id="__span-16-4"><a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a><span class="n">player</span><span class="o">.</span><span class="n">collision_mask</span>  <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">mask_for</span><span class="p">(</span>
+</span><span id="__span-16-5"><a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">TERRAIN</span><span class="p">,</span>
+</span><span id="__span-16-6"><a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">ENEMY</span><span class="p">,</span>
+</span><span id="__span-16-7"><a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a><span class="p">)</span>  <span class="c1"># 지형과 적과만 충돌</span>
+</span><span id="__span-16-8"><a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>
+</span><span id="__span-16-9"><a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a><span class="n">ghost</span><span class="o">.</span><span class="n">collision_layer</span> <span class="o">=</span> <span class="n">CollisionLayer</span><span class="o">.</span><span class="n">NONE</span>   <span class="c1"># 충돌 없음</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_13">고정 타임스텝<a class="headerlink" href="#_13" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-14-1"><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="c1"># 옵션 A: world.update() — 벽시계 시간 누산 (권장)</span>
-</span><span id="__span-14-2"><a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="n">world</span><span class="o">.</span><span class="n">fixed_dt</span>    <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">120</span>
-</span><span id="__span-14-3"><a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="n">world</span><span class="o">.</span><span class="n">max_substeps</span> <span class="o">=</span> <span class="mi">8</span>
-</span><span id="__span-14-4"><a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>
-</span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
-</span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a>    <span class="n">world</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
-</span><span id="__span-14-7"><a id="__codelineno-14-7" name="__codelineno-14-7" href="#__codelineno-14-7"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
-</span><span id="__span-14-8"><a id="__codelineno-14-8" name="__codelineno-14-8" href="#__codelineno-14-8"></a>
-</span><span id="__span-14-9"><a id="__codelineno-14-9" name="__codelineno-14-9" href="#__codelineno-14-9"></a><span class="c1"># 옵션 B: 명시적 서브스텝</span>
-</span><span id="__span-14-10"><a id="__codelineno-14-10" name="__codelineno-14-10" href="#__codelineno-14-10"></a><span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="n">substeps</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<h2 id="_14">고정 타임스텝<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-17-1"><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a><span class="c1"># 옵션 A: world.update() — 벽시계 시간 누산 (권장)</span>
+</span><span id="__span-17-2"><a id="__codelineno-17-2" name="__codelineno-17-2" href="#__codelineno-17-2"></a><span class="n">world</span><span class="o">.</span><span class="n">fixed_dt</span>    <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mi">120</span>
+</span><span id="__span-17-3"><a id="__codelineno-17-3" name="__codelineno-17-3" href="#__codelineno-17-3"></a><span class="n">world</span><span class="o">.</span><span class="n">max_substeps</span> <span class="o">=</span> <span class="mi">8</span>
+</span><span id="__span-17-4"><a id="__codelineno-17-4" name="__codelineno-17-4" href="#__codelineno-17-4"></a>
+</span><span id="__span-17-5"><a id="__codelineno-17-5" name="__codelineno-17-5" href="#__codelineno-17-5"></a><span class="k">while</span> <span class="n">viewer</span><span class="o">.</span><span class="n">is_open</span><span class="p">:</span>
+</span><span id="__span-17-6"><a id="__codelineno-17-6" name="__codelineno-17-6" href="#__codelineno-17-6"></a>    <span class="n">world</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">)</span>
+</span><span id="__span-17-7"><a id="__codelineno-17-7" name="__codelineno-17-7" href="#__codelineno-17-7"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
+</span><span id="__span-17-8"><a id="__codelineno-17-8" name="__codelineno-17-8" href="#__codelineno-17-8"></a>
+</span><span id="__span-17-9"><a id="__codelineno-17-9" name="__codelineno-17-9" href="#__codelineno-17-9"></a><span class="c1"># 옵션 B: 명시적 서브스텝</span>
+</span><span id="__span-17-10"><a id="__codelineno-17-10" name="__codelineno-17-10" href="#__codelineno-17-10"></a><span class="n">world</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">dt</span><span class="o">=</span><span class="n">viewer</span><span class="o">.</span><span class="n">dt</span><span class="p">,</span> <span class="n">substeps</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_14">직렬화<a class="headerlink" href="#_14" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-15-1"><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a><span class="n">world</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;checkpoint.json&quot;</span><span class="p">)</span>           <span class="c1"># 바디 + 조인트 저장</span>
-</span><span id="__span-15-2"><a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="n">world2</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;checkpoint.json&quot;</span><span class="p">)</span>  <span class="c1"># 새 World로 로드</span>
-</span><span id="__span-15-3"><a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="n">world</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="s2">&quot;checkpoint.json&quot;</span><span class="p">)</span>        <span class="c1"># 현재 인스턴스 in-place 복원</span>
+<h2 id="_15">직렬화<a class="headerlink" href="#_15" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-18-1"><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a><span class="n">world</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s2">&quot;checkpoint.json&quot;</span><span class="p">)</span>           <span class="c1"># 바디 + 조인트 저장</span>
+</span><span id="__span-18-2"><a id="__codelineno-18-2" name="__codelineno-18-2" href="#__codelineno-18-2"></a><span class="n">world2</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;checkpoint.json&quot;</span><span class="p">)</span>  <span class="c1"># 새 World로 로드</span>
+</span><span id="__span-18-3"><a id="__codelineno-18-3" name="__codelineno-18-3" href="#__codelineno-18-3"></a><span class="n">world</span><span class="o">.</span><span class="n">restore</span><span class="p">(</span><span class="s2">&quot;checkpoint.json&quot;</span><span class="p">)</span>        <span class="c1"># 현재 인스턴스 in-place 복원</span>
 </span></code></pre></div>
 <hr />
-<h2 id="_15">다음: <a href="../02_rendering/">렌더링 튜토리얼</a><a class="headerlink" href="#_15" title="Permanent link">&para;</a></h2>
+<h2 id="_16">다음: <a href="../02_rendering/">렌더링 튜토리얼</a><a class="headerlink" href="#_16" title="Permanent link">&para;</a></h2>
 
 
 
