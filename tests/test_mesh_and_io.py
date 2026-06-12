@@ -199,7 +199,9 @@ class TestBuiltinShapes:
 
     def test_add_convex_exists(self) -> None:
         world = self._world_with_ground()
-        pts = np.array([[1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]], dtype=float)
+        pts = np.array(
+            [[1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]], dtype=float
+        )
         body = world.add_convex(pts, position=(0, 0, 3), mass=1.0)
         assert body is not None
 
@@ -238,7 +240,9 @@ class TestBuiltinShapes:
         from forge3d.collision.detection import _quat_to_rot_unit
 
         world = self._world_with_ground()
-        pts = np.array([[1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]], dtype=float)
+        pts = np.array(
+            [[1, 0, 0], [0, 1, 0], [-1, 0, 0], [0, -1, 0], [0, 0, 1], [0, 0, -1]], dtype=float
+        )
         body = world.add_convex(pts, position=(0, 0, 3), mass=1.0)
         for _ in range(300):
             world.step(dt=1 / 60)

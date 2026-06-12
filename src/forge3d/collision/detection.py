@@ -733,8 +733,8 @@ def _mesh_vs_static_box(
         R_mesh = _quat_to_rot_unit(mesh.quat)
 
     hull_verts = mesh.shape_params["hull_vertices"]  # (K, 3) local frame
-    world_verts = mesh.pos + hull_verts @ R_mesh.T   # (K, 3) world frame
-    d_local = (world_verts - box.pos) @ R_box        # (K, 3) in box local frame
+    world_verts = mesh.pos + hull_verts @ R_mesh.T  # (K, 3) world frame
+    d_local = (world_verts - box.pos) @ R_box  # (K, 3) in box local frame
 
     # SAT: for each of the 3 axes compute the projection overlap.
     # If any axis shows zero or negative overlap, bodies are separated.
@@ -768,11 +768,7 @@ def _mesh_vs_static_box(
     # Require the vertex to lie within the face boundary on the other two axes
     other_axes = [i for i in range(3) if i != best_axis]
     a0, a1 = other_axes
-    within = (
-        pen_mask
-        & (np.abs(d_local[:, a0]) <= he[a0])
-        & (np.abs(d_local[:, a1]) <= he[a1])
-    )
+    within = pen_mask & (np.abs(d_local[:, a0]) <= he[a0]) & (np.abs(d_local[:, a1]) <= he[a1])
     if not within.any():
         return []
 

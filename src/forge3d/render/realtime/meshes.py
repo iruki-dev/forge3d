@@ -212,8 +212,9 @@ def unit_cylinder(
     for i in range(slices):
         theta = 2.0 * np.pi * i / slices
         c, s = float(np.cos(theta)), float(np.sin(theta))
-        verts.append([radius * c, radius * s, half_length, 0.0, 0.0, 1.0,
-                       0.5 + 0.5 * c, 0.5 + 0.5 * s])
+        verts.append(
+            [radius * c, radius * s, half_length, 0.0, 0.0, 1.0, 0.5 + 0.5 * c, 0.5 + 0.5 * s]
+        )
     for i in range(slices):
         idx.extend([top_c, top_rim + i, top_rim + (i + 1) % slices])
 
@@ -224,8 +225,9 @@ def unit_cylinder(
     for i in range(slices):
         theta = 2.0 * np.pi * i / slices
         c, s = float(np.cos(theta)), float(np.sin(theta))
-        verts.append([radius * c, radius * s, -half_length, 0.0, 0.0, -1.0,
-                       0.5 + 0.5 * c, 0.5 + 0.5 * s])
+        verts.append(
+            [radius * c, radius * s, -half_length, 0.0, 0.0, -1.0, 0.5 + 0.5 * c, 0.5 + 0.5 * s]
+        )
     for i in range(slices):
         idx.extend([bot_c, bot_rim + (i + 1) % slices, bot_rim + i])
 
@@ -262,8 +264,8 @@ def unit_cone(
     idx: list[int] = []
     half_h = height / 2.0
     slant = float(np.sqrt(radius * radius + height * height))
-    nz = radius / slant   # outward normal z component on lateral face
-    nr = height / slant   # outward normal horizontal magnitude
+    nz = radius / slant  # outward normal z component on lateral face
+    nr = height / slant  # outward normal horizontal magnitude
 
     # Base cap (normal −Z)
     base_c = len(verts)
@@ -272,8 +274,9 @@ def unit_cone(
     for i in range(slices):
         theta = 2.0 * np.pi * i / slices
         c, s = float(np.cos(theta)), float(np.sin(theta))
-        verts.append([radius * c, radius * s, -half_h, 0.0, 0.0, -1.0,
-                       0.5 + 0.5 * c, 0.5 + 0.5 * s])
+        verts.append(
+            [radius * c, radius * s, -half_h, 0.0, 0.0, -1.0, 0.5 + 0.5 * c, 0.5 + 0.5 * s]
+        )
     for i in range(slices):
         idx.extend([base_c, base_rim + (i + 1) % slices, base_rim + i])
 
@@ -284,17 +287,26 @@ def unit_cone(
         theta_mid = (theta0 + theta1) / 2.0
         base = len(verts)
         # Apex (normal averaged at mid-angle)
-        verts.append([0.0, 0.0, half_h,
-                       nr * float(np.cos(theta_mid)), nr * float(np.sin(theta_mid)), nz,
-                       0.5, 1.0])
+        verts.append(
+            [
+                0.0,
+                0.0,
+                half_h,
+                nr * float(np.cos(theta_mid)),
+                nr * float(np.sin(theta_mid)),
+                nz,
+                0.5,
+                1.0,
+            ]
+        )
         c0, s0 = float(np.cos(theta0)), float(np.sin(theta0))
-        verts.append([radius * c0, radius * s0, -half_h,
-                       nr * c0, nr * s0, nz,
-                       float(i) / slices, 0.0])
+        verts.append(
+            [radius * c0, radius * s0, -half_h, nr * c0, nr * s0, nz, float(i) / slices, 0.0]
+        )
         c1, s1 = float(np.cos(theta1)), float(np.sin(theta1))
-        verts.append([radius * c1, radius * s1, -half_h,
-                       nr * c1, nr * s1, nz,
-                       float(i + 1) / slices, 0.0])
+        verts.append(
+            [radius * c1, radius * s1, -half_h, nr * c1, nr * s1, nz, float(i + 1) / slices, 0.0]
+        )
         idx.extend([base, base + 1, base + 2])
 
     return np.array(verts, dtype=np.float32), np.array(idx, dtype=np.uint32)
@@ -320,11 +332,11 @@ def unit_wedge(
     # 6 raw vertex positions
     p: list[tuple[float, float, float]] = [
         (-hx, -hy, -hz),  # 0 front-bottom-left
-        ( hx, -hy, -hz),  # 1 front-bottom-right
-        ( hx,  hy, -hz),  # 2 back-bottom-right
-        (-hx,  hy, -hz),  # 3 back-bottom-left
-        (-hx,  hy,  hz),  # 4 back-top-left
-        ( hx,  hy,  hz),  # 5 back-top-right
+        (hx, -hy, -hz),  # 1 front-bottom-right
+        (hx, hy, -hz),  # 2 back-bottom-right
+        (-hx, hy, -hz),  # 3 back-bottom-left
+        (-hx, hy, hz),  # 4 back-top-left
+        (hx, hy, hz),  # 5 back-top-right
     ]
 
     # Slant face (front-bottom → back-top) outward normal
@@ -334,8 +346,9 @@ def unit_wedge(
     verts: list[list[float]] = []
     idx: list[int] = []
 
-    def _quad(corners: list[int], n: tuple[float, float, float],
-              uvs: list[tuple[float, float]]) -> None:
+    def _quad(
+        corners: list[int], n: tuple[float, float, float], uvs: list[tuple[float, float]]
+    ) -> None:
         base = len(verts)
         nx, ny, nz_ = n
         for ci, uv in zip(corners, uvs, strict=True):
@@ -343,8 +356,9 @@ def unit_wedge(
             verts.append([pos[0], pos[1], pos[2], nx, ny, nz_, uv[0], uv[1]])
         idx.extend([base, base + 1, base + 2, base, base + 2, base + 3])
 
-    def _tri(corners: list[int], n: tuple[float, float, float],
-             uvs: list[tuple[float, float]]) -> None:
+    def _tri(
+        corners: list[int], n: tuple[float, float, float], uvs: list[tuple[float, float]]
+    ) -> None:
         base = len(verts)
         nx, ny, nz_ = n
         for ci, uv in zip(corners, uvs, strict=True):

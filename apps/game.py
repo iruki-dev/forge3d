@@ -21,22 +21,22 @@ import numpy as np
 import forge3d as f3d
 
 # ─────────────────────────── 게임 상수 ────────────────────────────
-BALL_RADIUS   = 0.35
-FORCE         = 14.0          # 굴리기 힘 (N)
-JUMP_IMPULSE  = 7.5            # 점프 임펄스
-MAX_SPEED     = 8.0            # 최대 수평 속도 (m/s)
-RESPAWN_POS   = (0.0, 0.0, 2.0)
+BALL_RADIUS = 0.35
+FORCE = 14.0  # 굴리기 힘 (N)
+JUMP_IMPULSE = 7.5  # 점프 임펄스
+MAX_SPEED = 8.0  # 최대 수평 속도 (m/s)
+RESPAWN_POS = (0.0, 0.0, 2.0)
 
 # ─────────────────────────── 전역 상태 ────────────────────────────
 state = {
-    "phase"      : "playing",   # "playing" | "win" | "dead"
-    "score"      : 0,
-    "lives"      : 3,
-    "start_time" : time.perf_counter(),
-    "best_time"  : None,
-    "win_time"   : None,
+    "phase": "playing",  # "playing" | "win" | "dead"
+    "score": 0,
+    "lives": 3,
+    "start_time": time.perf_counter(),
+    "best_time": None,
+    "win_time": None,
 }
-ball      = None
+ball = None
 goal_zone = None
 
 # ─────────────────────────── App 설정 ─────────────────────────────
@@ -58,14 +58,14 @@ def build_level(world: f3d.World) -> None:
     # ── 코스 플랫폼 (직선 복도 + 점프 구간) ──────────────────────
     platforms = [
         # (x_center, y_center, z_bottom, sx, sy, sz)
-        (  0.0,  0.0, 0.5,   6.0, 3.0, 1.0),   # 출발 플랫폼
-        (  0.0,  5.5, 0.5,   3.0, 8.0, 1.0),   # 긴 복도
-        (  0.0, 12.0, 0.5,   6.0, 3.0, 1.0),   # 교차점
-        ( -5.0, 14.5, 0.5,   6.0, 2.0, 1.0),   # 왼쪽 분기
-        (  5.0, 14.5, 0.5,   6.0, 2.0, 1.0),   # 오른쪽 분기 (막힘)
-        (  0.0, 18.5, 1.5,   4.0, 2.0, 1.0),   # 높은 플랫폼 (점프!)
-        (  0.0, 23.0, 2.5,   4.0, 2.0, 1.0),   # 더 높은 곳
-        (  0.0, 28.0, 3.5,   6.0, 4.0, 1.0),   # 최종 구역
+        (0.0, 0.0, 0.5, 6.0, 3.0, 1.0),  # 출발 플랫폼
+        (0.0, 5.5, 0.5, 3.0, 8.0, 1.0),  # 긴 복도
+        (0.0, 12.0, 0.5, 6.0, 3.0, 1.0),  # 교차점
+        (-5.0, 14.5, 0.5, 6.0, 2.0, 1.0),  # 왼쪽 분기
+        (5.0, 14.5, 0.5, 6.0, 2.0, 1.0),  # 오른쪽 분기 (막힘)
+        (0.0, 18.5, 1.5, 4.0, 2.0, 1.0),  # 높은 플랫폼 (점프!)
+        (0.0, 23.0, 2.5, 4.0, 2.0, 1.0),  # 더 높은 곳
+        (0.0, 28.0, 3.5, 6.0, 4.0, 1.0),  # 최종 구역
     ]
     colors = [
         (0.30, 0.35, 0.55),
@@ -87,8 +87,9 @@ def build_level(world: f3d.World) -> None:
     # ── 원기둥 기둥: 복도에 지그재그 장애물 ────────────────────────
     for xp, yp in [(-0.65, 4.0), (0.65, 7.5), (-0.65, 10.0)]:
         world.add_cylinder(
-            radius=0.22, half_length=0.85,
-            position=(xp, yp, 2.35),   # 복도 바닥 z=1.5, 기둥 중심 z=2.35
+            radius=0.22,
+            half_length=0.85,
+            position=(xp, yp, 2.35),  # 복도 바닥 z=1.5, 기둥 중심 z=2.35
             static=True,
             material=f3d.Material(color=(0.50, 0.60, 0.85), roughness=0.4),
         )
@@ -96,8 +97,9 @@ def build_level(world: f3d.World) -> None:
     # ── 원뿔 경고 표지: 오른쪽 막힘 분기 입구 ──────────────────────
     for cx in (-1.8, 0.0, 1.8):
         world.add_cone(
-            radius=0.18, height=0.55,
-            position=(cx + 5.0, 13.8, 1.775),   # 분기 바닥 z=1.5, 원뿔 중심 z=1.775
+            radius=0.18,
+            height=0.55,
+            position=(cx + 5.0, 13.8, 1.775),  # 분기 바닥 z=1.5, 원뿔 중심 z=1.775
             static=True,
             material=f3d.Material(color=(1.0, 0.35, 0.0), roughness=0.4),
         )
@@ -138,14 +140,16 @@ def build_level(world: f3d.World) -> None:
             name=f"bumper_{xi}",
         )
     # 스프링으로 천장에 연결
-    ceiling_anchor = world.add_static_box(
-        size=(6.0, 2.0, 0.2), position=(0.0, 12.0, 5.0)
-    )
+    ceiling_anchor = world.add_static_box(size=(6.0, 2.0, 0.2), position=(0.0, 12.0, 5.0))
     for name in ["bumper_0", "bumper_1", "bumper_2"]:
         bumper = world.get_body(name)
         world.add_joint(
-            "spring", bumper, ceiling_anchor,
-            stiffness=60.0, damping=4.0, rest_length=3.2,
+            "spring",
+            bumper,
+            ceiling_anchor,
+            stiffness=60.0,
+            damping=4.0,
+            rest_length=3.2,
         )
 
     # ── 낙하 함정 구역 (바닥 없는 구간) ──────────────────────────
@@ -183,9 +187,9 @@ def build_level(world: f3d.World) -> None:
     def on_goal(body: f3d.Body) -> None:
         if body is ball and state["phase"] == "playing":
             elapsed = time.perf_counter() - state["start_time"]
-            state["phase"]    = "win"
+            state["phase"] = "win"
             state["win_time"] = elapsed
-            state["score"]   += max(0, int(3000 - elapsed * 40))
+            state["score"] += max(0, int(3000 - elapsed * 40))
             if state["best_time"] is None or elapsed < state["best_time"]:
                 state["best_time"] = elapsed
 
@@ -209,16 +213,16 @@ def build_level(world: f3d.World) -> None:
         material=f3d.Material(color=(1.0, 0.85, 0.1), roughness=0.3, metallic=0.5),
         name="player_ball",
     )
-    ball.linear_damping  = 0.35
+    ball.linear_damping = 0.35
     ball.angular_damping = 0.6
 
     # ── 카메라 초기 위치 ─────────────────────────────────────────
     world.set_camera(position=(0, -8, 10), target=(0, 5, 2), fov_deg=55)
 
     # ── 시작 시간 리셋 ────────────────────────────────────────────
-    state["phase"]      = "playing"
+    state["phase"] = "playing"
     state["start_time"] = time.perf_counter()
-    state["win_time"]   = None
+    state["win_time"] = None
 
 
 # ─────────────────────────── on_start ─────────────────────────────
@@ -242,7 +246,7 @@ def update(world: f3d.World, dt: float, inp: f3d.Input) -> None:
         sys.exit(0)
 
     if state["phase"] == "win":
-        return   # 이긴 상태 — 입력 무시
+        return  # 이긴 상태 — 입력 무시
 
     bpos = ball.position
 
@@ -291,9 +295,9 @@ def update(world: f3d.World, dt: float, inp: f3d.Input) -> None:
         world.apply_impulse(ball, (0.0, 0.0, JUMP_IMPULSE))
 
     # ── 카메라 — 공 추적 ────────────────────────────────────────
-    cx   = bpos[0] * 0.4
-    cy   = bpos[1] - 9.0
-    cz   = bpos[2] + 8.0
+    cx = bpos[0] * 0.4
+    cy = bpos[1] - 9.0
+    cz = bpos[2] + 8.0
     world.set_camera(
         position=(cx, cy, cz),
         target=(bpos[0], bpos[1] + 2.0, bpos[2]),
@@ -312,78 +316,117 @@ def render(world: f3d.World, viewer) -> None:
     if state["phase"] == "playing":
         viewer.draw_text(
             f"⏱  {elapsed:.1f}s",
-            x=20, y=18, size=22, color=(1.0, 1.0, 0.5),
+            x=20,
+            y=18,
+            size=22,
+            color=(1.0, 1.0, 0.5),
         )
         viewer.draw_text(
             f"❤  Lives: {state['lives']}",
-            x=20, y=46, size=20, color=(1.0, 0.4, 0.4),
+            x=20,
+            y=46,
+            size=20,
+            color=(1.0, 0.4, 0.4),
         )
         viewer.draw_text(
             f"⭐ Score: {state['score']}",
-            x=20, y=72, size=20, color=(0.5, 1.0, 0.6),
+            x=20,
+            y=72,
+            size=20,
+            color=(0.5, 1.0, 0.6),
         )
 
         # 조작 힌트 (하단)
         viewer.draw_text(
             "WASD / 방향키 — 이동  │  SPACE — 점프  │  R — 재시작",
-            x=W // 2, y=H - 30, size=16,
-            color=(0.8, 0.8, 0.8), anchor="midbottom",
+            x=W // 2,
+            y=H - 30,
+            size=16,
+            color=(0.8, 0.8, 0.8),
+            anchor="midbottom",
         )
 
         # 골인 지점 안내
-        bpos  = ball.position
-        dist  = math.hypot(bpos[0], bpos[1] - 28.0)
+        bpos = ball.position
+        dist = math.hypot(bpos[0], bpos[1] - 28.0)
         viewer.draw_text(
             f"🏁 Goal: {dist:.0f}m",
-            x=W - 20, y=18, size=19,
-            color=(0.4, 1.0, 0.5), anchor="topright",
+            x=W - 20,
+            y=18,
+            size=19,
+            color=(0.4, 1.0, 0.5),
+            anchor="topright",
         )
         if state["best_time"] is not None:
             viewer.draw_text(
                 f"🥇 Best: {state['best_time']:.1f}s",
-                x=W - 20, y=45, size=17,
-                color=(1.0, 0.85, 0.2), anchor="topright",
+                x=W - 20,
+                y=45,
+                size=17,
+                color=(1.0, 0.85, 0.2),
+                anchor="topright",
             )
 
     elif state["phase"] == "win":
         # 승리 화면
         viewer.draw_text(
             "🎉 GOAL!  클리어! 🎉",
-            x=W // 2, y=H // 2 - 85, size=40,
-            color=(0.2, 1.0, 0.4), anchor="midtop",
+            x=W // 2,
+            y=H // 2 - 85,
+            size=40,
+            color=(0.2, 1.0, 0.4),
+            anchor="midtop",
         )
         viewer.draw_text(
             f"클리어 시간: {state['win_time']:.2f}초",
-            x=W // 2, y=H // 2 - 25, size=26,
-            color=(1.0, 1.0, 0.5), anchor="midtop",
+            x=W // 2,
+            y=H // 2 - 25,
+            size=26,
+            color=(1.0, 1.0, 0.5),
+            anchor="midtop",
         )
         viewer.draw_text(
             f"획득 점수: {state['score']}점",
-            x=W // 2, y=H // 2 + 15, size=26,
-            color=(0.5, 1.0, 0.8), anchor="midtop",
+            x=W // 2,
+            y=H // 2 + 15,
+            size=26,
+            color=(0.5, 1.0, 0.8),
+            anchor="midtop",
         )
         viewer.draw_text(
             "[ R ] 재도전  │  [ ESC ] 종료",
-            x=W // 2, y=H // 2 + 60, size=20,
-            color=(0.8, 0.8, 0.8), anchor="midtop",
+            x=W // 2,
+            y=H // 2 + 60,
+            size=20,
+            color=(0.8, 0.8, 0.8),
+            anchor="midtop",
         )
 
     elif state["phase"] == "dead":
         # 게임오버 화면
         viewer.draw_text(
             "💀 GAME OVER",
-            x=W // 2, y=H // 2 - 80, size=40,
-            color=(1.0, 0.25, 0.2), anchor="midtop",
+            x=W // 2,
+            y=H // 2 - 80,
+            size=40,
+            color=(1.0, 0.25, 0.2),
+            anchor="midtop",
         )
         viewer.draw_text(
             f"최종 점수: {state['score']}점",
-            x=W // 2, y=H // 2 - 20, size=26,
-            color=(1.0, 0.8, 0.3), anchor="midtop",
+            x=W // 2,
+            y=H // 2 - 20,
+            size=26,
+            color=(1.0, 0.8, 0.3),
+            anchor="midtop",
         )
         viewer.draw_text(
             "[ R ] 재시작  │  [ ESC ] 종료",
-            x=W // 2, y=H // 2 + 30, size=20,
-            color=(0.8, 0.8, 0.8), anchor="midtop",
+            x=W // 2,
+            y=H // 2 + 30,
+            size=20,
+            color=(0.8, 0.8, 0.8),
+            anchor="midtop",
         )
 
 
