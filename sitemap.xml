@@ -1,123 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://forge3d.readthedocs.io/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/architecture/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/architecture/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/changelog/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/changelog/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/contributing/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/contributing/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/install/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/install/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/migration_v2/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/migration_v2/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/quickstart/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/quickstart/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/whats_new_v1_1/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/whats_new_v1_1/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/whats_new_v2_1/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/whats_new_v2_1/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/animation/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/animation/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/app/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/app/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/audio/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/audio/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/backends/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/backends/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/body/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/body/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/camera/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/camera/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/character/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/character/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/ecs/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/ecs/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/editor/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/editor/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/input/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/input/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/particle/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/particle/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/profiler/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/profiler/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/rendering/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/rendering/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/robot/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/robot/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/scene/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/scene/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/shapes/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/shapes/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/api/world/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/api/world/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/tutorials/01_physics/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/ko/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/tutorials/02_rendering/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/ko/architecture/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/tutorials/03_robot/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/ko/changelog/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
     <url>
-         <loc>https://forge3d.readthedocs.io/tutorials/04_rl/</loc>
-         <lastmod>2026-06-11</lastmod>
+         <loc>https://iruki.dev/forge3d/ko/contributing/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/install/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/migration_v2/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/quickstart/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/whats_new_v1_1/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/whats_new_v2_1/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/tutorials/01_physics/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/tutorials/02_rendering/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/tutorials/03_robot/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/ko/tutorials/04_rl/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/tutorials/01_physics/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/tutorials/02_rendering/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/tutorials/03_robot/</loc>
+         <lastmod>2026-06-12</lastmod>
+    </url>
+    <url>
+         <loc>https://iruki.dev/forge3d/tutorials/04_rl/</loc>
+         <lastmod>2026-06-12</lastmod>
     </url>
 </urlset>

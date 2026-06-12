@@ -10,7 +10,7 @@
       
       
       
-        <link rel="canonical" href="https://forge3d.readthedocs.io/migration_v2/">
+        <link rel="canonical" href="https://iruki.dev/forge3d/migration_v2/">
       
       
         <link rel="prev" href="../whats_new_v2_1/">
@@ -19,6 +19,10 @@
         <link rel="next" href="../whats_new_v1_1/">
       
       
+        
+          <link rel="alternate" href="/forge3d/" hreflang="en">
+        
+          <link rel="alternate" href="/forge3d/ko/" hreflang="ko">
         
       
       
@@ -80,7 +84,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#v1-v2" class="md-skip">
+        <a href="#v1-v2-migration-guide" class="md-skip">
           Skip to content
         </a>
       
@@ -152,6 +156,32 @@
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="Select language">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/forge3d/" hreflang="en" class="md-select__link">
+              English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/forge3d/ko/" hreflang="ko" class="md-select__link">
+              한국어
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
     
     
       
@@ -372,6 +402,26 @@
 
       </a>
     </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../ko/" class="md-tabs__link">
+          
+  
+  
+  한국어
+
+        </a>
+      </li>
+    
   
 
       
@@ -1461,10 +1511,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#1" class="md-nav__link">
+  <a href="#1-installation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. 설치
+        1. Installation
       
     </span>
   </a>
@@ -1472,10 +1522,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#2" class="md-nav__link">
+  <a href="#2-version-check" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. 버전 확인
+        2. Version check
       
     </span>
   </a>
@@ -1483,10 +1533,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#3" class="md-nav__link">
+  <a href="#3-existing-code-no-changes-needed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. 기존 코드 — 변경 불필요
+        3. Existing code — no changes needed
       
     </span>
   </a>
@@ -1494,22 +1544,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#4-v2-ecs" class="md-nav__link">
+  <a href="#4-adopting-v2-features-ecs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. v2 신기능 활용 — ECS
+        4. Adopting v2 features — ECS
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="4. v2 신기능 활용 — ECS">
+    <nav class="md-nav" aria-label="4. Adopting v2 features — ECS">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#v1" class="md-nav__link">
+  <a href="#v1-style-still-supported" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1 방식 (계속 지원)
+        v1 style (still supported)
       
     </span>
   </a>
@@ -1517,10 +1567,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#v2-ecs" class="md-nav__link">
+  <a href="#v2-ecs-style-opt-in" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v2 ECS 방식 (선택)
+        v2 ECS style (opt-in)
       
     </span>
   </a>
@@ -1528,10 +1578,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#v1-body-ecs" class="md-nav__link">
+  <a href="#bridging-v1-body-ecs-entity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v1 Body → ECS 브릿지
+        Bridging v1 Body → ECS entity
       
     </span>
   </a>
@@ -1544,15 +1594,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#5-p26" class="md-nav__link">
+  <a href="#5-modern-rendering-pipeline-p26" class="md-nav__link">
     <span class="md-ellipsis">
       
-        5. 모던 렌더링 파이프라인 (P26)
+        5. Modern rendering pipeline (P26)
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="5. 모던 렌더링 파이프라인 (P26)">
+    <nav class="md-nav" aria-label="5. Modern rendering pipeline (P26)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1567,10 +1617,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#v2-pbr" class="md-nav__link">
+  <a href="#v2-deferred-pbr-automatic-upgrade" class="md-nav__link">
     <span class="md-ellipsis">
       
-        v2 — 지연 PBR (자동 업그레이드)
+        v2 — Deferred PBR (automatic upgrade)
       
     </span>
   </a>
@@ -1583,10 +1633,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#6-p28" class="md-nav__link">
+  <a href="#6-audio-system-p28" class="md-nav__link">
     <span class="md-ellipsis">
       
-        6. 오디오 시스템 (P28)
+        6. Audio system (P28)
       
     </span>
   </a>
@@ -1594,10 +1644,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#7-ik-p29" class="md-nav__link">
+  <a href="#7-animation-ik-p29" class="md-nav__link">
     <span class="md-ellipsis">
       
-        7. 애니메이션 + IK (P29)
+        7. Animation + IK (P29)
       
     </span>
   </a>
@@ -1605,10 +1655,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#8-p31" class="md-nav__link">
+  <a href="#8-particle-system-p31" class="md-nav__link">
     <span class="md-ellipsis">
       
-        8. 파티클 시스템 (P31)
+        8. Particle system (P31)
       
     </span>
   </a>
@@ -1616,10 +1666,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#9-p30" class="md-nav__link">
+  <a href="#9-scene-save-load-p30" class="md-nav__link">
     <span class="md-ellipsis">
       
-        9. 씬 저장/로드 (P30)
+        9. Scene save / load (P30)
       
     </span>
   </a>
@@ -1627,10 +1677,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#10-rust" class="md-nav__link">
+  <a href="#10-rust-core-control" class="md-nav__link">
     <span class="md-ellipsis">
       
-        10. Rust 코어 제어
+        10. Rust core control
       
     </span>
   </a>
@@ -1641,7 +1691,7 @@
   <a href="#11-breaking-changes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        11. Breaking Changes
+        11. Breaking changes
       
     </span>
   </a>
@@ -1757,6 +1807,1155 @@
   
 
     
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_9" id="__nav_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    한국어
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    한국어
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    홈
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_2" id="__nav_9_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    시작하기
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    시작하기
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/install/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    설치
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/quickstart/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    빠른 시작
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_3" id="__nav_9_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    튜토리얼
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    튜토리얼
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/tutorials/01_physics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    1 — 물리 시뮬레이션
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/tutorials/02_rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    2 — 렌더링
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/tutorials/03_robot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    3 — 로봇 팔 (FK / IK)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/tutorials/04_rl/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    4 — 강화학습
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    아키텍처
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_5" id="__nav_9_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API 레퍼런스
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API 레퍼런스
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/world/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    World
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/body/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Body
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/shapes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shape & Material
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/app/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    App
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/rendering/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Viewer & Recorder
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/input/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input & Key
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/camera/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Camera
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/character/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Character Controller
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/ecs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    ECS
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/animation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Animation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/audio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Audio
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/particle/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Particle System
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/scene/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Scene Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/editor/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Editor
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/profiler/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Profiler
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/robot/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Robot
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/backends/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Backend (NumPy / JAX)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_9_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_9_6" id="__nav_9_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    새로운 기능
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_9_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_9_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    새로운 기능
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/whats_new_v2_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.1.0 — 고급 시스템
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/migration_v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v2.0.0 — 마이그레이션 가이드
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/whats_new_v1_1/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    v1.1.0 — 게임 제작 대비
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    기여 가이드
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ko/changelog/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    변경 내역
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
   </ul>
 </nav>
                   </div>
@@ -1777,31 +2976,31 @@
   
 
 
-<h1 id="v1-v2">v1 → v2 마이그레이션 가이드<a class="headerlink" href="#v1-v2" title="Permanent link">&para;</a></h1>
+<h1 id="v1-v2-migration-guide">v1 → v2 Migration Guide<a class="headerlink" href="#v1-v2-migration-guide" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>v1.x 코드를 v2.0으로 업그레이드하는 방법을 설명한다.<br />
-<strong>v1 API는 v2에서 완전 하위 호환</strong>된다 — 기존 코드는 수정 없이 동작한다.<br />
-v2 신기능을 활용하고 싶을 때만 아래 가이드를 따른다.</p>
+<p>Explains how to upgrade v1.x code to v2.0.
+<strong>v1 API is fully backward-compatible in v2</strong> — existing code runs without modification.
+Follow this guide only when you want to adopt v2 features.</p>
 </blockquote>
 <hr />
-<h2 id="1">1. 설치<a class="headerlink" href="#1" title="Permanent link">&para;</a></h2>
+<h2 id="1-installation">1. Installation<a class="headerlink" href="#1-installation" title="Permanent link">&para;</a></h2>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># v1</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">pyforge3d</span><span class="o">==</span><span class="m">1</span>.1.0
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># v2 (Rust 확장 포함)</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="c1"># v2 (includes Rust extension)</span>
 </span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>pip<span class="w"> </span>install<span class="w"> </span><span class="nv">pyforge3d</span><span class="o">==</span><span class="m">2</span>.0.0
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># 또는 소스에서: maturin build --release &amp;&amp; pip install dist/pyforge3d-2.0.0-*.whl</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># Or from source: maturin build --release &amp;&amp; pip install dist/pyforge3d-2.0.0-*.whl</span>
 </span></code></pre></div>
-<p>Rust(<code>rustup</code>) 없이도 설치 가능하다 — Rust 빌드 실패 시 Python 폴백 자동 선택.</p>
+<p>Rust (<code>rustup</code>) is not required for installation — if the Rust build fails, the Python fallback is selected automatically.</p>
 <hr />
-<h2 id="2">2. 버전 확인<a class="headerlink" href="#2" title="Permanent link">&para;</a></h2>
+<h2 id="2-version-check">2. Version check<a class="headerlink" href="#2-version-check" title="Permanent link">&para;</a></h2>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="nb">print</span><span class="p">(</span><span class="n">forge3d</span><span class="o">.</span><span class="n">__version__</span><span class="p">)</span>  <span class="c1"># &quot;2.0.0&quot;</span>
 </span></code></pre></div>
 <hr />
-<h2 id="3">3. 기존 코드 — 변경 불필요<a class="headerlink" href="#3" title="Permanent link">&para;</a></h2>
-<p>v1의 모든 코드는 v2에서 그대로 동작한다.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># v1 코드 — v2에서 수정 없이 동작</span>
+<h2 id="3-existing-code-no-changes-needed">3. Existing code — no changes needed<a class="headerlink" href="#3-existing-code-no-changes-needed" title="Permanent link">&para;</a></h2>
+<p>All v1 code runs unchanged in v2.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># v1 code — runs in v2 without modification</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="kn">import</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">f3d</span>
 </span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>
 </span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">(</span><span class="n">gravity</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">9.81</span><span class="p">))</span>
@@ -1814,12 +3013,12 @@ v2 신기능을 활용하고 싶을 때만 아래 가이드를 따른다.</p>
 </span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">viewer</span><span class="o">.</span><span class="n">draw</span><span class="p">()</span>
 </span></code></pre></div>
 <hr />
-<h2 id="4-v2-ecs">4. v2 신기능 활용 — ECS<a class="headerlink" href="#4-v2-ecs" title="Permanent link">&para;</a></h2>
-<h3 id="v1">v1 방식 (계속 지원)<a class="headerlink" href="#v1" title="Permanent link">&para;</a></h3>
+<h2 id="4-adopting-v2-features-ecs">4. Adopting v2 features — ECS<a class="headerlink" href="#4-adopting-v2-features-ecs" title="Permanent link">&para;</a></h2>
+<h3 id="v1-style-still-supported">v1 style (still supported)<a class="headerlink" href="#v1-style-still-supported" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">world</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">World</span><span class="p">()</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">box</span> <span class="o">=</span> <span class="n">world</span><span class="o">.</span><span class="n">add_box</span><span class="p">(</span><span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">5</span><span class="p">),</span> <span class="n">mass</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="v2-ecs">v2 ECS 방식 (선택)<a class="headerlink" href="#v2-ecs" title="Permanent link">&para;</a></h3>
+<h3 id="v2-ecs-style-opt-in">v2 ECS style (opt-in)<a class="headerlink" href="#v2-ecs-style-opt-in" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">ew</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">EntityWorld</span><span class="p">()</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">box</span> <span class="o">=</span> <span class="n">ew</span><span class="o">.</span><span class="n">create_entity</span><span class="p">(</span>
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">f3d</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]),</span>
@@ -1830,39 +3029,39 @@ v2 신기능을 활용하고 싶을 때만 아래 가이드를 따른다.</p>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">ew</span><span class="o">.</span><span class="n">add_system</span><span class="p">(</span><span class="n">f3d</span><span class="o">.</span><span class="n">RenderSystem</span><span class="p">())</span>
 </span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">ew</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">60</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="v1-body-ecs">v1 Body → ECS 브릿지<a class="headerlink" href="#v1-body-ecs" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># 기존 v1 Body를 ECS 엔티티로 래핑</span>
+<h3 id="bridging-v1-body-ecs-entity">Bridging v1 Body → ECS entity<a class="headerlink" href="#bridging-v1-body-ecs-entity" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Wrap an existing v1 Body as an ECS entity</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">body_to_entity</span>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">entity</span> <span class="o">=</span> <span class="n">body_to_entity</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">v1_box</span><span class="p">,</span> <span class="n">ew</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="5-p26">5. 모던 렌더링 파이프라인 (P26)<a class="headerlink" href="#5-p26" title="Permanent link">&para;</a></h2>
+<h2 id="5-modern-rendering-pipeline-p26">5. Modern rendering pipeline (P26)<a class="headerlink" href="#5-modern-rendering-pipeline-p26" title="Permanent link">&para;</a></h2>
 <h3 id="v1-opengl-33-blinn-phong">v1 — OpenGL 3.3 Blinn-Phong<a class="headerlink" href="#v1-opengl-33-blinn-phong" title="Permanent link">&para;</a></h3>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">viewer</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Viewer</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;realtime&quot;</span><span class="p">)</span>
 </span></code></pre></div>
-<h3 id="v2-pbr">v2 — 지연 PBR (자동 업그레이드)<a class="headerlink" href="#v2-pbr" title="Permanent link">&para;</a></h3>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Viewer는 내부적으로 DeferredRenderer 사용 (자동)</span>
+<h3 id="v2-deferred-pbr-automatic-upgrade">v2 — Deferred PBR (automatic upgrade)<a class="headerlink" href="#v2-deferred-pbr-automatic-upgrade" title="Permanent link">&para;</a></h3>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Viewer uses DeferredRenderer internally (automatic)</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">viewer</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Viewer</span><span class="p">(</span><span class="n">world</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;realtime&quot;</span><span class="p">)</span>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
-</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># 직접 사용</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="c1"># Direct usage</span>
 </span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.render</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeferredRenderer</span>
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a><span class="n">renderer</span> <span class="o">=</span> <span class="n">DeferredRenderer</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1280</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">720</span><span class="p">)</span>
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">frame</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">snapshot</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="6-p28">6. 오디오 시스템 (P28)<a class="headerlink" href="#6-p28" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># v2 신규</span>
+<h2 id="6-audio-system-p28">6. Audio system (P28)<a class="headerlink" href="#6-audio-system-p28" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># New in v2</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">clip</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">AudioClip</span><span class="o">.</span><span class="n">from_sine</span><span class="p">(</span><span class="n">freq</span><span class="o">=</span><span class="mf">440.0</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">audio_sys</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">AudioSystem</span><span class="p">()</span>
 </span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a><span class="n">audio_sys</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="mf">0.8</span><span class="p">)</span>
 </span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>
-</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># 충돌 이벤트 → 사운드 트리거</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="c1"># Collision event → sound trigger</span>
 </span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">handler</span> <span class="o">=</span> <span class="n">audio_sys</span><span class="o">.</span><span class="n">make_collision_handler</span><span class="p">(</span><span class="n">clip</span><span class="p">,</span> <span class="n">max_volume</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="n">world</span><span class="o">.</span><span class="n">on_collision_begin</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="7-ik-p29">7. 애니메이션 + IK (P29)<a class="headerlink" href="#7-ik-p29" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># 골격 생성</span>
+<h2 id="7-animation-ik-p29">7. Animation + IK (P29)<a class="headerlink" href="#7-animation-ik-p29" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="c1"># Create skeleton</span>
 </span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">skel</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">Skeleton</span><span class="o">.</span><span class="n">chain</span><span class="p">([</span>
 </span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a>    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span>
 </span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a>    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]),</span>
@@ -1875,7 +3074,7 @@ v2 신기능을 활용하고 싶을 때만 아래 가이드를 따른다.</p>
 </span><span id="__span-9-11"><a id="__codelineno-9-11" name="__codelineno-9-11" href="#__codelineno-9-11"></a><span class="n">solved</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">chain</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]))</span>
 </span></code></pre></div>
 <hr />
-<h2 id="8-p31">8. 파티클 시스템 (P31)<a class="headerlink" href="#8-p31" title="Permanent link">&para;</a></h2>
+<h2 id="8-particle-system-p31">8. Particle system (P31)<a class="headerlink" href="#8-particle-system-p31" title="Permanent link">&para;</a></h2>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">ew</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">EntityWorld</span><span class="p">()</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">ew</span><span class="o">.</span><span class="n">create_entity</span><span class="p">(</span>
 </span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a>    <span class="n">f3d</span><span class="o">.</span><span class="n">Transform</span><span class="p">(</span><span class="n">position</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">])),</span>
@@ -1887,33 +3086,33 @@ v2 신기능을 활용하고 싶을 때만 아래 가이드를 따른다.</p>
 </span><span id="__span-10-9"><a id="__codelineno-10-9" name="__codelineno-10-9" href="#__codelineno-10-9"></a><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">ps</span><span class="o">.</span><span class="n">total_alive</span><span class="si">}</span><span class="s2"> sparks alive&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="9-p30">9. 씬 저장/로드 (P30)<a class="headerlink" href="#9-p30" title="Permanent link">&para;</a></h2>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># ECS 씬 저장</span>
+<h2 id="9-scene-save-load-p30">9. Scene save / load (P30)<a class="headerlink" href="#9-scene-save-load-p30" title="Permanent link">&para;</a></h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="c1"># Save ECS scene</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d</span><span class="w"> </span><span class="kn">import</span> <span class="n">save_scene</span><span class="p">,</span> <span class="n">load_scene</span>
 </span><span id="__span-11-3"><a id="__codelineno-11-3" name="__codelineno-11-3" href="#__codelineno-11-3"></a><span class="n">save_scene</span><span class="p">(</span><span class="n">ew</span><span class="p">,</span> <span class="s2">&quot;my_scene.json&quot;</span><span class="p">)</span>
 </span><span id="__span-11-4"><a id="__codelineno-11-4" name="__codelineno-11-4" href="#__codelineno-11-4"></a>
-</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># 씬 관리자 활용</span>
+</span><span id="__span-11-5"><a id="__codelineno-11-5" name="__codelineno-11-5" href="#__codelineno-11-5"></a><span class="c1"># Using scene manager</span>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a><span class="n">mgr</span> <span class="o">=</span> <span class="n">f3d</span><span class="o">.</span><span class="n">SceneManager</span><span class="p">(</span><span class="n">ew</span><span class="p">)</span>
-</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">mgr</span><span class="o">.</span><span class="n">on_scene_loaded</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;씬 로드됨&quot;</span><span class="p">))</span>
+</span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="n">mgr</span><span class="o">.</span><span class="n">on_scene_loaded</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Scene loaded&quot;</span><span class="p">))</span>
 </span><span id="__span-11-8"><a id="__codelineno-11-8" name="__codelineno-11-8" href="#__codelineno-11-8"></a><span class="n">mgr</span><span class="o">.</span><span class="n">load_scene</span><span class="p">(</span><span class="s2">&quot;level1.json&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="10-rust">10. Rust 코어 제어<a class="headerlink" href="#10-rust" title="Permanent link">&para;</a></h2>
-<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Rust 코어 비활성화 (Python 폴백)</span>
+<h2 id="10-rust-core-control">10. Rust core control<a class="headerlink" href="#10-rust-core-control" title="Permanent link">&para;</a></h2>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Disable Rust core (Python fallback)</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="nv">USE_RUST_CORE</span><span class="o">=</span><span class="m">0</span><span class="w"> </span>python<span class="w"> </span>my_game.py
 </span><span id="__span-12-3"><a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
-</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Rust 코어 강제 (없으면 오류)</span>
+</span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a><span class="c1"># Force Rust core (error if unavailable)</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="nv">USE_RUST_CORE</span><span class="o">=</span><span class="m">1</span><span class="w"> </span>python<span class="w"> </span>my_game.py
 </span></code></pre></div>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">forge3d.backend</span><span class="w"> </span><span class="kn">import</span> <span class="n">USE_RUST_CORE</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rust 코어:&quot;</span><span class="p">,</span> <span class="n">USE_RUST_CORE</span><span class="p">)</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Rust core:&quot;</span><span class="p">,</span> <span class="n">USE_RUST_CORE</span><span class="p">)</span>
 </span></code></pre></div>
 <hr />
-<h2 id="11-breaking-changes">11. Breaking Changes<a class="headerlink" href="#11-breaking-changes" title="Permanent link">&para;</a></h2>
-<p>없음. v1 API는 동결됐다.</p>
+<h2 id="11-breaking-changes">11. Breaking changes<a class="headerlink" href="#11-breaking-changes" title="Permanent link">&para;</a></h2>
+<p>None. The v1 API is frozen.</p>
 <hr />
 <h2 id="12-deprecated">12. Deprecated<a class="headerlink" href="#12-deprecated" title="Permanent link">&para;</a></h2>
-<p>없음. v1 API는 v3까지 지원 보장.</p>
+<p>None. v1 API is guaranteed until v3.</p>
 
 
 
@@ -2000,6 +3199,8 @@ v2 신기능을 활용하고 싶을 때만 아래 가이드를 따른다.</p>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+        <script src="../js/lang-switch.js"></script>
       
     
   </body>
