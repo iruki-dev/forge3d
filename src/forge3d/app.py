@@ -193,6 +193,10 @@ def _call_flexible(func: Callable, *positional: Any) -> Any:
     ``fn(world, dt, inp)`` interchangeably — missing args are omitted.
     Works with regular functions, lambdas, and bound methods.
     """
+    # Determine arg count from signature — only this part can fail for builtins.
+    # The function call itself is NOT wrapped in try/except so that errors raised
+    # inside the user's callback (e.g. wrong kwargs, missing imports) propagate
+    # immediately instead of being mistaken for an arg-count mismatch.
     try:
         sig = inspect.signature(func)
         n = len(
@@ -209,8 +213,9 @@ def _call_flexible(func: Callable, *positional: Any) -> Any:
         has_var_positional = any(
             p.kind == inspect.Parameter.VAR_POSITIONAL for p in sig.parameters.values()
         )
-        if has_var_positional:
-            return func(*positional)
-        return func(*positional[:n])
+        call_args = positional if has_var_positional else positional[:n]
     except (ValueError, TypeError):
-        return func(*positional)
+        # inspect.signature failed (e.g. C extension) — pass all args
+        call_args = positional
+
+    return func(*call_args)

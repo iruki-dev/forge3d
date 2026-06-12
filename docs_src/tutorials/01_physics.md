@@ -102,6 +102,26 @@ world.clear()                # remove all dynamic bodies
 world.clear(keep_statics=False)  # remove everything
 ```
 
+!!! warning "Stale handles after remove / clear"
+    The Python variable you hold (`ball`, `box`, …) becomes **invalid** after
+    it is removed.  Calling `apply_impulse`, reading `body.position`, etc. on
+    a stale handle raises `RuntimeError`.
+
+    **Always reassign** after `clear()`:
+
+    ```python
+    world.clear(keep_statics=False)
+    ball = world.add_sphere(...)  # 'ball' now points to the new body
+    ```
+
+    If you are unsure whether a body is still in the world, use
+    `world.contains()`:
+
+    ```python
+    if world.contains(ball):
+        world.apply_impulse(ball, force * dt)
+    ```
+
 ---
 
 ## Energy conservation check

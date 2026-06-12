@@ -851,10 +851,32 @@ class World:
 
     # ── Scene mutation ────────────────────────────────────────────────────────
 
+    def contains(self, body: Body) -> bool:
+        """Return ``True`` if *body* is still present in this world.
+
+        Body handles become stale after :meth:`remove` or :meth:`clear`.
+        Use this guard before calling any method that operates on the body::
+
+            if world.contains(ball):
+                world.apply_impulse(ball, force * dt)
+
+        Parameters
+        ----------
+        body : Body handle to check.
+        """
+        return body._id in self._bodies
+
     def remove(self, body: Body) -> None:
         """Remove a body from the simulation.
 
-        The body handle becomes stale after this call.
+        .. warning::
+            The Python ``Body`` object you hold becomes **stale** after this
+            call — its ``_id`` no longer exists in the world.  Any subsequent
+            call to :meth:`apply_impulse`, :meth:`teleport`, etc. with the old
+            handle will raise ``RuntimeError``.
+
+            Always reassign (``ball = world.add_sphere(...)``) or guard with
+            :meth:`contains` before reusing a handle.
 
         Parameters
         ----------
@@ -868,6 +890,17 @@ class World:
 
     def clear(self, keep_statics: bool = False) -> None:
         """Remove all bodies from the world.
+
+        .. warning::
+            **All** body handles in scope become stale after this call —
+            including variables like ``ball``, ``ground``, etc. created before
+            ``clear()``.  Calling :meth:`apply_impulse` or reading
+            ``body.position`` on a stale handle raises ``RuntimeError``.
+
+            Always reassign every body reference after calling ``clear()``::
+
+                world.clear(keep_statics=False)
+                ball = world.add_sphere(...)   # new handle — old variable is now stale
 
         Parameters
         ----------
@@ -899,6 +932,14 @@ class World:
             # Apply force F for time dt:
             world.apply_impulse(ball, np.array([F_x, F_y, 0]) * dt)
             world.step(dt)
+
+        .. note::
+            Raises ``RuntimeError`` if *body* has been removed from the world
+            (via :meth:`remove` or :meth:`clear`).  Guard with
+            :meth:`contains` if the body's lifetime is uncertain::
+
+                if world.contains(ball):
+                    world.apply_impulse(ball, force * dt)
         """
         self._physics.apply_impulse(body._id, impulse)
 

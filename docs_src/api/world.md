@@ -21,6 +21,7 @@ The central object of every simulation. It manages rigid bodies, advances physic
         - add
         - remove
         - clear
+        - contains
         - get_body
         - bodies
         - step
@@ -84,6 +85,26 @@ world.remove(box)
 world.clear(keep_statics=True)   # remove dynamics only
 print(world.time)                # elapsed simulation time (s)
 ```
+
+!!! warning "Body handles become stale after remove / clear"
+    The Python `Body` object you hold is **invalidated** when you call
+    `world.remove(body)` or `world.clear()`.  Any subsequent call that uses
+    the old variable — `apply_impulse`, `teleport`, reading `body.position`,
+    etc. — raises `RuntimeError: Body id=N not found in world`.
+
+    **Pattern: always reassign after clear**
+
+    ```python
+    world.clear(keep_statics=False)
+    ball = world.add_sphere(...)   # new handle — old 'ball' is now stale
+    ```
+
+    **Pattern: guard with `world.contains()`**
+
+    ```python
+    if world.contains(ball):
+        world.apply_impulse(ball, force * dt)
+    ```
 
 ### Weld constraints with rotation (v1.1.0)
 

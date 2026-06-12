@@ -28,6 +28,33 @@ cap  = world.add_capsule(radius=0.2, half_length=0.5, position=(-1, 0, 5))
 
 모든 `add_*` 호출은 이후에 조회·수정할 수 있는 `Body` 핸들을 반환합니다.
 
+### 바디 제거 & 스테일 핸들 주의
+
+```python
+world.remove(box)                    # 특정 바디 제거
+world.clear()                        # 동적 바디 전체 제거
+world.clear(keep_statics=False)      # 모든 바디 제거
+```
+
+!!! warning "remove / clear 후 핸들은 무효화됩니다"
+    `world.remove(body)` 또는 `world.clear()` 이후, 기존 변수(`ball`, `box` 등)는
+    **스테일(stale) 핸들**이 됩니다.  이 핸들로 `apply_impulse`, `body.position` 등을
+    호출하면 `RuntimeError: Body id=N not found in world`가 발생합니다.
+
+    **패턴: clear 후 반드시 재할당**
+
+    ```python
+    world.clear(keep_statics=False)
+    ball = world.add_sphere(...)   # 새 핸들 — 이전 'ball' 변수는 이제 무효
+    ```
+
+    **패턴: `world.contains()`로 유효성 확인**
+
+    ```python
+    if world.contains(ball):
+        world.apply_impulse(ball, force * dt)
+    ```
+
 ---
 
 ## 시뮬레이션 스텝
