@@ -263,10 +263,12 @@ def test_example_05_ecs_scene():
     """G6: examples/05_ecs_scene.py가 에러 없이 실행된다."""
     import subprocess
     import sys
+    from pathlib import Path
 
+    repo_root = Path(__file__).parent.parent
     result = subprocess.run(
         [sys.executable, "examples/05_ecs_scene.py"],
-        cwd="/workspaces/2026_python_toy_project_1",
+        cwd=str(repo_root),
         capture_output=True,
         text=True,
         timeout=30,

@@ -8,6 +8,11 @@ import pytest
 import forge3d as f3d
 from forge3d.app import App, _call_flexible
 from forge3d.facade import World
+from forge3d.render.realtime.context import check_opengl_available
+
+_skip_no_gl = pytest.mark.skipif(
+    not check_opengl_available(), reason="OpenGL not available in this environment"
+)
 
 
 class TestApp:
@@ -62,6 +67,7 @@ class TestApp:
 
         assert app._on_render is render
 
+    @_skip_no_gl
     def test_run_fires_on_start_no_args(self):
         app = App()
         called = []
@@ -73,6 +79,7 @@ class TestApp:
         app.run(max_frames=1)
         assert "setup" in called
 
+    @_skip_no_gl
     def test_run_fires_on_start_with_world(self):
         app = App()
         received = []
@@ -85,6 +92,7 @@ class TestApp:
         assert len(received) == 1
         assert isinstance(received[0], World)
 
+    @_skip_no_gl
     def test_run_fires_on_update(self):
         app = App()
         counts = [0]
@@ -96,6 +104,7 @@ class TestApp:
         app.run(max_frames=5)
         assert counts[0] == 5
 
+    @_skip_no_gl
     def test_run_update_receives_input(self):
         app = App()
         inputs = []
@@ -109,6 +118,7 @@ class TestApp:
         # All inputs are Input objects
         assert all(isinstance(i, f3d.Input) for i in inputs)
 
+    @_skip_no_gl
     def test_run_update_receives_dt(self):
         app = App(fps=30)
         dts = []
@@ -120,6 +130,7 @@ class TestApp:
         app.run(max_frames=2)
         assert all(dt == pytest.approx(1 / 30) for dt in dts)
 
+    @_skip_no_gl
     def test_run_advances_physics(self):
         app = App()
         ball = None
@@ -135,6 +146,7 @@ class TestApp:
         assert ball is not None
         assert ball.position[2] < 5.0
 
+    @_skip_no_gl
     def test_update_flexible_signature_no_args(self):
         app = App()
         called = [False]
@@ -146,6 +158,7 @@ class TestApp:
         app.run(max_frames=1)
         assert called[0]
 
+    @_skip_no_gl
     def test_update_flexible_signature_world_only(self):
         app = App()
         received = []
