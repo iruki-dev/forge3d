@@ -651,6 +651,179 @@ class World:
         self._register_body(body)
         return body
 
+    def add_cylinder(
+        self,
+        radius: float = 0.5,
+        half_length: float = 0.5,
+        position: Any = (0.0, 0.0, 0.0),
+        quat: Any = None,
+        mass: float = 1.0,
+        material: Material | str = "default",
+        name: str = "",
+        restitution: float = 0.3,
+        friction: float = 0.5,
+        static: bool = False,
+    ) -> Body:
+        """Add a cylinder-shaped rigid body (flat end caps, axis along +Z).
+
+        The cylinder has radius *radius* and total length *2 × half_length*.
+        Use ``quat`` to orient it — e.g. ``quat=[0.707,0.707,0,0]`` lays it on
+        its side along the X axis.
+
+        Physics uses GJK/EPA convex-hull collision (same as ``add_mesh``).
+
+        Parameters
+        ----------
+        radius      : Cylinder radius (m).
+        half_length : Half the cylinder height (m).
+        """
+        from forge3d.render.realtime.meshes import unit_cylinder
+
+        verts, idx = unit_cylinder(radius=float(radius), half_length=float(half_length))
+        mesh_data = _mesh_from_primitive(verts, idx)
+        return self.add_mesh(
+            mesh_data,
+            position=position,
+            quat=quat,
+            mass=mass,
+            material=material,
+            name=name or f"cylinder_{len(self._bodies)}",
+            restitution=restitution,
+            friction=friction,
+            static=static,
+        )
+
+    def add_cone(
+        self,
+        radius: float = 0.5,
+        height: float = 1.0,
+        position: Any = (0.0, 0.0, 0.0),
+        quat: Any = None,
+        mass: float = 1.0,
+        material: Material | str = "default",
+        name: str = "",
+        restitution: float = 0.3,
+        friction: float = 0.5,
+        static: bool = False,
+    ) -> Body:
+        """Add a cone-shaped rigid body (circular base at z=−height/2, apex at z=+height/2).
+
+        Physics uses GJK/EPA convex-hull collision.
+
+        Parameters
+        ----------
+        radius : Base circle radius (m).
+        height : Total height (m).
+        """
+        from forge3d.render.realtime.meshes import unit_cone
+
+        verts, idx = unit_cone(radius=float(radius), height=float(height))
+        mesh_data = _mesh_from_primitive(verts, idx)
+        return self.add_mesh(
+            mesh_data,
+            position=position,
+            quat=quat,
+            mass=mass,
+            material=material,
+            name=name or f"cone_{len(self._bodies)}",
+            restitution=restitution,
+            friction=friction,
+            static=static,
+        )
+
+    def add_wedge(
+        self,
+        size: Any = (1.0, 1.0, 1.0),
+        position: Any = (0.0, 0.0, 0.0),
+        quat: Any = None,
+        mass: float = 1.0,
+        material: Material | str = "default",
+        name: str = "",
+        restitution: float = 0.3,
+        friction: float = 0.5,
+        static: bool = False,
+    ) -> Body:
+        """Add a wedge (right-angle triangular prism / ramp).
+
+        The ramp slopes from the front-bottom edge up to the back-top edge.
+        ``size`` is ``(width_x, depth_y, height_z)``.  Use ``quat`` to rotate.
+
+        Physics uses GJK/EPA convex-hull collision.
+
+        Parameters
+        ----------
+        size : ``(sx, sy, sz)`` total bounding dimensions (m).
+
+        Example::
+
+            ramp = world.add_wedge(size=(2, 3, 1), position=(0, 0, 0.5),
+                                   static=True)
+        """
+        from forge3d.render.realtime.meshes import unit_wedge
+
+        sx, sy, sz = float(size[0]), float(size[1]), float(size[2])
+        verts, idx = unit_wedge(sx=sx, sy=sy, sz=sz)
+        mesh_data = _mesh_from_primitive(verts, idx)
+        return self.add_mesh(
+            mesh_data,
+            position=position,
+            quat=quat,
+            mass=mass,
+            material=material,
+            name=name or f"wedge_{len(self._bodies)}",
+            restitution=restitution,
+            friction=friction,
+            static=static,
+        )
+
+    def add_convex(
+        self,
+        vertices: Any,
+        position: Any = (0.0, 0.0, 0.0),
+        quat: Any = None,
+        mass: float = 1.0,
+        material: Material | str = "default",
+        name: str = "",
+        restitution: float = 0.3,
+        friction: float = 0.5,
+        static: bool = False,
+        collision_layer: int = 0x0001,
+        collision_mask: int = 0xFFFF,
+    ) -> Body:
+        """Add a rigid body from a custom convex point cloud.
+
+        Computes the convex hull of *vertices*, uses it for both rendering and
+        physics.  Ideal for simple custom shapes without loading a full OBJ file.
+
+        Parameters
+        ----------
+        vertices : (N, 3) array-like — point cloud in local frame.
+
+        Example::
+
+            import numpy as np
+            pts = np.array([
+                [-1, -1, -1], [1, -1, -1], [1, 1, -1], [-1, 1, -1],
+                [ 0,  0,  1],  # pyramid apex
+            ], dtype=float)
+            pyramid = world.add_convex(pts, position=(0, 0, 2), mass=1.0)
+        """
+        verts = np.asarray(vertices, dtype=np.float64)
+        mesh_data = _mesh_from_convex_points(verts)
+        return self.add_mesh(
+            mesh_data,
+            position=position,
+            quat=quat,
+            mass=mass,
+            material=material,
+            name=name or f"convex_{len(self._bodies)}",
+            restitution=restitution,
+            friction=friction,
+            static=static,
+            collision_layer=collision_layer,
+            collision_mask=collision_mask,
+        )
+
     def add_sphere(
         self,
         radius: float = 0.5,
@@ -1682,4 +1855,67 @@ def _resolve_material(m: Material | str) -> tuple[str, Material | None]:
         f"material must be a str preset name or a Material object, "
         f"got {type(m).__name__!r}.  "
         f"Valid presets: 'default', 'red', 'blue', 'green', 'orange', 'ground', 'gold', 'white'."
+    )
+
+
+def _mesh_from_primitive(verts8: np.ndarray, idx: np.ndarray) -> Any:
+    """Build a MeshData from an interleaved (N,8) vertex array and index array."""
+    from forge3d.io.mesh_data import MeshData
+
+    pos = verts8[:, :3]
+    nrm = verts8[:, 3:6]
+    uv = verts8[:, 6:8]
+    return MeshData.from_arrays(pos, nrm, uv, idx)
+
+
+def _mesh_from_convex_points(vertices: np.ndarray) -> Any:
+    """Build a MeshData from a point cloud using its convex hull as the render+physics mesh."""
+    from forge3d.io.mesh_data import MeshData
+
+    pts = np.asarray(vertices, dtype=np.float64)
+    try:
+        from scipy.spatial import ConvexHull
+
+        hull = ConvexHull(pts)
+        hull_verts = pts[hull.vertices].copy()
+        old_to_new = {int(old): new for new, old in enumerate(hull.vertices)}
+        faces = np.array(
+            [[old_to_new[int(v)] for v in s] for s in hull.simplices],
+            dtype=np.int32,
+        )
+
+        # Ensure outward-facing winding by checking against hull centroid
+        centroid = hull_verts.mean(axis=0)
+        for fi, face in enumerate(faces):
+            v0, v1, v2 = hull_verts[face[0]], hull_verts[face[1]], hull_verts[face[2]]
+            n = np.cross(v1 - v0, v2 - v0)
+            fc = (v0 + v1 + v2) / 3.0
+            if np.dot(n, fc - centroid) < 0:
+                faces[fi] = [face[0], face[2], face[1]]
+    except Exception:
+        hull_verts = pts
+        faces = np.empty((0, 3), dtype=np.int32)
+
+    n_verts = len(hull_verts)
+    normals = np.zeros((n_verts, 3), dtype=np.float64)
+    for face in faces:
+        v0, v1, v2 = hull_verts[face[0]], hull_verts[face[1]], hull_verts[face[2]]
+        n = np.cross(v1 - v0, v2 - v0)
+        norm = float(np.linalg.norm(n))
+        if norm > 1e-12:
+            n /= norm
+        normals[face[0]] += n
+        normals[face[1]] += n
+        normals[face[2]] += n
+
+    lens = np.linalg.norm(normals, axis=1, keepdims=True)
+    normals = np.where(lens > 1e-12, normals / lens, normals)
+
+    return MeshData(
+        vertices=hull_verts.astype(np.float32),
+        normals=normals.astype(np.float32),
+        uvs=np.zeros((n_verts, 2), dtype=np.float32),
+        indices=faces.flatten().astype(np.uint32),
+        hull_vertices=hull_verts,
+        hull_faces=faces,
     )

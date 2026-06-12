@@ -15,6 +15,10 @@ The central object of every simulation. It manages rigid bodies, advances physic
         - add_static_box
         - add_sphere
         - add_capsule
+        - add_cylinder
+        - add_cone
+        - add_wedge
+        - add_convex
         - add_mesh
         - add_terrain
         - add_character
@@ -145,6 +149,44 @@ terrain = world.add_terrain(
 )
 # terrain is visible in Viewer and collidable (sphere + box vs heightfield).
 ```
+
+### Built-in primitive shapes
+
+```python
+import forge3d as f3d
+
+world = f3d.World(gravity=(0, 0, -9.81))
+world.add_ground()
+
+# Cylinder — aligned along +Z; half_length is half the height
+pillar = world.add_cylinder(radius=0.3, half_length=1.0,
+                             position=(0, 0, 1), static=True)
+drum   = world.add_cylinder(radius=0.5, half_length=0.4,
+                             position=(2, 0, 2), mass=2.0)
+
+# Cone — base at bottom (-Z), apex at top (+Z)
+cone = world.add_cone(radius=0.4, height=0.8, position=(0, 0, 2), mass=1.0)
+
+# Wedge (triangular prism / ramp) — slant runs front-low → back-high (+Y rises)
+ramp = world.add_wedge(size=(2.0, 1.5, 0.6), position=(0, 3, 0.3), static=True)
+
+# Convex hull from arbitrary point cloud
+import numpy as np
+pts = np.array([
+    [1, 0, 0], [-1, 0, 0],
+    [0, 1, 0], [0, -1, 0],
+    [0, 0, 1], [0, 0, -1],
+], dtype=float)                                     # octahedron
+gem = world.add_convex(pts, position=(0, 0, 3), mass=1.5)
+
+# All add_* methods share the same common keyword arguments:
+#   mass, static, restitution, friction, material,
+#   collision_layer, collision_mask, name
+```
+
+!!! note "Wedge orientation"
+    The ramp face runs from **low (−Y side)** to **high (+Y side)**.
+    Rotate via `quat=` to orient the slope in any direction.
 
 ### Mesh bodies and collision filtering
 

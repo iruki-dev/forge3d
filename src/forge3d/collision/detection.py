@@ -223,6 +223,14 @@ def _dispatch(
     if st_b == "mesh" and st_a == "plane":
         pts = _mesh_vs_plane(b, ib, a, ia, R_b)
         return [ContactPoint(ia, ib, p.pos, -p.normal, p.depth) for p in pts]
+    # Mesh vs static box: test each hull vertex against the box faces for a
+    # well-conditioned multi-point contact manifold (GJK contact points are
+    # unreliable when one box has large aspect ratios, e.g. the ground plane).
+    if st_a == "mesh" and st_b == "box" and b.static:
+        return _mesh_vs_static_box(a, ia, b, ib, R_a)
+    if st_b == "mesh" and st_a == "box" and a.static:
+        pts = _mesh_vs_static_box(b, ib, a, ia, R_b)
+        return [ContactPoint(ia, ib, p.pos, -p.normal, p.depth) for p in pts]
     if st_a == "mesh" or st_b == "mesh":
         return _gjk_epa_pair(a, ia, b, ib)
 
@@ -703,6 +711,87 @@ def _mesh_vs_plane(
     return contacts
 
 
+def _mesh_vs_static_box(
+    mesh: Any,
+    ia: int,
+    box: Any,
+    ib: int,
+    R_mesh: np.ndarray | None = None,
+) -> list[ContactPoint]:
+    """Convex-hull mesh vs. static box — SAT-based multi-point contact manifold.
+
+    Uses the Separating Axis Theorem over the 6 box face axes to find the
+    minimum-penetration axis.  Contact points are hull vertices that penetrate
+    the chosen face.
+
+    Normal convention: FROM box TOWARD mesh (consistent with ContactPoint).
+    """
+    he = np.asarray(box.shape_params["half_extents"], dtype=float)
+    R_box = _quat_to_rot_unit(box.quat)
+
+    if R_mesh is None:
+        R_mesh = _quat_to_rot_unit(mesh.quat)
+
+    hull_verts = mesh.shape_params["hull_vertices"]  # (K, 3) local frame
+    world_verts = mesh.pos + hull_verts @ R_mesh.T   # (K, 3) world frame
+    d_local = (world_verts - box.pos) @ R_box        # (K, 3) in box local frame
+
+    # SAT: for each of the 3 axes compute the projection overlap.
+    # If any axis shows zero or negative overlap, bodies are separated.
+    best_overlap = float("inf")
+    best_axis = -1
+    best_sign = 1.0
+
+    for axis in range(3):
+        proj_min = float(d_local[:, axis].min())
+        proj_max = float(d_local[:, axis].max())
+        overlap = min(proj_max, he[axis]) - max(proj_min, -he[axis])
+        if overlap <= 0.0:
+            return []  # separating axis found
+        if overlap < best_overlap:
+            best_overlap = overlap
+            best_axis = axis
+            # Contact normal points from box toward mesh
+            # (direction from box centre to mesh centre projected onto this axis)
+            cdir = float(((mesh.pos - box.pos) @ R_box)[axis])
+            best_sign = 1.0 if cdir >= 0.0 else -1.0
+
+    if best_axis < 0:
+        return []
+
+    # Contact manifold: hull vertices that penetrate the chosen face
+    signed_dist = best_sign * d_local[:, best_axis] - he[best_axis]
+    pen_mask = signed_dist < 0.0
+    if not pen_mask.any():
+        return []
+
+    # Require the vertex to lie within the face boundary on the other two axes
+    other_axes = [i for i in range(3) if i != best_axis]
+    a0, a1 = other_axes
+    within = (
+        pen_mask
+        & (np.abs(d_local[:, a0]) <= he[a0])
+        & (np.abs(d_local[:, a1]) <= he[a1])
+    )
+    if not within.any():
+        return []
+
+    pen_verts = world_verts[within]
+    pen_depths = -signed_dist[within]
+    n_local = np.zeros(3)
+    n_local[best_axis] = best_sign
+    n_world = R_box @ n_local
+    contacts = [
+        ContactPoint(ia, ib, v.copy(), n_world.copy(), float(d))
+        for v, d in zip(pen_verts, pen_depths, strict=True)
+    ]
+
+    if len(contacts) > _MAX_CONTACTS_PER_PAIR:
+        contacts.sort(key=lambda c: -c.depth)
+        contacts = contacts[:_MAX_CONTACTS_PER_PAIR]
+    return contacts
+
+
 def _gjk_epa_pair(a: Any, ia: int, b: Any, ib: int) -> list[ContactPoint]:
     """Generic convex-body collision via GJK + EPA.
 
@@ -717,13 +806,19 @@ def _gjk_epa_pair(a: Any, ia: int, b: Any, ib: int) -> list[ContactPoint]:
         if verts_a is not None and verts_b is not None:
             core = rust_core()
             colliding, normal_arr, depth = core.gjk_query(verts_a, verts_b)
-            if not colliding or depth <= 0.0:
+            if colliding and depth > 0.0:
+                normal = np.asarray(normal_arr)
+                pa = _body_support_world(a, normal)
+                pb = _body_support_world(b, -normal)
+                contact_pos = (pa + pb) * 0.5
+                return [ContactPoint(ia, ib, contact_pos, normal.copy(), float(depth))]
+            # Rust says no collision — confirm with AABB: if AABBs don't overlap,
+            # trust the result; if they DO overlap, fall through to Python GJK
+            # (the Rust GJK can fail on very flat/large shapes like the ground box).
+            min_a, max_a = verts_a.min(axis=0), verts_a.max(axis=0)
+            min_b, max_b = verts_b.min(axis=0), verts_b.max(axis=0)
+            if not (np.all(max_a >= min_b) and np.all(max_b >= min_a)):
                 return []
-            normal = np.asarray(normal_arr)
-            pa = _body_support_world(a, normal)
-            pb = _body_support_world(b, -normal)
-            contact_pos = (pa + pb) * 0.5
-            return [ContactPoint(ia, ib, contact_pos, normal.copy(), float(depth))]
 
     # ── Python 폴백 ──
     from forge3d.collision.gjk import gjk_contact
@@ -732,10 +827,15 @@ def _gjk_epa_pair(a: Any, ia: int, b: Any, ib: int) -> list[ContactPoint]:
     if result is None:
         return []
 
-    depth, normal = result
+    depth, normal_gjk = result
     if depth <= 0.0:
         return []
 
+    # gjk_contact returns the CSO normal in the A-B Minkowski space, which
+    # points from body_a toward body_b.  The rest of the solver uses the
+    # "from body_b toward body_a" convention (same as _mesh_vs_plane), so
+    # we must negate.
+    normal = -normal_gjk
     pa = _body_support_world(a, normal)
     pb = _body_support_world(b, -normal)
     contact_pos = (pa + pb) * 0.5

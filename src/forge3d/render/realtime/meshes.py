@@ -190,6 +190,182 @@ def unit_capsule(
     return np.array(verts_list, dtype=np.float32), np.array(idx_list, dtype=np.uint32)
 
 
+def unit_cylinder(
+    radius: float = 0.5,
+    half_length: float = 0.5,
+    slices: int = 24,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Cylinder mesh aligned along +Z with flat end caps.
+
+    Returns
+    -------
+    verts : (N, 8) float32  — interleaved [pos, normal, uv]
+    idx   : (M,)   uint32
+    """
+    verts: list[list[float]] = []
+    idx: list[int] = []
+
+    # Top cap (normal +Z)
+    top_c = len(verts)
+    verts.append([0.0, 0.0, half_length, 0.0, 0.0, 1.0, 0.5, 0.5])
+    top_rim = len(verts)
+    for i in range(slices):
+        theta = 2.0 * np.pi * i / slices
+        c, s = float(np.cos(theta)), float(np.sin(theta))
+        verts.append([radius * c, radius * s, half_length, 0.0, 0.0, 1.0,
+                       0.5 + 0.5 * c, 0.5 + 0.5 * s])
+    for i in range(slices):
+        idx.extend([top_c, top_rim + i, top_rim + (i + 1) % slices])
+
+    # Bottom cap (normal -Z)
+    bot_c = len(verts)
+    verts.append([0.0, 0.0, -half_length, 0.0, 0.0, -1.0, 0.5, 0.5])
+    bot_rim = len(verts)
+    for i in range(slices):
+        theta = 2.0 * np.pi * i / slices
+        c, s = float(np.cos(theta)), float(np.sin(theta))
+        verts.append([radius * c, radius * s, -half_length, 0.0, 0.0, -1.0,
+                       0.5 + 0.5 * c, 0.5 + 0.5 * s])
+    for i in range(slices):
+        idx.extend([bot_c, bot_rim + (i + 1) % slices, bot_rim + i])
+
+    # Side wall — duplicate rim verts with outward normals
+    side_start = len(verts)
+    for i in range(slices + 1):
+        theta = 2.0 * np.pi * i / slices
+        nx, ny = float(np.cos(theta)), float(np.sin(theta))
+        x, y = radius * nx, radius * ny
+        u = float(i) / slices
+        verts.append([x, y, half_length, nx, ny, 0.0, u, 1.0])
+        verts.append([x, y, -half_length, nx, ny, 0.0, u, 0.0])
+    for i in range(slices):
+        a = side_start + i * 2
+        b, c_, d = a + 1, a + 2, a + 3
+        idx.extend([a, b, c_, b, d, c_])
+
+    return np.array(verts, dtype=np.float32), np.array(idx, dtype=np.uint32)
+
+
+def unit_cone(
+    radius: float = 0.5,
+    height: float = 1.0,
+    slices: int = 24,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Cone mesh: circular base at z=−height/2, apex at z=+height/2.
+
+    Returns
+    -------
+    verts : (N, 8) float32  — interleaved [pos, normal, uv]
+    idx   : (M,)   uint32
+    """
+    verts: list[list[float]] = []
+    idx: list[int] = []
+    half_h = height / 2.0
+    slant = float(np.sqrt(radius * radius + height * height))
+    nz = radius / slant   # outward normal z component on lateral face
+    nr = height / slant   # outward normal horizontal magnitude
+
+    # Base cap (normal −Z)
+    base_c = len(verts)
+    verts.append([0.0, 0.0, -half_h, 0.0, 0.0, -1.0, 0.5, 0.5])
+    base_rim = len(verts)
+    for i in range(slices):
+        theta = 2.0 * np.pi * i / slices
+        c, s = float(np.cos(theta)), float(np.sin(theta))
+        verts.append([radius * c, radius * s, -half_h, 0.0, 0.0, -1.0,
+                       0.5 + 0.5 * c, 0.5 + 0.5 * s])
+    for i in range(slices):
+        idx.extend([base_c, base_rim + (i + 1) % slices, base_rim + i])
+
+    # Lateral faces — one triangle per slice (apex + two rim vertices)
+    for i in range(slices):
+        theta0 = 2.0 * np.pi * i / slices
+        theta1 = 2.0 * np.pi * (i + 1) / slices
+        theta_mid = (theta0 + theta1) / 2.0
+        base = len(verts)
+        # Apex (normal averaged at mid-angle)
+        verts.append([0.0, 0.0, half_h,
+                       nr * float(np.cos(theta_mid)), nr * float(np.sin(theta_mid)), nz,
+                       0.5, 1.0])
+        c0, s0 = float(np.cos(theta0)), float(np.sin(theta0))
+        verts.append([radius * c0, radius * s0, -half_h,
+                       nr * c0, nr * s0, nz,
+                       float(i) / slices, 0.0])
+        c1, s1 = float(np.cos(theta1)), float(np.sin(theta1))
+        verts.append([radius * c1, radius * s1, -half_h,
+                       nr * c1, nr * s1, nz,
+                       float(i + 1) / slices, 0.0])
+        idx.extend([base, base + 1, base + 2])
+
+    return np.array(verts, dtype=np.float32), np.array(idx, dtype=np.uint32)
+
+
+def unit_wedge(
+    sx: float = 1.0,
+    sy: float = 1.0,
+    sz: float = 1.0,
+) -> tuple[np.ndarray, np.ndarray]:
+    """Right-angle triangular-prism ramp/wedge.
+
+    The ramp slopes from the front-bottom edge (y=−sy/2, z=−sz/2) up to the
+    back-top edge (y=+sy/2, z=+sz/2).  Use ``quat`` on the body to orient it.
+
+    Returns
+    -------
+    verts : (N, 8) float32  — interleaved [pos, normal, uv]
+    idx   : (M,)   uint32
+    """
+    hx, hy, hz = sx / 2.0, sy / 2.0, sz / 2.0
+
+    # 6 raw vertex positions
+    p: list[tuple[float, float, float]] = [
+        (-hx, -hy, -hz),  # 0 front-bottom-left
+        ( hx, -hy, -hz),  # 1 front-bottom-right
+        ( hx,  hy, -hz),  # 2 back-bottom-right
+        (-hx,  hy, -hz),  # 3 back-bottom-left
+        (-hx,  hy,  hz),  # 4 back-top-left
+        ( hx,  hy,  hz),  # 5 back-top-right
+    ]
+
+    # Slant face (front-bottom → back-top) outward normal
+    slant = float(np.sqrt(hy * hy + hz * hz))
+    sny, snz = -hz / slant, hy / slant
+
+    verts: list[list[float]] = []
+    idx: list[int] = []
+
+    def _quad(corners: list[int], n: tuple[float, float, float],
+              uvs: list[tuple[float, float]]) -> None:
+        base = len(verts)
+        nx, ny, nz_ = n
+        for ci, uv in zip(corners, uvs, strict=True):
+            pos = p[ci]
+            verts.append([pos[0], pos[1], pos[2], nx, ny, nz_, uv[0], uv[1]])
+        idx.extend([base, base + 1, base + 2, base, base + 2, base + 3])
+
+    def _tri(corners: list[int], n: tuple[float, float, float],
+             uvs: list[tuple[float, float]]) -> None:
+        base = len(verts)
+        nx, ny, nz_ = n
+        for ci, uv in zip(corners, uvs, strict=True):
+            pos = p[ci]
+            verts.append([pos[0], pos[1], pos[2], nx, ny, nz_, uv[0], uv[1]])
+        idx.extend([base, base + 1, base + 2])
+
+    # Bottom face (z = −hz, normal −Z): CCW from below → [0,3,2,1]
+    _quad([0, 3, 2, 1], (0.0, 0.0, -1.0), [(0.0, 1.0), (1.0, 1.0), (1.0, 0.0), (0.0, 0.0)])
+    # Back vertical face (y = +hy, normal +Y): [3,4,5,2]
+    _quad([3, 4, 5, 2], (0.0, 1.0, 0.0), [(0.0, 0.0), (0.0, 1.0), (1.0, 1.0), (1.0, 0.0)])
+    # Left end triangle (x = −hx, normal −X): [0,4,3]
+    _tri([0, 4, 3], (-1.0, 0.0, 0.0), [(1.0, 0.0), (0.0, 1.0), (0.0, 0.0)])
+    # Right end triangle (x = +hx, normal +X): [1,2,5]
+    _tri([1, 2, 5], (1.0, 0.0, 0.0), [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0)])
+    # Slant face (ramp, outward normal has −Y and +Z): [0,1,5,4]
+    _quad([0, 1, 5, 4], (0.0, sny, snz), [(0.0, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)])
+
+    return np.array(verts, dtype=np.float32), np.array(idx, dtype=np.uint32)
+
+
 def mesh_from_data(mesh_data: Any) -> tuple[np.ndarray, np.ndarray]:
     """Convert MeshData to renderer vertex/index arrays (8-float layout).
 
