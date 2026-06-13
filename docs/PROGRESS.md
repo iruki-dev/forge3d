@@ -4,12 +4,11 @@
 > 각 task 완료 시 갱신한다. (현재 목표 / 완료 / 진행 중 / 다음 / 결정·블로커)
 
 ## 현재 상태
-- **현재 Phase**: P35 ✅ 완료 (v2.0.0 릴리즈)
-- **v2 완료 일자**: 2026-06-04
-- **총 테스트**: 583 (wgpu 별도 7) = 590 passed
+- **현재 Phase**: P35 ✅ 완료 + v2.2.0 게임 개발 인체공학 개선
+- **최종 버전**: 2.2.0 (2026-06-13)
+- **총 테스트**: 545 passed (2 warnings) — 정규 스위트 기준
 - **활성 SPEC**: `docs/specs/phase-24-v1-release.md` ✅ 완료
 - **백엔드 정확성 확정 여부**: ✅ (PyBullet 대조 50/50 PASS, max_abs < 2e-11)
-- **테스트**: 459 passed (P14~P23 신규 테스트 포함)
 
 ## Phase 체크리스트 (게이트)
 - [x] **P0** 환경·골격·백엔드 스위치 — 게이트: `import forge3d` + pytest 통과(np/jnp 둘 다)
@@ -107,6 +106,8 @@
 - [x] **P33** 씬 에디터 (ImGui 기반) — 게이트: 레이캐스트 선택 ✅, Play/Pause/Step ✅, 기즈모 드래그 ✅, 583 tests PASS
 - [x] **P34** (선택) Vulkan / wgpu 백엔드 — WgpuRenderer(WGSL PBR) + GL 폴백 + 7 tests PASS (583+7=590 total)
 - [x] **P35** v2.0.0 릴리즈 — 게이트: version 2.0.0 ✅, v1 API 호환 ✅, twine PASS ✅, mkdocs ✅, 583+7=590 tests PASS
+
+| 2026-06-13 | v2.2.0 API 인체공학 개선 | Input.axis(), OrbitCamera.handle_input(), CharacterController.move_camera_relative(), Viewer.show_grid 프로퍼티, draw_text 앵커 자동배치, App 렌더 파라미터, Sentry hover raycast layer_mask 버그 수정 | 545 passed ✅ ruff ✅ mypy ✅ | apps/game 리팩토링으로 발굴. Unity 수준 간결 API 완성. |
 
 ## 미해결 / 블로커
 - (없음)

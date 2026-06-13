@@ -63,6 +63,7 @@ class Viewer:
         controls: Any = None,
         shadow_resolution: int = 0,
         sky_color: tuple | None = None,
+        show_grid: bool = True,
     ) -> None:
         if mode != "realtime":
             raise ValueError(f"Viewer mode={mode!r} is not implemented. Use mode='realtime'.")
@@ -77,6 +78,7 @@ class Viewer:
         self._closed = False
         self._shadow_resolution = shadow_resolution
         self._sky_color = sky_color
+        self._show_grid = show_grid
 
         # Windowed mode flag — set once renderer is created
         self._windowed = title is not None
@@ -146,6 +148,17 @@ class Viewer:
             return self._renderer.dt
         return 1.0 / 60.0
 
+    @property
+    def show_grid(self) -> bool:
+        """Whether to render the debug grid overlay (default ``True``)."""
+        return self._show_grid
+
+    @show_grid.setter
+    def show_grid(self, value: bool) -> None:
+        self._show_grid = value
+        if self._renderer is not None:
+            self._renderer._show_grid = value
+
     # ── Camera ────────────────────────────────────────────────────────────────
 
     def set_camera(self, cam: Any) -> None:
@@ -205,12 +218,13 @@ class Viewer:
     def draw_text(
         self,
         text: str,
-        x: int = 10,
-        y: int = 10,
+        x: int | None = None,
+        y: int | None = None,
         size: int = 20,
         color: tuple = (1.0, 1.0, 1.0),
         bg_alpha: float = 0.6,
         anchor: str = "topleft",
+        margin: int = 10,
     ) -> None:
         """Render a HUD text overlay on top of the current frame.
 
@@ -222,15 +236,42 @@ class Viewer:
         Parameters
         ----------
         text      : Text to display.
-        x, y      : Pixel position of the anchor point.
+        x, y      : Pixel position of the anchor point.  When omitted,
+                    auto-placed from *anchor* + *margin*.
         size      : Font size in pixels.
         color     : RGB in [0, 1].
         bg_alpha  : Dark background rectangle opacity [0, 1].
-        anchor    : ``"topleft"`` / ``"center"`` / ``"topright"``.
+        anchor    : ``"topleft"`` / ``"topright"`` / ``"topcenter"`` /
+                    ``"center"`` / ``"bottomleft"`` / ``"bottomcenter"`` /
+                    ``"bottomright"``.  Hyphens and underscores are accepted
+                    (e.g. ``"top-left"``).
+        margin    : Edge margin in pixels when *x* or *y* is auto-placed.
+
+        Examples
+        --------
+        >>> viewer.draw_text("SCORE 42", anchor="topleft")          # top-left corner
+        >>> viewer.draw_text("PRESS ENTER", anchor="center")        # screen centre
+        >>> viewer.draw_text("3 lives", anchor="topright")          # top-right corner
         """
         if self._renderer is None:
             return
-        self._renderer.draw_text(text, x, y, size, color, bg_alpha, anchor)
+        a = anchor.replace("-", "").replace("_", "").lower()
+        w, h = self._width, self._height
+        if x is None:
+            if "right" in a:
+                x = w - margin
+            elif "center" in a or a == "center" or a == "top" or a == "bottom":
+                x = w // 2
+            else:
+                x = margin
+        if y is None:
+            if "bottom" in a:
+                y = h - margin
+            elif a == "center":
+                y = h // 2
+            else:
+                y = margin
+        self._renderer.draw_text(text, x, y, size, color, bg_alpha, a)
 
     # ── Convenience helpers ───────────────────────────────────────────────────
 
@@ -341,6 +382,7 @@ class Viewer:
                 self._title,
                 fps=self._fps,
                 shadow_resolution=self._shadow_resolution,
+                show_grid=self._show_grid,
                 **({} if self._sky_color is None else {"sky_color": self._sky_color}),
             )
         else:

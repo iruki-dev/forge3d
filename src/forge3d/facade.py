@@ -15,6 +15,7 @@ Users only need::
 
 from __future__ import annotations
 
+import contextlib
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -165,6 +166,9 @@ class Body:
         self._angular_damping: float = 0.0
         # Back-reference to World (set by World after creation) for per-body callbacks
         self._world_ref: Any = None
+        # freeze() support
+        self._frozen: bool = False
+        self._frozen_pos: np.ndarray | None = None
 
     def _state(self) -> _Body:
         return self._pw._get_body(self._id)
@@ -388,6 +392,26 @@ class Body:
             self._world_ref._events.add_body_end_listener(self._id, fn)
         return fn
 
+    def freeze(self) -> None:
+        """Lock this body in place — position and velocity are held each step.
+
+        Useful for pausing a character on a DEAD or WIN screen without it
+        sinking through the world.  Call :meth:`unfreeze` to resume physics.
+
+        Example::
+
+            player.body.freeze()          # stop the player
+            # ... wait for input ...
+            player.body.unfreeze()        # resume
+        """
+        self._frozen = True
+        self._frozen_pos = self.position.copy()
+
+    def unfreeze(self) -> None:
+        """Resume normal physics after :meth:`freeze`."""
+        self._frozen = False
+        self._frozen_pos = None
+
     def _flush_accumulators(self, dt: float) -> None:
         """Apply accumulated force/torque as impulses (called by World.step)."""
         if np.any(self._force_accum != 0):
@@ -455,6 +479,9 @@ class World:
         self._events = EventDispatcher()
         # Collision ignore set: frozenset of (id_a, id_b) pairs
         self._ignored_pairs: set[frozenset[int]] = set()
+        # Particle burst tracking: list of (Body, remaining_lifetime)
+        self._burst_particles: list[tuple[Body, float]] = []
+        self._burst_rng = np.random.default_rng(42)
 
     # ── Scene construction ────────────────────────────────────────────────────
 
@@ -1335,8 +1362,25 @@ class World:
         _sub = max(1, int(substeps))
         _sub_dt = _dt / _sub
 
-        # Flush accumulators before physics step
+        # Advance moving platforms
+        if hasattr(self, "_moving_platforms") and self._moving_platforms:
+            _t = self._physics.time + _dt
+            for fn in self._moving_platforms:
+                fn(_t)
+
+        # Flush accumulators before physics step; enforce freeze
         for body in self._bodies.values():
+            frozen_pos = body._frozen_pos
+            if body._frozen and frozen_pos is not None:
+                from dataclasses import replace as _replace
+
+                b = body._state()
+                if not b.static:
+                    self._physics._replace_body(
+                        body._id,
+                        _replace(b, pos=frozen_pos.copy(), vel=np.zeros(3), omega=np.zeros(3)),
+                    )
+                continue
             if body._force_accum is not None and (
                 np.any(body._force_accum != 0) or np.any(body._torque_accum != 0)
             ):
@@ -1350,6 +1394,18 @@ class World:
         self._apply_welds()
         # Dispatch events once per full step
         self._dispatch_events()
+
+        # Age particle bursts and remove expired shards
+        if self._burst_particles:
+            alive = []
+            for shard, t_left in self._burst_particles:
+                t_left -= _dt
+                if t_left <= 0.0:
+                    with contextlib.suppress(Exception):
+                        self.remove(shard)
+                else:
+                    alive.append((shard, t_left))
+            self._burst_particles = alive
 
     def update(self, frame_dt: float) -> None:
         """Fixed-timestep accumulator update — call once per rendered frame.
@@ -1498,15 +1554,23 @@ class World:
         position: Any = (0.0, 0.0, 0.0),
         size: Any = (1.0, 1.0, 1.0),
         name: str = "trigger",
+        visual_material: Material | None = None,
     ) -> Any:
         """Add an invisible trigger zone (no physics collision, events only).
 
         Returns a :class:`~forge3d.events.TriggerZone` with ``on_enter`` and
         ``on_exit`` decorator attributes.
 
+        Parameters
+        ----------
+        visual_material : If supplied, a render-only box of the same *size*
+                          is created at *position* so the zone is visible in
+                          the scene without participating in physics.
+
         Example::
 
-            goal = world.add_trigger_zone(position=(5, 0, 0.5), size=(1, 1, 1))
+            goal = world.add_trigger_zone(position=(5, 0, 0.5), size=(1, 1, 1),
+                                          visual_material=f3d.Material(color="green"))
 
             @goal.on_enter
             def scored(body: forge3d.Body) -> None:
@@ -1516,7 +1580,166 @@ class World:
         sz = np.asarray(size, dtype=float)
         half_extents = sz / 2.0
         zone = self._events.add_trigger_zone(pos, half_extents)
+        if visual_material is not None:
+            visual = self.add_box(
+                size=tuple(float(s) for s in sz),
+                position=tuple(float(p) for p in pos),
+                static=True,
+                material=visual_material,
+                name=f"{name}_visual",
+            )
+            visual.collision_mask = 0
         return zone
+
+    def add_moving_platform(
+        self,
+        path: Any,
+        period: float = 4.0,
+        size: Any = (2.0, 2.0, 0.3),
+        material: Material | str = "default",
+        name: str = "",
+        phase: float = 0.0,
+        restitution: float = 0.1,
+        friction: float = 0.8,
+    ) -> Body:
+        """Add a kinematic platform that oscillates between two or more waypoints.
+
+        The platform is static from physics's point of view (not pushed by
+        gravity), moves along the *path* on a smooth cosine curve, and the
+        :class:`CharacterController` automatically rides it.
+
+        Parameters
+        ----------
+        path    : List of 2+ world-space positions ``[(x,y,z), ...]``.
+                  The platform travels between consecutive pairs (last→first
+                  wraps for closed loops).  For a simple back-and-forth pass
+                  two points.
+        period  : Full oscillation period in seconds (one round trip).
+        size    : Box dimensions ``(sx, sy, sz)`` in metres.
+        phase   : Initial phase offset [0, 1] — stagger multiple platforms.
+
+        Example::
+
+            plat = world.add_moving_platform(
+                path=[(0, 0, 2), (8, 0, 2)],
+                period=5.0,
+                size=(2.4, 2.4, 0.3),
+                material=f3d.Material(color=(0.7, 0.8, 0.9)),
+            )
+        """
+        import math
+
+        waypoints = [np.asarray(p, dtype=float) for p in path]
+        if len(waypoints) < 2:
+            raise ValueError("add_moving_platform requires at least 2 waypoints")
+
+        mat_id, mat = _resolve_material(material)
+        if mat:
+            self._materials[mat_id] = mat
+
+        start_pos = waypoints[0]
+        plat_name = name or f"platform_{len(self._bodies)}"
+        bid = self._physics.add_static_box(
+            size=size,
+            position=tuple(float(v) for v in start_pos),
+            material=mat_id,
+            name=plat_name,
+            restitution=restitution,
+            friction=friction,
+        )
+        body = Body(self._physics, bid)
+        self._register_body(body)
+
+        # Attach the animation callback to the world's update list
+        if not hasattr(self, "_moving_platforms"):
+            self._moving_platforms: list[Any] = []
+
+        n_pts = len(waypoints)
+        _phase = float(phase)
+        _period = float(period)
+
+        def _move(t: float) -> None:
+            # Cosine interpolation between waypoints in sequence
+            cycle = (t / _period + _phase) % 1.0
+            seg_f = cycle * (n_pts - 1)
+            seg = int(seg_f)
+            seg = min(seg, n_pts - 2)
+            frac = seg_f - seg
+            s = 0.5 - 0.5 * math.cos(frac * math.pi)
+            new_pos = waypoints[seg] * (1.0 - s) + waypoints[seg + 1] * s
+            with contextlib.suppress(Exception):
+                body.set_position(new_pos)
+
+        self._moving_platforms.append(_move)
+        return body
+
+    def particle_burst(
+        self,
+        position: Any,
+        color: Any = (1.0, 0.8, 0.2),
+        count: int = 8,
+        speed: float = 5.0,
+        lifetime: float = 1.1,
+        up: float = 4.0,
+        layer: int = 0x0010,
+        max_particles: int = 60,
+    ) -> None:
+        """Spawn a one-shot particle burst and manage its lifetime automatically.
+
+        Particles are small dynamic spheres that expire and are removed from
+        the world when their *lifetime* elapses — no manual tracking needed.
+
+        Parameters
+        ----------
+        position : World-space origin of the burst.
+        color    : RGB tuple in [0, 1] for the particle material.
+        count    : Number of particles to spawn.
+        speed    : Horizontal spray speed (m/s).
+        lifetime : Particle lifetime in seconds.
+        up       : Additional upward velocity component (m/s).
+        layer    : Collision layer for the particles (default: DEBRIS = 0x0010).
+        max_particles : Hard cap on total live burst particles in this world.
+
+        Example::
+
+            @goal.on_enter
+            def scored(body):
+                world.particle_burst(body.position, color=(0.3, 1.0, 0.5),
+                                     count=20, speed=6.0, up=7.0, lifetime=1.5)
+        """
+        budget = max_particles - len(self._burst_particles)
+        n = min(count, max(0, budget))
+        if n <= 0:
+            return
+
+        mat = Material(color=tuple(color), emissive=0.9)
+        mat_id, _ = _resolve_material(mat)
+        self._materials[mat_id] = mat
+
+        pos = np.asarray(position, dtype=float)
+        for _ in range(n):
+            d = self._burst_rng.standard_normal(3)
+            d[2] = abs(d[2])
+            d_norm = np.linalg.norm(d)
+            if d_norm > 1e-9:
+                d /= d_norm
+            radius = float(self._burst_rng.uniform(0.06, 0.13))
+            spawn_pos = pos + d * 0.2
+            b = self.add_sphere(
+                radius=radius,
+                position=tuple(float(v) for v in spawn_pos),
+                mass=0.05,
+                restitution=0.55,
+                friction=0.4,
+                material=mat,
+                name="burst_particle",
+            )
+            b.collision_layer = int(layer)
+            b.collision_mask = 0x0009  # TERRAIN | DEFAULT
+            vel = d * speed + np.array([0.0, 0.0, up])
+            b.set_velocity(tuple(float(v) for v in vel))
+            t_life = lifetime * float(self._burst_rng.uniform(0.7, 1.3))
+            self._burst_particles.append((b, t_life))
 
     def _apply_welds(self) -> None:
         if not self._welds:
@@ -1663,7 +1886,8 @@ class World:
         ----------
         origin, direction, max_dist : same as :meth:`raycast`.
         layer_mask : only bodies whose ``collision_layer & layer_mask != 0``
-                     are tested.
+                     are tested.  Heightfields are tested when
+                     ``CollisionLayer.TERRAIN & layer_mask`` is nonzero.
 
         Returns
         -------
@@ -1682,22 +1906,35 @@ class World:
 
         RayHit = namedtuple("RayHit", ["body", "point", "normal", "distance"])
 
+        ro = np.asarray(origin, dtype=float)
+        rd = np.asarray(direction, dtype=float)
+        md = float(max_dist)
+
         filtered_bodies = [
             self._physics._get_body(bid)
             for bid in self._bodies
             if self._physics._get_body(bid).collision_layer & layer_mask
         ]
-        results = ray_cast_all(
-            np.asarray(origin, dtype=float),
-            np.asarray(direction, dtype=float),
-            float(max_dist),
-            filtered_bodies,
-        )
+        results = ray_cast_all(ro, rd, md, filtered_bodies)
         hits = []
         for body_id, point, normal, dist in results:
             body = self._bodies.get(body_id)
             if body is not None:
                 hits.append(RayHit(body=body, point=point, normal=normal, distance=dist))
+
+        # Heightfield raycast
+        if self._physics._heightfields:
+            from forge3d.collision.heightfield import ray_vs_heightfield
+
+            for hf in self._physics._heightfields:
+                if not (hf.collision_layer & layer_mask):
+                    continue
+                result = ray_vs_heightfield(ro, rd, md, hf)
+                if result is not None:
+                    t_hit, hit_pt, normal = result
+                    hits.append(RayHit(body=None, point=hit_pt, normal=normal, distance=t_hit))
+
+        hits.sort(key=lambda h: h.distance)
         return hits
 
     def overlap_sphere(
@@ -1785,10 +2022,11 @@ class World:
         origin: Any,
         direction: Any,
         max_dist: float = 100.0,
+        layer_mask: int = 0xFFFF,
     ) -> Any | None:
         """Cast a ray from *origin* along *direction* and return the first hit.
 
-        Tests the ray against all physics bodies (AABB then exact shape) and
+        Tests the ray against all physics bodies and heightfield terrain, and
         returns the closest intersection, or ``None`` if nothing is hit.
 
         Parameters
@@ -1801,31 +2039,17 @@ class World:
         -------
         A :class:`RayHit` namedtuple with fields
         ``(body, point, normal, distance)`` or ``None``.
+        For terrain hits ``body`` is ``None``.
 
         Example::
 
             hit = world.raycast((0, 0, 5), (0, 0, -1), max_dist=10)
             if hit:
-                print(hit.body.name, hit.distance)
+                name = hit.body.name if hit.body else "terrain"
+                print(name, hit.distance)
         """
-        from forge3d.collision.raycast import ray_cast
-
-        result = ray_cast(
-            np.asarray(origin, dtype=float),
-            np.asarray(direction, dtype=float),
-            float(max_dist),
-            self._physics._bodies,
-        )
-        if result is None:
-            return None
-        body_id, point, normal, dist = result
-        body = self._bodies.get(body_id)
-        if body is None:
-            return None
-        from collections import namedtuple
-
-        RayHit = namedtuple("RayHit", ["body", "point", "normal", "distance"])
-        return RayHit(body=body, point=point, normal=normal, distance=dist)
+        hits = self.raycast_all(origin, direction, max_dist, layer_mask=layer_mask)
+        return hits[0] if hits else None
 
     def _register_body(self, body: Body) -> Body:
         """Store body in _bodies, set its world back-reference, and register events."""

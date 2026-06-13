@@ -6,7 +6,7 @@ build-backend = "maturin"
 
 [project]
 name = "pyforge3d"
-version = "2.1.1"
+version = "2.2.0"
 description = "Pure-Python 3D physics game engine — own dynamics, own rules, no compromises."
 readme = "README.md"
 license = { file = "LICENSE" }

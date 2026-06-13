@@ -283,6 +283,7 @@ class WindowedRealtimeRenderer:
         fps: int = 60,
         shadow_resolution: int = 0,
         sky_color: tuple = _SKY_DEFAULT,
+        show_grid: bool = True,
     ) -> None:
         self._width = width
         self._height = height
@@ -328,7 +329,7 @@ class WindowedRealtimeRenderer:
         self._excluded_names: set[str] = set()
 
         # Debug grid overlay (can be toggled off for cleaner game view)
-        self._show_grid: bool = True
+        self._show_grid: bool = show_grid
 
         # HUD text cache: key → {"tex", "vbo", "vao", "alive"}
         self._hud_cache: dict[tuple, dict[str, Any]] = {}
@@ -819,8 +820,18 @@ class WindowedRealtimeRenderer:
 
         if anchor == "center":
             x0, y0 = x - tw // 2, y - th // 2
-        elif anchor == "topright":
+        elif anchor in ("topright", "right"):
             x0, y0 = x - tw, y
+        elif anchor in ("topcenter", "top"):
+            x0, y0 = x - tw // 2, y
+        elif anchor in ("bottomleft", "bottomcenter", "bottomright", "bottom"):
+            if "center" in anchor or anchor == "bottom":
+                x0 = x - tw // 2
+            elif "right" in anchor:
+                x0 = x - tw
+            else:
+                x0 = x
+            y0 = y - th
         else:
             x0, y0 = x, y
         x1, y1 = x0 + tw, y0 + th

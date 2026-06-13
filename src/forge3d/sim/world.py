@@ -474,6 +474,10 @@ class PhysicsWorld:
                         contacts.extend(sphere_vs_heightfield(body, idx, hf))
                     elif body.shape_type == "box":
                         contacts.extend(box_vs_heightfield(body, idx, hf))
+                    elif body.shape_type == "capsule":
+                        from forge3d.collision.heightfield import capsule_vs_heightfield
+
+                        contacts.extend(capsule_vs_heightfield(body, idx, hf))
 
         # Step 3: impulse-based contact resolution
         if contacts:

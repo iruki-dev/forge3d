@@ -66,6 +66,11 @@ class App:
         height: int = 720,
         fps: float = 60.0,
         gravity: Any = (0.0, 0.0, -9.81),
+        substeps: int = 2,
+        shadow_resolution: int = 0,
+        sky_color: tuple | None = None,
+        show_grid: bool = False,
+        max_dt: float = 1 / 25,
     ) -> None:
         from forge3d.facade import World
 
@@ -75,6 +80,11 @@ class App:
         self._height = height
         self._fps = float(fps)
         self._dt = 1.0 / self._fps
+        self._substeps = substeps
+        self._shadow_resolution = shadow_resolution
+        self._sky_color = sky_color
+        self._show_grid = show_grid
+        self._max_dt = max_dt
 
         self._on_start: Callable | None = None
         self._on_update: Callable | None = None
@@ -155,23 +165,28 @@ class App:
         if self._on_start is not None:
             _call_flexible(self._on_start, self._world)
 
+        kw: dict[str, Any] = {}
+        if self._sky_color is not None:
+            kw["sky_color"] = self._sky_color
         viewer = Viewer(
             self._world,
             title=self._title,
             width=self._width,
             height=self._height,
+            fps=int(self._fps),
             max_frames=max_frames,
+            shadow_resolution=self._shadow_resolution,
+            show_grid=self._show_grid,
+            **kw,
         )
 
         while viewer.is_open:
-            # viewer.input is kept up-to-date by the GLFW callbacks wired
-            # inside the renderer — no separate InputBuilder needed here.
             inp = viewer.input
 
             if self._on_update is not None:
                 _call_flexible(self._on_update, self._world, self._dt, inp)
 
-            self._world.step(self._dt)
+            self._world.step(self._dt, substeps=self._substeps)
             viewer.draw()
 
             if self._on_render is not None:

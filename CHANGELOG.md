@@ -10,6 +10,36 @@ versioning follows [Semantic Versioning](https://semver.org/).
 
 ---
 
+## [2.2.0] — 2026-06-13 — Game-dev ergonomics & API clarity
+
+게임 제작 시 반복되던 보일러플레이트를 라이브러리 안으로 흡수.  
+Unity처럼 파이썬 기초만 알면 바로 게임을 만들 수 있는 수준의 API 완성.
+
+### Added
+
+- **`Input.axis(neg_key, pos_key) → float`** — 두 키를 `[-1, 1]` float 축으로 읽는 헬퍼.  
+  `float(inp.key_held(D)) - float(inp.key_held(A))` 관용구를 한 줄로 대체.  
+  `ScriptedInput`에도 동일하게 추가.
+- **`OrbitCamera.handle_input(inp, dt, ...)` ** — 마우스 드래그, Q/E 키 회전, 휠 줌을  
+  OrbitCamera 자체에서 처리. 게임 루프에서 직접 event를 파싱할 필요 없음.
+- **`CharacterController.move_camera_relative(inp, cam, speed, dt)` ** —  
+  yaw 각도를 직접 계산하지 않고 카메라 방향 기준으로 캐릭터를 이동.
+- **`Viewer.show_grid: bool` 프로퍼티** (생성자 파라미터도 추가) —  
+  기존 `viewer._renderer._show_grid` 내부 접근을 공개 API로 대체.
+- **`Viewer.draw_text` 앵커 기반 레이아웃** —  
+  `x=None` / `y=None` 생략 시 `anchor`에 맞게 자동 배치. `margin` 파라미터 추가.  
+  새 앵커 타입: `"topcenter"`, `"bottomleft"`, `"bottomcenter"`, `"bottomright"`.
+- **`App.__init__` 렌더 파라미터 추가** — `substeps`, `shadow_resolution`, `sky_color`,  
+  `show_grid`, `max_dt`. `App` 한 줄 선언으로 렌더 설정까지 완결.
+
+### Fixed
+
+- **`Sentry` 호버 떠오름 버그** (`apps/game/enemies.py`) — 호버 raycast에  
+  `layer_mask` 미지정으로 sentry 자신의 몸통(`ENEMY` 레이어)을 맞추던 문제 수정.  
+  `layer_mask=CollisionLayer.DEFAULT | CollisionLayer.TERRAIN`으로 자기 충돌 제거.
+
+---
+
 ## [2.1.1] — 2026-06-11
 
 ### Changed

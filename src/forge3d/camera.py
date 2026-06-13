@@ -167,6 +167,187 @@ class OrbitCamera:
             fov_deg=self.fov_deg,
         )
 
+    @property
+    def forward_azimuth(self) -> float:
+        """Azimuth the camera is *looking toward* (azimuth + 180°, mod 360).
+
+        Useful as a "player forward" heading for camera-relative movement::
+
+            yaw_deg = cam.forward_azimuth
+            fwd = (cos(radians(yaw_deg)), sin(radians(yaw_deg)), 0)
+        """
+        return (self.azimuth + 180.0) % 360.0
+
+    def handle_input(
+        self,
+        inp: Any,
+        dt: float,
+        *,
+        rotate_button: int = 1,
+        mouse_sensitivity: float = 0.25,
+        rotate_key_left: str = "q",
+        rotate_key_right: str = "e",
+        pitch_key_up: str = "r",
+        pitch_key_down: str = "f",
+        key_deg_per_s: float = 130.0,
+        scroll_zoom: bool = True,
+        min_distance: float = 1.0,
+        max_distance: float = 50.0,
+        min_elevation: float = -89.0,
+        max_elevation: float = 89.0,
+    ) -> OrbitCamera:
+        """Process one frame of keyboard / mouse input and update the camera.
+
+        Designed to replace per-game boilerplate camera-rig update logic.
+        Call once per frame before :meth:`to_snapshot`::
+
+            cam.handle_input(inp, dt).follow(player_pos, dt=dt).occlude(world)
+            viewer.set_camera(cam.to_snapshot())
+
+        Parameters
+        ----------
+        inp             : :class:`~forge3d.input.Input` or :class:`~forge3d.input.ScriptedInput`.
+        dt              : Frame delta-time in seconds.
+        rotate_button   : Mouse button held to orbit (default 1 = right).
+        mouse_sensitivity: Degrees per pixel for mouse drag.
+        rotate_key_left : Key to rotate left (default ``'q'``).
+        rotate_key_right: Key to rotate right (default ``'e'``).
+        pitch_key_up    : Key to pitch up (default ``'r'``).
+        pitch_key_down  : Key to pitch down (default ``'f'``).
+        key_deg_per_s   : Rotation speed in degrees/s for key-driven orbit.
+        scroll_zoom     : If True (default), scroll wheel zooms.
+        min_distance    : Minimum zoom distance in metres.
+        max_distance    : Maximum zoom distance in metres.
+        min_elevation   : Elevation clamp lower bound (degrees).
+        max_elevation   : Elevation clamp upper bound (degrees).
+
+        Returns ``self`` for method chaining.
+        """
+        # Mouse drag rotate
+        if inp.mouse_button(rotate_button):
+            dx, dy = inp.mouse_delta()
+            self.rotate(d_azimuth=-dx * mouse_sensitivity, d_elevation=dy * mouse_sensitivity)
+
+        # Key-driven rotate
+        k = key_deg_per_s * dt
+        if inp.key_held(rotate_key_left):
+            self.rotate(d_azimuth=k)
+        if inp.key_held(rotate_key_right):
+            self.rotate(d_azimuth=-k)
+        if inp.key_held(pitch_key_up):
+            self.rotate(d_elevation=k * 0.6)
+        if inp.key_held(pitch_key_down):
+            self.rotate(d_elevation=-k * 0.6)
+
+        # Clamp elevation
+        self.elevation = float(np.clip(self.elevation, min_elevation, max_elevation))
+
+        # Scroll zoom
+        if scroll_zoom:
+            sd = inp.scroll_delta()
+            if sd:
+                self.distance = float(
+                    np.clip(
+                        self.distance * (1.0 - sd * 0.1),
+                        min_distance,
+                        max_distance,
+                    )
+                )
+
+        return self
+
+    def follow(
+        self,
+        target: Any,
+        head_height: float = 1.2,
+        smooth_hz: float = 10.0,
+        dt: float = 0.0,
+    ) -> OrbitCamera:
+        """Smoothly move the camera target toward *target* + *head_height*.
+
+        Replaces the common per-frame ``smooth_target`` lerp pattern that
+        third-person games need.  Call once per frame before :meth:`to_snapshot`.
+
+        Parameters
+        ----------
+        target      : World position to track — usually ``player.position``.
+        head_height : Vertical offset added to *target* (default 1.2 m).
+        smooth_hz   : Smoothing frequency in Hz — higher = snappier.
+        dt          : Frame delta-time; pass 0 for instant snap.
+
+        Returns ``self`` for method chaining::
+
+            cam.follow(player.position, dt=dt).occlude(world)
+            viewer.set_camera(cam.to_snapshot())
+        """
+        import math
+
+        goal = np.asarray(target, dtype=float) + np.array([0.0, 0.0, head_height])
+        alpha = 1.0 - math.exp(-smooth_hz * dt) if dt > 0.0 and smooth_hz > 0.0 else 1.0
+        self.target = self.target + (goal - self.target) * alpha
+        return self
+
+    def occlude(
+        self,
+        world: Any,
+        terrain_sampler: Any = None,
+        min_distance: float = 1.6,
+        layer_mask: int = 0x0001,
+        terrain_steps: int = 16,
+        terrain_clearance: float = 0.35,
+    ) -> OrbitCamera:
+        """Pull the camera distance inward to avoid geometry occlusion.
+
+        Raycasts against physics bodies and (optionally) marches the eye ray
+        against a terrain height sampler.  Sets ``self.distance`` to the safe
+        distance and returns ``self`` for chaining.
+
+        Parameters
+        ----------
+        world            : :class:`~forge3d.facade.World` to raycast against.
+        terrain_sampler  : Callable ``(x, y) → z`` for terrain height (e.g.
+                           ``heightfield.height_at`` or your own function).
+                           Pass ``None`` to skip terrain marching — when the
+                           world has heightfields and raycasts already hit them
+                           this is usually not needed.
+        min_distance     : Minimum eye-to-target distance (m).
+        layer_mask       : Collision layers included in the occlusion raycast.
+        terrain_steps    : Number of steps for the terrain march.
+        terrain_clearance: Camera is pulled in when closer than this to terrain.
+
+        Returns ``self``::
+
+            cam.follow(player.position, dt=dt).occlude(world)
+            viewer.set_camera(cam.to_snapshot())
+        """
+        eye_dir = self.position - self.target
+        eye_len = float(np.linalg.norm(eye_dir))
+        if eye_len < 1e-9:
+            return self
+
+        u = eye_dir / eye_len
+        dist = self.distance
+
+        # Raycast against bodies
+        hits = world.raycast_all(self.target, u, max_dist=dist, layer_mask=layer_mask)
+        for hit in hits:
+            if hit.body is not None:
+                dist = min(dist, max(min_distance, float(hit.distance) - 0.4))
+                break
+
+        # Optional terrain height-function march
+        if terrain_sampler is not None:
+            for k in range(1, terrain_steps + 1):
+                t = dist * k / terrain_steps
+                p = self.target + u * t
+                h_terrain = float(terrain_sampler(float(p[0]), float(p[1])))
+                if float(p[2]) < h_terrain + terrain_clearance:
+                    dist = max(min_distance, t - 0.5)
+                    break
+
+        self.distance = max(min_distance, dist)
+        return self
+
     def __repr__(self) -> str:
         return (
             f"OrbitCamera(target={self.target.round(2).tolist()}, "

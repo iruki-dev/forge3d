@@ -69,6 +69,11 @@ class CharacterController:
         # close to the ground in the frame right after a jump.
         self._jump_cooldown: float = 0.0
 
+        # Platform riding: track which body we're standing on and its last position
+        # so we can apply its displacement to ourselves each frame.
+        self._ground_body_id: int | None = None  # None → terrain / nothing
+        self._ground_body_last_pos: Any | None = None  # np.ndarray
+
     # ── State queries ─────────────────────────────────────────────────────────
 
     @property
@@ -101,6 +106,9 @@ class CharacterController:
     ) -> None:
         """Apply horizontal movement toward *direction* at *speed* m/s.
 
+        Also carries the character on moving platforms automatically — no
+        manual delta-passing needed.
+
         Parameters
         ----------
         direction : (3,) movement vector (only x/y components used unless z != 0).
@@ -108,6 +116,8 @@ class CharacterController:
         speed     : Maximum movement speed in m/s.
         dt        : Frame delta-time in seconds.
         """
+        self._update_ground(dt)
+
         d = np.asarray(direction, dtype=float)
         norm = np.linalg.norm(d[:2])
         if norm > 1e-9:
@@ -118,7 +128,6 @@ class CharacterController:
             cur = self.body.velocity.copy()
             cur[:2] = target_vel[:2]
             self.body.set_velocity(cur)
-        self._update_ground(dt)
 
     def jump(self, impulse: float = 5.0) -> None:
         """Apply an upward velocity impulse if grounded.
@@ -133,6 +142,55 @@ class CharacterController:
             self.body.set_velocity(vel)
             self._grounded = False
             self._jump_cooldown = 0.40  # 400 ms before the next jump is allowed
+
+    def move_camera_relative(
+        self,
+        inp: Any,
+        cam: Any,
+        speed: float,
+        dt: float,
+        *,
+        forward_key: str = "w",
+        back_key: str = "s",
+        left_key: str = "a",
+        right_key: str = "d",
+    ) -> np.ndarray:
+        """Move relative to the camera's facing direction.
+
+        Eliminates the boilerplate yaw-angle → forward/right vector pattern that
+        every third-person game repeats.  Returns the world-space move vector
+        (useful for updating a ``facing`` direction)::
+
+            move = cc.move_camera_relative(inp, cam, speed=7.2, dt=dt)
+
+        Parameters
+        ----------
+        inp         : :class:`~forge3d.input.Input` or
+                      :class:`~forge3d.input.ScriptedInput`.
+        cam         : :class:`~forge3d.camera.OrbitCamera` — only its
+                      ``forward_azimuth`` property is used.
+        speed       : Horizontal movement speed in m/s.
+        dt          : Frame delta-time in seconds.
+        forward_key : Key for forward movement (default ``'w'``).
+        back_key    : Key for backward movement (default ``'s'``).
+        left_key    : Key for left movement (default ``'a'``).
+        right_key   : Key for right movement (default ``'d'``).
+
+        Returns
+        -------
+        np.ndarray
+            The (3,) world-space move vector (zero if no input).
+        """
+        import math
+
+        yaw = math.radians(float(cam.forward_azimuth))
+        fwd = np.array([math.cos(yaw), math.sin(yaw), 0.0])
+        right = np.array([math.sin(yaw), -math.cos(yaw), 0.0])
+        mx = inp.axis(left_key, right_key)
+        my = inp.axis(back_key, forward_key)
+        move = fwd * my + right * mx
+        self.move(direction=tuple(move), speed=speed, dt=dt)
+        return move
 
     def glide(self, target_fall_speed: float = -1.5, dt: float = 1 / 60) -> None:
         """Reduce falling speed to *target_fall_speed* for a glide effect.
@@ -152,25 +210,66 @@ class CharacterController:
     # ── Internal ──────────────────────────────────────────────────────────────
 
     def _update_ground(self, dt: float) -> None:
-        """Update is_grounded via downward raycast (throttled + jump-cooldown aware)."""
+        """Update is_grounded via downward raycast (throttled + jump-cooldown aware).
+
+        Also applies platform displacement: if the body we were standing on
+        has moved since the last check, we teleport ourselves by the same delta.
+        """
         # Decrement jump cooldown unconditionally every call
         if self._jump_cooldown > 0.0:
             self._jump_cooldown = max(0.0, self._jump_cooldown - dt)
-            self._grounded = False  # never re-ground during cooldown
+            self._grounded = False
+            self._ground_body_id = None
+            self._ground_body_last_pos = None
             return
 
         self._ground_check_timer += dt
         if self._ground_check_timer < self._ground_check_interval:
+            # Apply stored platform delta even between checks
+            self._apply_platform_delta()
             return
         self._ground_check_timer = 0.0
+
+        # Apply platform delta from last frame before updating ground state
+        self._apply_platform_delta()
+
         pos = self.body.position
         ray_len = self._height / 2.0 + self._radius + self._GROUND_RAY_EXTRA
         hit = self._world.raycast(
             origin=pos,
             direction=(0.0, 0.0, -1.0),
             max_dist=ray_len,
+            layer_mask=self._ground_layer_mask,
         )
         self._grounded = hit is not None
+
+        # Track which body (or terrain) we're on for platform riding
+        if hit is not None and hit.body is not None:
+            self._ground_body_id = hit.body._id
+            self._ground_body_last_pos = hit.body.position.copy()
+        else:
+            # Terrain hit (body is None) or no hit
+            self._ground_body_id = None
+            self._ground_body_last_pos = None
+
+    def _apply_platform_delta(self) -> None:
+        """If standing on a moving body, carry ourselves with it."""
+        if self._ground_body_id is None or self._ground_body_last_pos is None:
+            return
+        body = self._world._bodies.get(self._ground_body_id)
+        if body is None:
+            self._ground_body_id = None
+            self._ground_body_last_pos = None
+            return
+        try:
+            current_pos = body.position
+            delta = current_pos - self._ground_body_last_pos
+            if np.linalg.norm(delta) > 1e-6:
+                self.body.set_position(self.body.position + delta)
+            self._ground_body_last_pos = current_pos.copy()
+        except Exception:
+            self._ground_body_id = None
+            self._ground_body_last_pos = None
 
     def __repr__(self) -> str:
         pos = self.position

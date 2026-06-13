@@ -194,3 +194,94 @@ def box_vs_heightfield(
         contacts.sort(key=lambda c: -c.depth)
         contacts = contacts[:4]
     return contacts
+
+
+def capsule_vs_heightfield(
+    capsule_body: Any,
+    capsule_idx: int,
+    hf: Heightfield,
+) -> list[ContactPoint]:
+    """Collision between a capsule and a heightfield terrain.
+
+    Samples three sphere centres along the capsule axis (bottom, middle, top)
+    and returns the contact with the deepest penetration (if any).
+    """
+    from forge3d.collision.detection import ContactPoint
+    from forge3d.math.quaternion import quat_to_rot
+
+    radius = float(capsule_body.shape_params["radius"])
+    half_len = float(capsule_body.shape_params["half_length"])
+    R = quat_to_rot(capsule_body.quat)
+    pos = capsule_body.pos
+    axis = R @ np.array([0.0, 0.0, 1.0])
+
+    best: ContactPoint | None = None
+    for t in (-half_len, 0.0, half_len):
+        sphere_center = pos + axis * t
+        x, y = float(sphere_center[0]), float(sphere_center[1])
+        h_terrain = hf.height_at(x, y)
+        depth = h_terrain + radius - float(sphere_center[2])
+        if depth > 0:
+            normal = hf.normal_at(x, y)
+            cp = ContactPoint(
+                body_a_idx=capsule_idx,
+                body_b_idx=-1,
+                pos=np.array([x, y, h_terrain]),
+                normal=normal,
+                depth=depth,
+            )
+            if best is None or depth > best.depth:
+                best = cp
+
+    return [best] if best is not None else []
+
+
+def ray_vs_heightfield(
+    ro: np.ndarray,
+    rd: np.ndarray,
+    max_dist: float,
+    hf: Heightfield,
+    steps: int = 64,
+) -> tuple[float, np.ndarray, np.ndarray] | None:
+    """Ray vs heightfield intersection.
+
+    Marches along the ray and bisects once a terrain crossing is detected.
+
+    Returns
+    -------
+    ``(t, hit_point, normal)`` or ``None`` if no hit within *max_dist*.
+    """
+    step = max_dist / max(steps, 1)
+    prev_h_rel: float | None = None
+    prev_t: float = 0.0
+
+    for i in range(steps + 1):
+        t = i * step
+        if t > max_dist:
+            break
+        p = ro + rd * t
+        terrain_h = hf.height_at(float(p[0]), float(p[1]))
+        h_rel = float(p[2]) - terrain_h
+
+        if prev_h_rel is not None and prev_h_rel >= 0.0 and h_rel < 0.0:
+            # Binary search for crossing point
+            t0, t1 = prev_t, t
+            for _ in range(6):
+                tm = (t0 + t1) * 0.5
+                pm = ro + rd * tm
+                hm = hf.height_at(float(pm[0]), float(pm[1]))
+                if float(pm[2]) >= hm:
+                    t0 = tm
+                else:
+                    t1 = tm
+            t_hit = (t0 + t1) * 0.5
+            p_hit = ro + rd * t_hit
+            hit_x, hit_y = float(p_hit[0]), float(p_hit[1])
+            hit_pt = np.array([hit_x, hit_y, hf.height_at(hit_x, hit_y)])
+            normal = hf.normal_at(hit_x, hit_y)
+            return t_hit, hit_pt, normal
+
+        prev_h_rel = h_rel
+        prev_t = t
+
+    return None

@@ -179,6 +179,16 @@ class Input:
         """True if *all* of the given keys are held simultaneously."""
         return all(k in self._keys_held for k in keys)
 
+    def axis(self, neg_key: str, pos_key: str) -> float:
+        """Return a [-1, 1] float axis from two opposing keys.
+
+        Positive when *pos_key* is held, negative when *neg_key* is held,
+        zero when neither or both are held.  Replaces the common pattern::
+
+            float(inp.key_held(Key.D)) - float(inp.key_held(Key.A))
+        """
+        return float(self.key_held(pos_key)) - float(self.key_held(neg_key))
+
     # ── Mouse ─────────────────────────────────────────────────────────────────
 
     def mouse_pos(self) -> tuple[float, float]:
@@ -336,3 +346,113 @@ class _InputBuilder:
 
 # Public alias — no leading underscore
 InputBuilder = _InputBuilder
+
+
+# ── ScriptedInput — for smoke tests and offline scripted sequences ─────────────
+
+
+class ScriptedInput:
+    """Mutable input stand-in for headless tests and scripted sequences.
+
+    Provides the same query API as :class:`Input` (``key_held``, ``key_pressed``,
+    ``mouse_delta``, etc.) so it can be dropped in wherever an :class:`Input`
+    is expected without opening a window.
+
+    Call :meth:`end_frame` at the end of each simulated frame to clear
+    per-frame state (``key_pressed``, ``key_released``, scroll delta).
+
+    Example::
+
+        inp = f3d.ScriptedInput()
+
+        for frame in range(300):
+            inp.press(f3d.Key.ENTER) if frame == 5 else None
+            inp.hold(f3d.Key.W)
+            if frame % 70 == 0:
+                inp.press(f3d.Key.SPACE)
+            game.update(inp, dt, cam_yaw)
+            world.step(dt)
+            inp.end_frame()
+    """
+
+    def __init__(self) -> None:
+        self._held: set[str] = set()
+        self._pressed: set[str] = set()
+        self._released: set[str] = set()
+        self._scroll: float = 0.0
+        self._mouse_pos: tuple[float, float] = (0.0, 0.0)
+        self._mouse_delta: tuple[float, float] = (0.0, 0.0)
+        self._mouse_buttons: set[int] = set()
+
+    # ── Mutators (call before update) ─────────────────────────────────────────
+
+    def hold(self, key: str) -> None:
+        """Mark *key* as continuously held."""
+        self._held.add(key.lower())
+
+    def unhold(self, key: str) -> None:
+        """Release *key* from the held set."""
+        self._held.discard(key.lower())
+
+    def press(self, key: str) -> None:
+        """Fire a single-frame key-press (also adds to held)."""
+        k = key.lower()
+        self._pressed.add(k)
+        self._held.add(k)
+
+    def release(self, key: str) -> None:
+        """Fire a single-frame key-release (also removes from held)."""
+        k = key.lower()
+        self._released.add(k)
+        self._held.discard(k)
+
+    def set_mouse_delta(self, dx: float, dy: float) -> None:
+        """Set mouse cursor movement for this frame."""
+        self._mouse_delta = (float(dx), float(dy))
+
+    def set_scroll(self, delta: float) -> None:
+        """Set scroll wheel delta for this frame."""
+        self._scroll = float(delta)
+
+    def end_frame(self) -> None:
+        """Clear per-frame state.  Call once at the end of each simulated frame."""
+        self._pressed.clear()
+        self._released.clear()
+        self._scroll = 0.0
+        self._mouse_delta = (0.0, 0.0)
+
+    # ── Input query API (mirrors Input) ───────────────────────────────────────
+
+    def key_held(self, key: str) -> bool:
+        return key.lower() in self._held
+
+    def key_pressed(self, key: str) -> bool:
+        return key.lower() in self._pressed
+
+    def key_released(self, key: str) -> bool:
+        return key.lower() in self._released
+
+    def any_key_held(self, *keys: str) -> bool:
+        return any(k.lower() in self._held for k in keys)
+
+    def all_keys_held(self, *keys: str) -> bool:
+        return all(k.lower() in self._held for k in keys)
+
+    def axis(self, neg_key: str, pos_key: str) -> float:
+        """Return a [-1, 1] float axis from two opposing keys."""
+        return float(self.key_held(pos_key)) - float(self.key_held(neg_key))
+
+    def mouse_pos(self) -> tuple[float, float]:
+        return self._mouse_pos
+
+    def mouse_delta(self) -> tuple[float, float]:
+        return self._mouse_delta
+
+    def mouse_button(self, button: int = 0) -> bool:
+        return button in self._mouse_buttons
+
+    def scroll_delta(self) -> float:
+        return self._scroll
+
+    def __repr__(self) -> str:
+        return f"ScriptedInput(held={sorted(self._held)}, pressed={sorted(self._pressed)})"

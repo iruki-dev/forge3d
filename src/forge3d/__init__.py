@@ -103,7 +103,7 @@ from forge3d.editor import EditorApp, PlayState
 from forge3d.errors import Forge3dError, PhysicsError, RenderError, ValidationError
 from forge3d.events import CollisionEvent, CollisionHandler
 from forge3d.facade import Body, Material, Shape, World
-from forge3d.input import Input, InputBuilder, Key
+from forge3d.input import Input, InputBuilder, Key, ScriptedInput
 from forge3d.io.world_snapshot import StateRecorder
 
 # Particle system (P31)
@@ -158,6 +158,7 @@ __all__ = [
     "Input",
     "InputBuilder",
     "Key",
+    "ScriptedInput",
     # Camera
     "OrbitCamera",
     "FollowCamera",
