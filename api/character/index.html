@@ -3453,6 +3453,8 @@ velocity    : Current linear velocity (3,).</p>
     <div class="doc doc-contents ">
 
         <p>Apply horizontal movement toward <em>direction</em> at <em>speed</em> m/s.</p>
+<p>Also carries the character on moving platforms automatically — no
+manual delta-passing needed.</p>
 <h5 id="forge3d.character.CharacterController.move--parameters">Parameters<a class="headerlink" href="#forge3d.character.CharacterController.move--parameters" title="Permanent link">&para;</a></h5>
 <p>direction : (3,) movement vector (only x/y components used unless z != 0).
             Does <strong>not</strong> need to be normalised.

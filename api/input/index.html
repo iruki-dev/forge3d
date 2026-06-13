@@ -1161,6 +1161,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forge3d.input.Input.axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        axis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#forge3d.input.Input.mouse_pos" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2579,6 +2590,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#forge3d.input.Input.axis" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        axis
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#forge3d.input.Input.mouse_pos" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3425,6 +3447,30 @@ strings (<code>'w'</code>, <code>'space'</code>, <code>'f1'</code>).</p>
     <div class="doc doc-contents ">
 
         <p>True if <em>all</em> of the given keys are held simultaneously.</p>
+
+
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="forge3d.input.Input.axis" class="doc doc-heading">
+            <span class="doc doc-object-name doc-function-name">axis</span>
+
+
+<a href="#forge3d.input.Input.axis" class="headerlink" title="Permanent link">&para;</a></h3>
+<div class="language-python doc-signature highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nf">axis</span><span class="p">(</span><span class="n">neg_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pos_key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span>
+</span></code></pre></div>
+
+    <div class="doc doc-contents ">
+
+        <p>Return a [-1, 1] float axis from two opposing keys.</p>
+<p>Positive when <em>pos_key</em> is held, negative when <em>neg_key</em> is held,
+zero when neither or both are held.  Replaces the common pattern::</p>
+<div class="language-text highlight"><pre><span></span><code>float(inp.key_held(Key.D)) - float(inp.key_held(Key.A))
+</code></pre></div>
 
 
     </div>
