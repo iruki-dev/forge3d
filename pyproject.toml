@@ -57,11 +57,17 @@ render = [
     "Pillow>=10.0",
     "imageio>=2.34",
     "imageio-ffmpeg>=0.5",
+    "soundfile>=0.12",       # P28 오디오 시스템 (없으면 stdlib WAV 파서로 폴백)
 ]
 rl = [
     "gymnasium>=0.29",
     "stable-baselines3>=2.2",
     "optax>=0.2",
+    "matplotlib>=3.8",       # 학습 대시보드
+]
+experimental = [
+    "wgpu>=0.19",            # P34 WebGPU 렌더러 (없으면 GL 폴백)
+    "rendercanvas>=2.0",     # wgpu 캔버스 백엔드
 ]
 dev = [
     "pytest>=8.0",
@@ -74,13 +80,14 @@ dev = [
     "Pillow>=10.0",
     "imageio>=2.34",
     "imageio-ffmpeg>=0.5",
+    "soundfile>=0.12",
 ]
 docs = [
     "mkdocs-material>=9.5",
     "mkdocstrings[python]>=0.25",
 ]
 all = [
-    "pyforge3d[render,rl,dev]",
+    "pyforge3d[render,rl,experimental,dev]",
 ]
 
 # ── Build (maturin — Python + Rust 혼합) ──────────────────────────────────────

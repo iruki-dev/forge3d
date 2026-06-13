@@ -1,12 +1,14 @@
 services:
   dev:
-    build: .
+    build:
+      context: ..                          # 프로젝트 루트를 build context로
+      dockerfile: .devcontainer/Dockerfile
     volumes:
-      # Source code — live-editable without rebuild
-      - .:/workspace
-      # Persist checkpoints and logs outside container
-      - ./checkpoints:/workspace/checkpoints
-      - ./logs:/workspace/logs
+      # 소스 코드 — 재빌드 없이 실시간 편집 가능
+      - ..:/workspace
+      # 체크포인트·로그를 컨테이너 밖에 보존
+      - ../checkpoints:/workspace/checkpoints
+      - ../logs:/workspace/logs
     environment:
       ENGINE_BACKEND: ${ENGINE_BACKEND:-numpy}
       XLA_FLAGS: "--xla_force_host_platform_device_count=4"
